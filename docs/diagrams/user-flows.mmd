@@ -1,0 +1,37 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ff69b4'}}}%%
+stateDiagram-v2
+    [*] --> Landing: Ouvre app
+
+    Landing --> Login: Non authentifie
+    Landing --> Menu: Authentifie
+
+    Login --> Menu: Success
+    Login --> Login: Erreur
+
+    Menu --> Practice: Mode Practice
+    Menu --> Challenge: Mode Challenge
+    Menu --> Badges: Voir badges
+    Menu --> Settings: Parametres
+
+    state Practice {
+        [*] --> SelectTable
+        SelectTable --> Question
+        Question --> Answer
+        Answer --> Feedback
+        Feedback --> Question: Continuer
+        Feedback --> Results: Terminer
+    }
+
+    state Challenge {
+        [*] --> Countdown
+        Countdown --> QuestionC
+        QuestionC --> AnswerC
+        AnswerC --> FeedbackC
+        FeedbackC --> QuestionC: Temps restant
+        FeedbackC --> ResultsC: Temps ecoule
+    }
+
+    Practice --> Menu: Retour
+    Challenge --> Menu: Retour
+    Badges --> Menu: Retour
+    Settings --> Menu: Retour

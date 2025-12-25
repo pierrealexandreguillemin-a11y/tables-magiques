@@ -1,0 +1,26 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ff69b4'}}}%%
+flowchart TB
+    subgraph Practice["Mode Practice - 8 Badges"]
+        P1["⭐ Premiere Etoile<br/>1ere bonne reponse"]
+        P2["🦄 Licorne Magique<br/>5 bonnes reponses"]
+        P3["👑 Princesse Maths<br/>10 bonnes reponses"]
+        P4["🌈 Arc-en-ciel<br/>5/5 parfait"]
+        P5["✨ Etoile Brillante<br/>20 bonnes reponses"]
+        P6["🧚 Fee Calculs<br/>10/10 parfait"]
+        P7["👸 Reine Magique<br/>30 bonnes reponses"]
+        P8["🏆 Super Championne<br/>50 bonnes reponses"]
+    end
+
+    subgraph Challenge["Mode Challenge - 5 Badges"]
+        C1["⚡ Eclair Rapide<br/>5 reponses"]
+        C2["🥷 Ninja Maths<br/>10 reponses"]
+        C3["🚀 Fusee Magique<br/>15 reponses"]
+        C4["⚡👑 Reine Vitesse<br/>20 reponses"]
+        C5["💎 Perfection<br/>100% sans erreur"]
+    end
+
+    P1 --> P2 --> P3 --> P5 --> P7 --> P8
+    P4 --> P6
+
+    C1 --> C2 --> C3 --> C4
+    C5

@@ -1,0 +1,34 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ff69b4', 'secondaryColor': '#ba55d3'}}}%%
+flowchart TB
+    subgraph Client["Frontend (Vercel)"]
+        UI[Next.js App Router]
+        Components[shadcn/ui Components]
+        Animations[GSAP + Framer Motion]
+        PWA[Service Worker]
+    end
+
+    subgraph API["API Routes (Serverless)"]
+        AuthAPI["/api/auth/*"]
+        ScoresAPI["/api/scores/*"]
+        BadgesAPI["/api/badges/*"]
+    end
+
+    subgraph Database["Upstash Redis"]
+        Users["tm:user:*"]
+        Sessions["tm:session:*"]
+        Scores["tm:scores:*"]
+        Badges["tm:badges:*"]
+    end
+
+    UI --> Components
+    Components --> Animations
+    UI --> PWA
+
+    UI --> AuthAPI
+    UI --> ScoresAPI
+    UI --> BadgesAPI
+
+    AuthAPI --> Users
+    AuthAPI --> Sessions
+    ScoresAPI --> Scores
+    BadgesAPI --> Badges

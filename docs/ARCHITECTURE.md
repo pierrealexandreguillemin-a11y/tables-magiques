@@ -2,6 +2,19 @@
 
 Guide d'architecture pour le developpement conforme aux standards.
 
+## Diagrammes
+
+| Diagramme    | Description          | Fichier                                           |
+| ------------ | -------------------- | ------------------------------------------------- |
+| Architecture | Vue C4 du systeme    | [architecture.svg](./diagrams/architecture.svg)   |
+| Data Flow    | Flux de donnees      | [data-flow.svg](./diagrams/data-flow.svg)         |
+| User Flows   | Parcours utilisateur | [user-flows.svg](./diagrams/user-flows.svg)       |
+| Badges       | Systeme de badges    | [badges-system.svg](./diagrams/badges-system.svg) |
+
+> Les fichiers `.mmd` (Mermaid) sont la source. Les `.svg` sont regeneres automatiquement par le hook pre-push.
+
+---
+
 ## Standards appliques
 
 | Standard      | Application        |

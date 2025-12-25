@@ -1,0 +1,40 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ff69b4'}}}%%
+flowchart LR
+    subgraph User["Utilisateur"]
+        Login[Login]
+        Play[Joue]
+        View[Consulte badges]
+    end
+
+    subgraph Frontend["Frontend"]
+        AuthState[useAuth Hook]
+        GameState[useGameState Hook]
+        BadgeState[useBadges Hook]
+    end
+
+    subgraph API["API Routes"]
+        AuthRoute["/api/auth"]
+        ScoreRoute["/api/scores"]
+        BadgeRoute["/api/badges"]
+    end
+
+    subgraph Redis["Upstash Redis"]
+        UserData[("Users")]
+        SessionData[("Sessions")]
+        ScoreData[("Scores")]
+        BadgeData[("Badges")]
+    end
+
+    Login --> AuthState
+    AuthState --> AuthRoute
+    AuthRoute --> UserData
+    AuthRoute --> SessionData
+
+    Play --> GameState
+    GameState --> ScoreRoute
+    ScoreRoute --> ScoreData
+    GameState --> BadgeRoute
+    BadgeRoute --> BadgeData
+
+    View --> BadgeState
+    BadgeState --> BadgeRoute
