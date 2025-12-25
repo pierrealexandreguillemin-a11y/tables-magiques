@@ -1,12 +1,12 @@
 /**
- * Tests FairyBackground - TDD RED PHASE
+ * Tests FairyBackground - TDD
  * ISO/IEC 29119 - Tests unitaires
  *
- * P0 Component - Fond magique feerie
+ * P0 Component - Fond magique feerie avec tsParticles
  */
 
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { FairyBackground } from '@/components/effects/FairyBackground';
 
 // Mock framer-motion to avoid animation issues in tests
@@ -23,6 +23,34 @@ vi.mock('framer-motion', () => ({
       </div>
     ),
   },
+}));
+
+// Mock tsParticles
+vi.mock('@tsparticles/react', () => ({
+  default: ({
+    id,
+    className,
+    'data-testid': testId,
+    options,
+  }: {
+    id: string;
+    className?: string;
+    'data-testid'?: string;
+    options?: { particles?: { number?: { value?: number } } };
+  }) => (
+    <div
+      id={id}
+      className={className}
+      data-testid={testId ?? 'particles-container'}
+      data-particle-count={options?.particles?.number?.value?.toString()}
+    />
+  ),
+  initParticlesEngine: vi.fn().mockResolvedValue(undefined),
+}));
+
+// Mock tsParticles slim engine
+vi.mock('@tsparticles/slim', () => ({
+  loadSlim: vi.fn().mockResolvedValue(undefined),
 }));
 
 describe('FairyBackground', () => {
@@ -84,20 +112,32 @@ describe('FairyBackground', () => {
     });
   });
 
-  describe('etoiles', () => {
-    it('rend des etoiles scintillantes', () => {
+  describe('particles (etoiles tsParticles)', () => {
+    it('rend le conteneur particles apres initialisation', async () => {
       render(<FairyBackground />);
 
-      const stars = screen.getAllByTestId(/^star-/);
-      expect(stars.length).toBeGreaterThan(0);
+      const particles = await waitFor(() =>
+        screen.getByTestId('particles-container')
+      );
+      expect(particles).toBeInTheDocument();
     });
 
-    it('rend entre 15 et 25 etoiles par defaut', () => {
+    it('configure le nombre de particules par defaut (20)', async () => {
       render(<FairyBackground />);
 
-      const stars = screen.getAllByTestId(/^star-/);
-      expect(stars.length).toBeGreaterThanOrEqual(15);
-      expect(stars.length).toBeLessThanOrEqual(25);
+      const particles = await waitFor(() =>
+        screen.getByTestId('particles-container')
+      );
+      expect(particles).toHaveAttribute('data-particle-count', '20');
+    });
+
+    it('respecte le starCount personnalise', async () => {
+      render(<FairyBackground starCount={50} />);
+
+      const particles = await waitFor(() =>
+        screen.getByTestId('particles-container')
+      );
+      expect(particles).toHaveAttribute('data-particle-count', '50');
     });
   });
 
@@ -134,11 +174,13 @@ describe('FairyBackground', () => {
       expect(container).toHaveClass('custom-class');
     });
 
-    it('accepte prop starCount pour controler le nombre d etoiles', () => {
+    it('accepte prop starCount pour controler le nombre de particules', async () => {
       render(<FairyBackground starCount={10} />);
 
-      const stars = screen.getAllByTestId(/^star-/);
-      expect(stars).toHaveLength(10);
+      const particles = await waitFor(() =>
+        screen.getByTestId('particles-container')
+      );
+      expect(particles).toHaveAttribute('data-particle-count', '10');
     });
   });
 });

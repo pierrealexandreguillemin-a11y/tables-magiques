@@ -3,13 +3,16 @@
  * ISO/IEC 25010 - Utilisabilite, Performance
  *
  * P0 Component - Ambiance magique essentielle
- * 3 nuages animes + etoiles scintillantes
+ * tsParticles pour etoiles (performance) + Framer Motion pour nuages
  */
 
 'use client';
 
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
+import Particles, { initParticlesEngine } from '@tsparticles/react';
+import { loadSlim } from '@tsparticles/slim';
+import type { Container, ISourceOptions } from '@tsparticles/engine';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 import type { AnimatedComponentProps } from '@/types/effects';
@@ -42,7 +45,7 @@ interface CloudConfig {
 }
 
 /**
- * Configuration des nuages
+ * Configuration des nuages (Framer Motion - elements larges)
  */
 const CLOUDS: CloudConfig[] = [
   {
@@ -92,31 +95,77 @@ const CLOUDS: CloudConfig[] = [
 ];
 
 /**
- * Generer des positions aleatoires pour les etoiles
+ * Generer la configuration tsParticles pour les etoiles
  */
-function generateStars(count: number): Array<{
-  id: number;
-  left: string;
-  top: string;
-  delay: number;
-  duration: number;
-  size: number;
-}> {
-  return Array.from({ length: count }, (_, i) => ({
-    id: i,
-    left: `${Math.random() * 100}%`,
-    top: `${Math.random() * 100}%`,
-    delay: Math.random() * 3,
-    duration: 2 + Math.random() * 2,
-    size: 4 + Math.random() * 4,
-  }));
+function createStarParticlesConfig(
+  starCount: number,
+  animate: boolean
+): ISourceOptions {
+  return {
+    fullScreen: false,
+    fpsLimit: 60,
+    pauseOnBlur: true,
+    pauseOnOutsideViewport: true,
+    particles: {
+      number: {
+        value: starCount,
+        density: {
+          enable: true,
+        },
+      },
+      color: {
+        value: ['#fef08a', '#fde047', '#facc15', '#ffffff'],
+      },
+      shape: {
+        type: 'circle',
+      },
+      opacity: {
+        value: { min: 0.3, max: 1 },
+        animation: animate
+          ? {
+              enable: true,
+              speed: 0.5,
+              sync: false,
+            }
+          : { enable: false },
+      },
+      size: {
+        value: { min: 2, max: 6 },
+        animation: animate
+          ? {
+              enable: true,
+              speed: 2,
+              sync: false,
+            }
+          : { enable: false },
+      },
+      move: {
+        enable: animate,
+        speed: 0.3,
+        direction: 'none',
+        random: true,
+        straight: false,
+        outModes: {
+          default: 'bounce',
+        },
+      },
+      twinkle: {
+        particles: {
+          enable: animate,
+          frequency: 0.05,
+          opacity: 1,
+        },
+      },
+    },
+    detectRetina: true,
+  };
 }
 
 /**
  * FairyBackground Component
  *
  * Cree une ambiance feerique avec des nuages pastel flottants
- * et des etoiles scintillantes. Optimise pour 60fps.
+ * et des etoiles scintillantes via tsParticles (60fps GPU).
  *
  * @example
  * ```tsx
@@ -132,13 +181,33 @@ export function FairyBackground({
 }: FairyBackgroundProps) {
   const { shouldAnimate } = useReducedMotion();
   const animate = shouldAnimate && !disableAnimation;
+  const [engineReady, setEngineReady] = useState(false);
+  const [particlesReady, setParticlesReady] = useState(false);
 
-  // Memoize stars to prevent regeneration on re-render
-  const stars = useMemo(() => generateStars(starCount), [starCount]);
+  // Initialize tsParticles engine (once per app lifetime)
+  useEffect(() => {
+    initParticlesEngine(async (engine) => {
+      await loadSlim(engine);
+    }).then(() => {
+      setEngineReady(true);
+    });
+  }, []);
+
+  // Callback when particles container is loaded
+  const particlesLoaded = useCallback(async (_container?: Container) => {
+    setParticlesReady(true);
+  }, []);
+
+  // Memoize particles config
+  const particlesConfig = useMemo(
+    () => createStarParticlesConfig(starCount, animate),
+    [starCount, animate]
+  );
 
   return (
     <div
       data-testid="fairy-background"
+      data-particles-ready={particlesReady.toString()}
       role="presentation"
       aria-hidden="true"
       className={cn(
@@ -147,7 +216,18 @@ export function FairyBackground({
         className
       )}
     >
-      {/* Nuages colores */}
+      {/* Etoiles scintillantes via tsParticles (GPU accelere) */}
+      {engineReady && (
+        <Particles
+          id="fairy-stars"
+          data-testid="particles-container"
+          className="absolute inset-0"
+          particlesLoaded={particlesLoaded}
+          options={particlesConfig}
+        />
+      )}
+
+      {/* Nuages colores (Framer Motion - elements larges) */}
       {CLOUDS.map((cloud) => (
         <motion.div
           key={cloud.id}
@@ -169,39 +249,6 @@ export function FairyBackground({
                   repeat: Infinity,
                   ease: 'easeInOut',
                   delay: cloud.delay ?? 0,
-                }
-              : undefined
-          }
-        />
-      ))}
-
-      {/* Etoiles scintillantes */}
-      {stars.map((star) => (
-        <motion.div
-          key={star.id}
-          data-testid={`star-${star.id}`}
-          className="absolute rounded-full bg-yellow-200 pointer-events-none"
-          style={{
-            width: star.size,
-            height: star.size,
-            left: star.left,
-            top: star.top,
-          }}
-          animate={
-            animate
-              ? {
-                  opacity: [0.3, 1, 0.3],
-                  scale: [1, 1.5, 1],
-                }
-              : undefined
-          }
-          transition={
-            animate
-              ? {
-                  duration: star.duration,
-                  repeat: Infinity,
-                  delay: star.delay,
-                  ease: 'easeInOut',
                 }
               : undefined
           }
