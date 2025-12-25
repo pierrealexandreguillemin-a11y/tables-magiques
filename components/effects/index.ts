@@ -4,3 +4,6 @@
 
 export { FairyBackground } from './FairyBackground';
 export type { FairyBackgroundProps } from './FairyBackground';
+
+export { MagicCard } from './MagicCard';
+export type { MagicCardProps } from './MagicCard';
