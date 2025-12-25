@@ -1,0 +1,194 @@
+#!/bin/sh
+# Tables Magiques Pre-Commit Hook v1.0 - ISO/IEC 25010 Quality
+# Adapté de Chess App v5.0 - Environnement familial (non hostile)
+# Date: 2025-12-25
+# Standards: ISO/IEC 25010, ISO/IEC 5055, MISRA Type Safety
+
+echo "🔍 Validation qualité ISO/IEC 25010..."
+
+# ============================================
+# 0. SECRET SCANNING (Sécurité)
+# ============================================
+echo ""
+echo "🔐 Scan des secrets..."
+
+GITLEAKS_BIN=""
+if [ -f "./tools/gitleaks.exe" ]; then
+  GITLEAKS_BIN="./tools/gitleaks.exe"
+elif [ -f "./tools/gitleaks" ]; then
+  GITLEAKS_BIN="./tools/gitleaks"
+elif command -v gitleaks &> /dev/null; then
+  GITLEAKS_BIN="gitleaks"
+fi
+
+if [ -n "$GITLEAKS_BIN" ]; then
+  $GITLEAKS_BIN protect --staged --source . --verbose --redact --no-banner 2>&1
+  GITLEAKS_EXIT=$?
+
+  if [ $GITLEAKS_EXIT -ne 0 ]; then
+    echo ""
+    echo "╔═══════════════════════════════════════════════════════════════╗"
+    echo "║  ❌ SECRETS DÉTECTÉS - COMMIT BLOQUÉ                          ║"
+    echo "║                                                               ║"
+    echo "║  Action: Supprimer les secrets et utiliser .env.local         ║"
+    echo "║  Les fichiers .env ne doivent JAMAIS être commités            ║"
+    echo "╚═══════════════════════════════════════════════════════════════╝"
+    exit 1
+  fi
+  echo "  ✅ Aucun secret détecté"
+else
+  echo "  ⚠️  Gitleaks non installé (recommandé: choco install gitleaks)"
+  echo "  ℹ️  Continuons sans scan de secrets..."
+fi
+
+# ============================================
+# 1. FORMATAGE + LINT (lint-staged)
+# ============================================
+echo ""
+echo "🎨 Formatage + Lint..."
+npx lint-staged
+
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "❌ COMMIT BLOQUÉ: Erreurs lint-staged"
+  echo "Action: Corriger les erreurs ci-dessus"
+  exit 1
+fi
+
+echo "  ✅ Formatage + lint OK"
+
+# ============================================
+# 2. TYPE SAFETY - ISO/IEC 5055 (CWE-704)
+# ============================================
+echo ""
+echo "🔍 Vérification type safety..."
+
+STAGED_TS_TSX=$(git diff --cached --name-only --diff-filter=ACM | grep -E "\.(ts|tsx)$" | grep -v "\.test\." | grep -v "\.spec\." || true)
+
+if [ -n "$STAGED_TS_TSX" ]; then
+  # Détecter "as Type" (sauf "as const")
+  TYPE_ASSERTIONS=$(echo "$STAGED_TS_TSX" | xargs grep -nE "\bas [A-Z][a-zA-Z]*(\[\])?(\s*\||\s*;|\s*,|\s*\)|\s*$)" 2>/dev/null | grep -v "as const" || true)
+
+  if [ -n "$TYPE_ASSERTIONS" ]; then
+    echo ""
+    echo "╔═══════════════════════════════════════════════════════════════╗"
+    echo "║  ❌ COMMIT BLOQUÉ: Type assertions détectées                  ║"
+    echo "║                                                               ║"
+    echo "║  ISO/IEC 5055 - CWE-704: Type conversion non sûre            ║"
+    echo "║                                                               ║"
+    echo "║  Patterns autorisés:                                         ║"
+    echo "║    ✅ Type guards: if (isType(x)) { ... }                    ║"
+    echo "║    ✅ as const (literal types)                               ║"
+    echo "║                                                               ║"
+    echo "║  Patterns bloqués:                                           ║"
+    echo "║    ❌ as Type                                                ║"
+    echo "╚═══════════════════════════════════════════════════════════════╝"
+    echo ""
+    echo "Fichiers concernés:"
+    echo "$TYPE_ASSERTIONS"
+    exit 1
+  fi
+  echo "  ✅ Type safety conforme"
+else
+  echo "  ℹ️  Aucun fichier TypeScript staged"
+fi
+
+# ============================================
+# 3. CATCH VIDES INTERDITS
+# ============================================
+echo ""
+echo "🔍 Vérification catch vides..."
+
+if [ -n "$STAGED_TS_TSX" ]; then
+  EMPTY_CATCH=$(echo "$STAGED_TS_TSX" | xargs grep -nE "catch\s*(\([^)]*\))?\s*\{\s*\}" 2>/dev/null || true)
+
+  if [ -n "$EMPTY_CATCH" ]; then
+    echo ""
+    echo "╔═══════════════════════════════════════════════════════════════╗"
+    echo "║  ❌ COMMIT BLOQUÉ: Catch vide détecté                        ║"
+    echo "║                                                               ║"
+    echo "║  Les erreurs doivent être loggées:                           ║"
+    echo "║    ❌ catch { }                                              ║"
+    echo "║    ✅ catch (error) { console.error(error) }                 ║"
+    echo "╚═══════════════════════════════════════════════════════════════╝"
+    echo ""
+    echo "Fichiers concernés:"
+    echo "$EMPTY_CATCH"
+    exit 1
+  fi
+  echo "  ✅ Aucun catch vide"
+fi
+
+# ============================================
+# 4. TDD - Tests avant code (Warning)
+# ============================================
+echo ""
+echo "🔍 Vérification TDD..."
+
+STAGED_SOURCE=$(git diff --cached --name-only --diff-filter=A | grep -E "\.(ts|tsx)$" | grep -v "\.test\." | grep -v "\.spec\." | grep -v "types/" | grep -v "config/" || true)
+STAGED_TESTS=$(git diff --cached --name-only --diff-filter=A | grep -E "\.(test|spec)\.(ts|tsx)$" || true)
+
+if [ -n "$STAGED_SOURCE" ]; then
+  MISSING_TESTS=""
+
+  for source_file in $STAGED_SOURCE; do
+    base_name=$(basename "$source_file" | sed 's/\.\(ts\|tsx\)$//')
+
+    # Skip fichiers sans logique (types, index, constants)
+    if echo "$source_file" | grep -qE "(types|index|constants|config)\.(ts|tsx)$"; then
+      continue
+    fi
+
+    # Chercher test correspondant
+    has_test=false
+    for test_file in $STAGED_TESTS; do
+      if echo "$test_file" | grep -q "$base_name"; then
+        has_test=true
+        break
+      fi
+    done
+
+    if [ "$has_test" = false ]; then
+      MISSING_TESTS="$MISSING_TESTS\n  - $source_file"
+    fi
+  done
+
+  if [ -n "$MISSING_TESTS" ]; then
+    echo ""
+    echo "  ⚠️  TDD: Fichiers sans tests correspondants:"
+    echo -e "$MISSING_TESTS"
+    echo ""
+    echo "  Rappel TDD: Écrire le test AVANT le code"
+    echo "  (Warning non-bloquant)"
+  else
+    echo "  ✅ TDD respecté"
+  fi
+else
+  echo "  ℹ️  Aucun nouveau fichier source"
+fi
+
+# ============================================
+# 5. TYPESCRIPT COMPILATION
+# ============================================
+echo ""
+echo "📘 Compilation TypeScript..."
+
+npx tsc --noEmit > /tmp/tsc-output.txt 2>&1
+TSC_EXIT=$?
+
+if [ $TSC_EXIT -ne 0 ]; then
+  echo ""
+  echo "❌ COMMIT BLOQUÉ: Erreurs TypeScript"
+  cat /tmp/tsc-output.txt
+  exit 1
+fi
+
+echo "  ✅ TypeScript: 0 erreur"
+
+# ============================================
+# RÉSUMÉ
+# ============================================
+echo ""
+echo "✅ Validation qualité OK (ISO/IEC 25010)"
+echo "   Type Safety ✓ | Error Handling ✓ | TypeScript ✓"
+echo ""

@@ -1,0 +1,225 @@
+#!/bin/sh
+# Tables Magiques Pre-Push Hook v1.0 - ISO/IEC 25010 Quality
+# Adapté de Chess App v3.0 - Environnement familial
+# Date: 2025-12-25
+# Standards: ISO/IEC 25010, ISO/IEC 29119 (Tests)
+
+set -e
+
+echo ""
+echo "╔══════════════════════════════════════════════════════════════════╗"
+echo "║           🦄 TABLES MAGIQUES - PRE-PUSH VALIDATION               ║"
+echo "╚══════════════════════════════════════════════════════════════════╝"
+echo ""
+
+# ============================================
+# 1. TYPESCRIPT STRICT CHECK
+# ============================================
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "📋 VALIDATION QUALITÉ PRÉ-PUSH"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+echo ""
+echo "🔍 TypeScript strict check..."
+if npm run typecheck 2>/dev/null; then
+  echo "  ✅ TypeScript: 0 erreur"
+else
+  echo "  ❌ Erreurs TypeScript - PUSH BLOQUÉ"
+  echo "  Exécuter: npm run typecheck"
+  exit 1
+fi
+
+# ============================================
+# 2. ESLINT - ZERO TOLERANCE
+# ============================================
+echo ""
+echo "🔍 ESLint check..."
+if npm run lint 2>/dev/null; then
+  echo "  ✅ ESLint: OK"
+else
+  echo "  ❌ Erreurs ESLint - PUSH BLOQUÉ"
+  echo "  Exécuter: npm run lint"
+  exit 1
+fi
+
+# ============================================
+# 3. TESTS UNITAIRES (Vitest)
+# ============================================
+echo ""
+echo "🧪 Tests unitaires..."
+
+# Vérifier si des tests existent
+if [ -d "tests" ] && find tests -name "*.test.ts" -o -name "*.test.tsx" 2>/dev/null | grep -q .; then
+  if npm run test:run 2>/dev/null; then
+    echo "  ✅ Tests: 100% passing"
+  else
+    echo "  ❌ Tests échoués - PUSH BLOQUÉ"
+    echo "  Exécuter: npm test"
+    exit 1
+  fi
+else
+  echo "  ℹ️  Aucun test unitaire trouvé (skip)"
+fi
+
+# ============================================
+# 4. BUILD PRODUCTION
+# ============================================
+echo ""
+echo "🏗️ Build production..."
+if npm run build 2>/dev/null; then
+  echo "  ✅ Build: OK"
+else
+  echo "  ❌ Build échoué - PUSH BLOQUÉ"
+  echo "  Exécuter: npm run build"
+  exit 1
+fi
+
+# ============================================
+# 5. DÉPENDANCES CIRCULAIRES (madge)
+# ============================================
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "📊 ANALYSE ARCHITECTURE"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+echo ""
+echo "📊 Dépendances circulaires..."
+
+set +e
+npm run quality:circular > /tmp/madge-output.txt 2>&1
+MADGE_EXIT=$?
+set -e
+
+if [ $MADGE_EXIT -ne 0 ]; then
+  CIRCULAR_COUNT=$(grep -cE "^[0-9]+\)" /tmp/madge-output.txt 2>/dev/null || echo "0")
+  if [ "$CIRCULAR_COUNT" -gt 0 ]; then
+    echo "  ❌ $CIRCULAR_COUNT dépendances circulaires détectées!"
+    cat /tmp/madge-output.txt
+    echo "  Action: Refactorer pour éliminer les imports circulaires"
+    exit 1
+  fi
+fi
+echo "  ✅ 0 dépendances circulaires"
+
+# ============================================
+# 6. DUPLICATION CODE (jscpd)
+# ============================================
+echo ""
+echo "🔍 Analyse duplication..."
+mkdir -p reports/duplication
+npm run quality:duplication > /dev/null 2>&1 || true
+if [ -f "reports/duplication/jscpd-report.html" ]; then
+  echo "  ✅ Rapport généré: reports/duplication/"
+else
+  echo "  ℹ️  Analyse duplication indisponible"
+fi
+
+# ============================================
+# 7. RÉGÉNÉRATION SVG DIAGRAMMES
+# ============================================
+echo ""
+echo "📊 Vérification diagrammes..."
+
+# Si fichiers .mmd (Mermaid) modifiés → régénérer SVG
+if git diff --cached --name-only | grep -qE "\.mmd$"; then
+  echo "  📐 Diagrammes Mermaid modifiés..."
+
+  # Vérifier si mmdc (mermaid-cli) est installé
+  if command -v mmdc &> /dev/null || npx mmdc --version &> /dev/null 2>&1; then
+    mkdir -p docs/diagrams
+    for mmd_file in $(git diff --cached --name-only | grep -E "\.mmd$"); do
+      svg_file="${mmd_file%.mmd}.svg"
+      npx mmdc -i "$mmd_file" -o "$svg_file" 2>/dev/null || true
+      if [ -f "$svg_file" ]; then
+        git add "$svg_file" 2>/dev/null || true
+        echo "  ✅ Généré: $svg_file"
+      fi
+    done
+  else
+    echo "  ⚠️  mermaid-cli non installé (npm install -D @mermaid-js/mermaid-cli)"
+  fi
+else
+  echo "  ℹ️  Aucun diagramme modifié"
+fi
+
+# ============================================
+# 8. E2E COVERAGE DOC UPDATE
+# ============================================
+echo ""
+echo "📊 Mise à jour doc E2E coverage..."
+
+E2E_DOC="docs/E2E-COVERAGE.md"
+E2E_DIR="tests/e2e"
+
+if [ -d "$E2E_DIR" ]; then
+  # Compter tests E2E
+  TOTAL_TESTS=$(find "$E2E_DIR" -name "*.spec.ts" -exec grep -c "test(" {} \; 2>/dev/null | awk '{sum+=$1} END {print sum}' || echo "0")
+  TOTAL_FILES=$(find "$E2E_DIR" -name "*.spec.ts" 2>/dev/null | wc -l || echo "0")
+
+  # Créer/mettre à jour doc
+  mkdir -p docs
+  TIMESTAMP=$(date +"%Y-%m-%d %H:%M")
+
+  cat > "$E2E_DOC" << EOF
+# E2E Test Coverage
+
+> **Dernière mise à jour**: $TIMESTAMP
+> **Total fichiers E2E**: $TOTAL_FILES
+> **Total tests E2E**: $TOTAL_TESTS
+
+## Fichiers de test
+
+EOF
+
+  # Lister les fichiers de test
+  for test_file in $(find "$E2E_DIR" -name "*.spec.ts" 2>/dev/null); do
+    test_count=$(grep -c "test(" "$test_file" 2>/dev/null || echo "0")
+    echo "- \`$(basename $test_file)\`: $test_count tests" >> "$E2E_DOC"
+  done
+
+  git add "$E2E_DOC" 2>/dev/null || true
+  echo "  ✅ Doc E2E mise à jour ($TOTAL_TESTS tests / $TOTAL_FILES fichiers)"
+else
+  echo "  ℹ️  Aucun test E2E trouvé"
+fi
+
+# ============================================
+# 9. E2E TESTS (si déployé)
+# ============================================
+echo ""
+echo "🎭 Tests E2E..."
+
+if [ "$SKIP_E2E" = "1" ]; then
+  echo "  ⚠️  E2E skipped (SKIP_E2E=1)"
+elif [ -f "playwright.config.ts" ] && find tests/e2e -name "*.spec.ts" 2>/dev/null | grep -q .; then
+  # Vérifier si serveur local ou prod
+  if [ -n "$NEXT_PUBLIC_APP_URL" ] && [ "$NEXT_PUBLIC_APP_URL" != "http://localhost:3000" ]; then
+    echo "  🌐 Target: $NEXT_PUBLIC_APP_URL"
+    if npm run test:e2e 2>/dev/null; then
+      echo "  ✅ E2E: passing"
+    else
+      echo "  ⚠️  E2E échoués (non-bloquant en dev)"
+    fi
+  else
+    echo "  ℹ️  E2E skipped (localhost - à activer après déploiement)"
+  fi
+else
+  echo "  ℹ️  Playwright non configuré ou pas de tests"
+fi
+
+# ============================================
+# RÉSUMÉ
+# ============================================
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "📋 CHECKLIST PRÉ-PUSH"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "  ✅ TypeScript: 0 erreur"
+echo "  ✅ ESLint: 0 erreur"
+echo "  ✅ Build: OK"
+echo "  ✅ Architecture: 0 dépendance circulaire"
+echo "  ✅ Documentation: mise à jour"
+echo ""
+echo "✅ Push autorisé - Qualité ISO/IEC 25010 OK"
+echo ""
