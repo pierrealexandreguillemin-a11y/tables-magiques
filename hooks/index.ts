@@ -3,3 +3,5 @@
  */
 
 export { useReducedMotion } from './useReducedMotion';
+export { useAuth } from './useAuth';
+export type { AuthResult } from './useAuth';
