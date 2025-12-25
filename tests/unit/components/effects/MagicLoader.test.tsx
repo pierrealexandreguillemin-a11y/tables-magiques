@@ -97,29 +97,34 @@ describe('MagicLoader', () => {
     it('a taille md par defaut', () => {
       render(<MagicLoader />);
 
+      // La taille est sur le div enfant qui contient l'animation
       const loader = screen.getByTestId('magic-loader');
-      expect(loader).toHaveClass('w-16', 'h-16');
+      const sizeContainer = loader.querySelector('div');
+      expect(sizeContainer).toHaveClass('w-16', 'h-16');
     });
 
     it('accepte taille sm', () => {
       render(<MagicLoader size="sm" />);
 
       const loader = screen.getByTestId('magic-loader');
-      expect(loader).toHaveClass('w-12', 'h-12');
+      const sizeContainer = loader.querySelector('div');
+      expect(sizeContainer).toHaveClass('w-12', 'h-12');
     });
 
     it('accepte taille lg', () => {
       render(<MagicLoader size="lg" />);
 
       const loader = screen.getByTestId('magic-loader');
-      expect(loader).toHaveClass('w-24', 'h-24');
+      const sizeContainer = loader.querySelector('div');
+      expect(sizeContainer).toHaveClass('w-24', 'h-24');
     });
 
     it('accepte taille xl', () => {
       render(<MagicLoader size="xl" />);
 
       const loader = screen.getByTestId('magic-loader');
-      expect(loader).toHaveClass('w-32', 'h-32');
+      const sizeContainer = loader.querySelector('div');
+      expect(sizeContainer).toHaveClass('w-32', 'h-32');
     });
   });
 
