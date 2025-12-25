@@ -1,0 +1,135 @@
+/**
+ * Design Tokens - Tables Magiques
+ * ISO/IEC 25010 - Maintenabilite, Utilisabilite
+ *
+ * Theme: Princesse/Licorne pour enfant 9 ans
+ * Standards: WCAG 2.1 AA (contraste >= 4.5:1)
+ */
+
+:root {
+  /* === COULEURS PRINCESSE === */
+  --princess-pink: #ffb6d9;
+  --princess-pink-light: #ffe5f0;
+  --princess-pink-dark: #ff69b4;
+  --unicorn-purple: #dda0dd;
+  --unicorn-purple-light: #f0e5ff;
+  --unicorn-purple-dark: #ba55d3;
+  --sky-blue: #87ceeb;
+  --sky-blue-light: #e0f4ff;
+  --star-yellow: #ffd700;
+  --star-yellow-light: #fff9c4;
+  --mint-green: #b4e7ce;
+  --coral-pink: #ff7f7f;
+
+  /* === GLOWS (effets lumineux) === */
+  --glow-princess: 0 0 20px rgba(255, 182, 217, 0.6);
+  --glow-unicorn: 0 0 30px rgba(221, 160, 221, 0.5);
+  --glow-magic:
+    0 0 40px rgba(255, 182, 217, 0.4), 0 0 80px rgba(221, 160, 221, 0.3);
+  --glow-star: 0 0 25px rgba(255, 215, 0, 0.7);
+  --glow-success: 0 0 20px rgba(180, 231, 206, 0.6);
+
+  /* === GRADIENTS === */
+  --gradient-fairy: linear-gradient(
+    135deg,
+    var(--princess-pink) 0%,
+    var(--unicorn-purple) 50%,
+    var(--sky-blue) 100%
+  );
+
+  --gradient-unicorn: linear-gradient(
+    135deg,
+    #ffb6d9 0%,
+    #ffd4e5 14%,
+    #e0bbe4 28%,
+    #dda0dd 42%,
+    #b4e7ce 57%,
+    #87ceeb 71%,
+    #fff9c4 100%
+  );
+
+  --gradient-princess: linear-gradient(
+    135deg,
+    var(--princess-pink) 0%,
+    var(--unicorn-purple) 100%
+  );
+
+  --gradient-success: linear-gradient(
+    135deg,
+    var(--mint-green) 0%,
+    var(--sky-blue) 100%
+  );
+
+  --gradient-button: linear-gradient(
+    135deg,
+    var(--princess-pink-dark) 0%,
+    var(--unicorn-purple-dark) 100%
+  );
+
+  /* === TIMING (adapte enfants - plus lent) === */
+  --timing-instant: 100ms;
+  --timing-fast: 200ms;
+  --timing-normal: 400ms;
+  --timing-celebration: 800ms;
+  --timing-dramatic: 1200ms;
+
+  /* === EASING === */
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-elastic: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+
+  /* === SHADOWS === */
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --shadow-princess: 0 4px 20px rgba(255, 182, 217, 0.3);
+  --shadow-unicorn: 0 4px 20px rgba(221, 160, 221, 0.3);
+  --shadow-button: 0 4px 16px rgba(255, 105, 180, 0.4);
+
+  /* === BORDERS === */
+  --border-radius-sm: 8px;
+  --border-radius-md: 16px;
+  --border-radius-lg: 24px;
+  --border-radius-xl: 32px;
+  --border-radius-full: 9999px;
+
+  /* === SPACING === */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* === TOUCH TARGETS (A11Y - enfants) === */
+  --touch-target-min: 48px;
+  --touch-target-comfortable: 56px;
+
+  /* === Z-INDEX === */
+  --z-background: -10;
+  --z-content: 0;
+  --z-overlay: 10;
+  --z-modal: 100;
+  --z-toast: 200;
+  --z-confetti: 300;
+}
+
+/* === MODE CONTRASTE ELEVE (A11Y) === */
+@media (prefers-contrast: high) {
+  :root {
+    --princess-pink: #ff1493;
+    --unicorn-purple: #9932cc;
+    --sky-blue: #1e90ff;
+    --star-yellow: #ffa500;
+  }
+}
+
+/* === MOUVEMENT REDUIT (A11Y) === */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --timing-instant: 0ms;
+    --timing-fast: 0ms;
+    --timing-normal: 0ms;
+    --timing-celebration: 0ms;
+    --timing-dramatic: 0ms;
+  }
+}

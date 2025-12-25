@@ -1,0 +1,218 @@
+/**
+ * CSS Animations - Tables Magiques
+ * ISO/IEC 25010 - Performance (GPU-accelerated)
+ *
+ * Toutes les animations utilisent transform/opacity (compositing only)
+ * Pas de layout/paint triggers pour 60fps
+ */
+
+/* === SHIMMER (skeleton loading) === */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 182, 217, 0.1) 0%,
+    rgba(255, 182, 217, 0.3) 50%,
+    rgba(255, 182, 217, 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+/* === GLOW PULSE === */
+@keyframes glow-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px var(--princess-pink));
+    opacity: 1;
+  }
+  50% {
+    filter: drop-shadow(0 0 25px var(--princess-pink));
+    opacity: 0.8;
+  }
+}
+
+.animate-glow {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* === FLOAT (hover subtil) === */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* === SPARKLE (etoiles scintillantes) === */
+@keyframes sparkle {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3) rotate(180deg);
+  }
+}
+
+.animate-sparkle {
+  animation: sparkle 1.5s ease-in-out infinite;
+}
+
+/* === BOUNCE SOFT (rebond doux) === */
+@keyframes bounce-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-bounce-soft {
+  animation: bounce-soft 1s ease-in-out infinite;
+}
+
+/* === SHAKE GENTLE (erreur douce) === */
+@keyframes shake-gentle {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+.animate-shake-gentle {
+  animation: shake-gentle 0.4s ease-in-out;
+}
+
+/* === SPIN (loading) === */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* === SCALE POP (apparition) === */
+@keyframes scale-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-pop {
+  animation: scale-pop 0.4s var(--ease-spring);
+}
+
+/* === GRADIENT ANIMATE (boutons) === */
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* === STAR BURST (bonne reponse) === */
+@keyframes star-burst {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+.animate-star-burst {
+  animation: star-burst 0.6s var(--ease-bounce) forwards;
+}
+
+/* === CLOUD DRIFT (nuages background) === */
+@keyframes cloud-drift {
+  0%,
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(30px) translateY(-20px);
+  }
+  50% {
+    transform: translateX(0) translateY(-10px);
+  }
+  75% {
+    transform: translateX(-20px) translateY(-5px);
+  }
+}
+
+.animate-cloud {
+  animation: cloud-drift 20s ease-in-out infinite;
+}
+
+/* === REDUCED MOTION (A11Y) === */
+@media (prefers-reduced-motion: reduce) {
+  .animate-shimmer,
+  .animate-glow,
+  .animate-float,
+  .animate-sparkle,
+  .animate-bounce-soft,
+  .animate-shake-gentle,
+  .animate-spin,
+  .animate-pop,
+  .animate-gradient,
+  .animate-star-burst,
+  .animate-cloud {
+    animation: none;
+  }
+}
