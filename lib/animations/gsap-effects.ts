@@ -236,7 +236,8 @@ export const celebrationCascade = (container: HTMLElement) => {
   for (let i = 0; i < 20; i++) {
     setTimeout(() => {
       const emoji = document.createElement('div');
-      emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.textContent =
+        emojis[Math.floor(Math.random() * emojis.length)] ?? '✨';
       emoji.style.cssText = `
         position: absolute;
         font-size: ${24 + Math.random() * 24}px;
