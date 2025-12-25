@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
-import type { Container, ISourceOptions } from '@tsparticles/engine';
+import type { ISourceOptions } from '@tsparticles/engine';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 import type { AnimatedComponentProps } from '@/types/effects';
@@ -194,7 +194,7 @@ export function FairyBackground({
   }, []);
 
   // Callback when particles container is loaded
-  const particlesLoaded = useCallback(async (_container?: Container) => {
+  const particlesLoaded = useCallback(async () => {
     setParticlesReady(true);
   }, []);
 
