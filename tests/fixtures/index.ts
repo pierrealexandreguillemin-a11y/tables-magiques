@@ -1,0 +1,60 @@
+/**
+ * Fixtures Index - DONNÉES RÉELLES
+ * ISO/IEC 29119 - Export centralisé
+ *
+ * Toutes les fixtures sont des DONNÉES RÉELLES
+ * exportées de la production ou représentant
+ * des cas d'usage authentiques.
+ */
+
+// Multiplications - Tables de 1 à 10
+export {
+  MULTIPLICATION_FIXTURES,
+  TABLE_7_FIXTURE,
+  SINGLE_PROBLEM_FIXTURE,
+  type MultiplicationProblem,
+  type MultiplicationTable,
+} from './multiplications';
+
+// User Progress - Progression enfant 9 ans
+export {
+  USER_PROGRESS_FIXTURES,
+  SINGLE_ANSWER_FIXTURE,
+  WRONG_ANSWER_FIXTURE,
+  type UserProgress,
+  type TableProgress,
+  type UserAnswer,
+} from './user-progress';
+
+// Sessions - États de connexion
+export {
+  ACTIVE_SESSION_FIXTURE,
+  EXPIRED_SESSION_FIXTURE,
+  NEW_USER_SESSION_FIXTURE,
+  API_SESSION_FIXTURE,
+  GAME_SESSION_FIXTURE,
+  CHALLENGE_SESSION_FIXTURE,
+} from './sessions';
+
+// Badges - Récompenses gagnées
+export {
+  EARNED_BADGES_FIXTURE,
+  SINGLE_BADGE_FIXTURE,
+  CHALLENGE_BADGE_FIXTURE,
+  PRACTICE_BADGES_EARNED,
+  CHALLENGE_BADGES_EARNED,
+  BADGE_STATS_FIXTURE,
+} from './badges';
+
+// Game State - États de jeu
+export {
+  INITIAL_GAME_STATE_FIXTURE,
+  ACTIVE_GAME_STATE_FIXTURE,
+  CORRECT_ANSWER_STATE_FIXTURE,
+  WRONG_ANSWER_STATE_FIXTURE,
+  CHALLENGE_GAME_STATE_FIXTURE,
+  COMPLETED_GAME_STATE_FIXTURE,
+  TABLE_7_QUESTIONS_FIXTURE,
+  DEFAULT_CONFIG_FIXTURE,
+  CUSTOM_CONFIG_FIXTURE,
+} from './game-state';
