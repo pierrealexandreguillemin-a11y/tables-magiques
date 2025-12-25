@@ -23,3 +23,6 @@ export type {
 
 export { CrownProgress } from './CrownProgress';
 export type { CrownProgressProps, CrownSize } from './CrownProgress';
+
+export { MagicLoader } from './MagicLoader';
+export type { MagicLoaderProps, LoaderType, LoaderSize } from './MagicLoader';
