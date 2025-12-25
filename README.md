@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tables Magiques
 
-## Getting Started
+PWA moderne pour apprendre les tables de multiplication avec un theme princesse/licorne.
 
-First, run the development server:
+## Stack technique
+
+| Composant  | Technologie                    |
+| ---------- | ------------------------------ |
+| Frontend   | Next.js 16 + TypeScript strict |
+| Database   | Upstash Redis                  |
+| UI         | shadcn/ui                      |
+| Animations | GSAP + Framer Motion           |
+| Deploy     | Vercel                         |
+| Tests      | Vitest + Playwright            |
+| Standards  | ISO/IEC 25010                  |
+
+## Fonctionnalites
+
+- **Mode Practice** : Choix de table (1-10) ou toutes, sans limite de temps
+- **Mode Challenge** : 3 minutes, 5 secondes par question
+- **Badges** : 8 badges Practice + 5 badges Challenge
+- **PWA** : Installable, fonctionne offline
+- **Dark mode** : Theme sombre disponible
+- **Accessibilite** : Fonts dys-friendly
+
+## URLs
+
+- **Production** : https://tables-magiques-pierrealexandreguillemin-4999s-projects.vercel.app
+- **GitHub** : https://github.com/pierrealexandreguillemin-a11y/tables-magiques
+
+## Developpement
 
 ```bash
+# Installation
+npm install
+
+# Dev
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Tests
+npm run test          # Unit + Integration
+npm run test:e2e      # E2E Playwright
+
+# Build
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Structure projet (ISO/IEC 25010)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+tables-magiques/
+├── app/                    # Next.js App Router
+│   ├── (auth)/            # Routes authentification
+│   ├── (game)/            # Routes jeu
+│   └── api/               # API Routes
+├── components/            # Composants UI
+│   ├── ui/               # shadcn/ui
+│   └── game/             # Composants jeu
+├── lib/                   # Logique metier
+│   ├── db/               # Upstash client
+│   ├── game/             # Logique jeu
+│   └── auth/             # Authentification
+├── hooks/                 # React hooks
+├── types/                 # TypeScript types
+├── tests/                 # Tests (TDD)
+│   ├── unit/
+│   ├── integration/
+│   └── e2e/
+└── docs/                  # Documentation
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Documentation
 
-## Learn More
+- [ROADMAP.md](./ROADMAP.md) - Plan de developpement
+- [docs/FEATURES.md](./docs/FEATURES.md) - Fonctionnalites detaillees
+- [docs/BADGES.md](./docs/BADGES.md) - Systeme de badges
+- [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) - Architecture ISO
 
-To learn more about Next.js, take a look at the following resources:
+## Auteur
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Projet familial - App educative pour enfants.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Licence
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Prive - Usage familial uniquement.
