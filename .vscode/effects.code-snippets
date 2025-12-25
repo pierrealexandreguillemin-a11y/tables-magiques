@@ -1,0 +1,339 @@
+{
+  "Magic Card Component": {
+    "prefix": "magic-card",
+    "body": [
+      "import { motion } from 'framer-motion';",
+      "import { cn } from '@/lib/utils';",
+      "",
+      "interface ${1:ComponentName}Props {",
+      "  children: React.ReactNode;",
+      "  variant?: 'princess' | 'unicorn' | 'star';",
+      "  className?: string;",
+      "}",
+      "",
+      "export function ${1:ComponentName}({ children, variant = 'princess', className }: ${1:ComponentName}Props) {",
+      "  return (",
+      "    <motion.div",
+      "      className={cn(",
+      "        'rounded-[24px] p-6 backdrop-blur-md',",
+      "        variant === 'princess' && 'bg-pink-50/60 border-pink-200',",
+      "        variant === 'unicorn' && 'bg-purple-50/60 border-purple-200',",
+      "        variant === 'star' && 'bg-yellow-50/60 border-yellow-200',",
+      "        className",
+      "      )}",
+      "      whileHover={{ scale: 1.02 }}",
+      "      whileTap={{ scale: 0.98 }}",
+      "    >",
+      "      {children}",
+      "    </motion.div>",
+      "  );",
+      "}"
+    ],
+    "description": "Créer un composant MagicCard avec variants"
+  },
+
+  "Magic Button": {
+    "prefix": "magic-button",
+    "body": [
+      "<MagicButton",
+      "  variant=\"${1|princess,unicorn,success|}\"",
+      "  size=\"${2|sm,md,lg|}\"",
+      "  onClick={${3:handleClick}}",
+      ">",
+      "  ${4:Button Text}",
+      "</MagicButton>"
+    ],
+    "description": "Insérer un MagicButton"
+  },
+
+  "Framer Motion Basic": {
+    "prefix": "motion-div",
+    "body": [
+      "<motion.div",
+      "  initial={{ ${1:opacity}: 0, ${2:y}: 20 }}",
+      "  animate={{ ${1:opacity}: 1, ${2:y}: 0 }}",
+      "  exit={{ ${1:opacity}: 0, ${2:y}: -20 }}",
+      "  transition={{ duration: ${3:0.3} }}",
+      ">",
+      "  ${4:content}",
+      "</motion.div>"
+    ],
+    "description": "Div Framer Motion avec animations de base"
+  },
+
+  "Framer Motion Hover & Tap": {
+    "prefix": "motion-hover",
+    "body": [
+      "<motion.${1:div}",
+      "  whileHover={{",
+      "    scale: ${2:1.05},",
+      "    transition: { duration: ${3:0.2} }",
+      "  }}",
+      "  whileTap={{ scale: ${4:0.95} }}",
+      ">",
+      "  ${5:content}",
+      "</motion.${1:div}>"
+    ],
+    "description": "Élément avec hover et tap animations"
+  },
+
+  "Stagger Children": {
+    "prefix": "motion-stagger",
+    "body": [
+      "const containerVariants = {",
+      "  hidden: { opacity: 0 },",
+      "  visible: {",
+      "    opacity: 1,",
+      "    transition: {",
+      "      staggerChildren: ${1:0.1},",
+      "      delayChildren: ${2:0.2}",
+      "    }",
+      "  }",
+      "};",
+      "",
+      "const itemVariants = {",
+      "  hidden: { opacity: 0, y: 20 },",
+      "  visible: {",
+      "    opacity: 1,",
+      "    y: 0,",
+      "    transition: { type: 'spring', stiffness: 400 }",
+      "  }",
+      "};",
+      "",
+      "<motion.div variants={containerVariants} initial=\"hidden\" animate=\"visible\">",
+      "  {${3:items}.map((item) => (",
+      "    <motion.div key={item.id} variants={itemVariants}>",
+      "      {item.content}",
+      "    </motion.div>",
+      "  ))}",
+      "</motion.div>"
+    ],
+    "description": "Stagger animation pour liste"
+  },
+
+  "Use Reduced Motion Hook": {
+    "prefix": "use-reduced-motion",
+    "body": [
+      "const reducedMotion = useReducedMotion();",
+      "",
+      "if (reducedMotion) {",
+      "  return <${1:StaticComponent} />;",
+      "}",
+      "",
+      "return <${2:AnimatedComponent} />;"
+    ],
+    "description": "Hook reduced motion avec fallback"
+  },
+
+  "Confetti Celebration": {
+    "prefix": "confetti",
+    "body": [
+      "import confetti from 'canvas-confetti';",
+      "",
+      "const fireMagicConfetti = () => {",
+      "  confetti({",
+      "    particleCount: ${1:30},",
+      "    spread: ${2:70},",
+      "    origin: { y: ${3:0.6} },",
+      "    colors: ['#FFB6D9', '#DDA0DD', '#87CEEB', '#FFD700'],",
+      "    scalar: ${4:2}",
+      "  });",
+      "};",
+      "",
+      "// Appeler:",
+      "fireMagicConfetti();"
+    ],
+    "description": "Confetti avec couleurs princesse"
+  },
+
+  "Toast Notification": {
+    "prefix": "toast",
+    "body": [
+      "const { addToast } = useToastStore();",
+      "",
+      "addToast({",
+      "  type: '${1|success,info,warning,star|}',",
+      "  title: '${2:🌟 Super !}',",
+      "  description: '${3:Tu es un champion !}',",
+      "  duration: ${4:3000}",
+      "});"
+    ],
+    "description": "Afficher un toast"
+  },
+
+  "Magic Counter": {
+    "prefix": "magic-counter",
+    "body": [
+      "<MagicCounter",
+      "  value={${1:score}}",
+      "  suffix={${2:' étoiles'}}",
+      "  showParticles={${3:true}}",
+      "/>"
+    ],
+    "description": "Compteur animé avec particules"
+  },
+
+  "Crown Progress": {
+    "prefix": "crown-progress",
+    "body": [
+      "<CrownProgress",
+      "  progress={${1:75}}",
+      "  size={${2:128}}",
+      "/>"
+    ],
+    "description": "Barre de progression couronne"
+  },
+
+  "Answer Icon": {
+    "prefix": "answer-icon",
+    "body": [
+      "const [answerState, setAnswerState] = useState<'waiting' | 'checking' | 'correct' | 'incorrect'>('waiting');",
+      "",
+      "<AnswerIcon state={answerState} size=\"${1|sm,md,lg|}\" />"
+    ],
+    "description": "Icône feedback réponse"
+  },
+
+  "Gradient Text": {
+    "prefix": "gradient-text",
+    "body": [
+      "<span",
+      "  className=\"bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 animate-gradient-x\"",
+      "  style={{ backgroundSize: '200% 200%' }}",
+      ">",
+      "  ${1:Texte magique}",
+      "</span>"
+    ],
+    "description": "Texte avec gradient animé"
+  },
+
+  "Fairy Background": {
+    "prefix": "fairy-bg",
+    "body": [
+      "import { FairyBackground } from '@/components/effects/FairyBackground';",
+      "",
+      "export function ${1:PageName}() {",
+      "  return (",
+      "    <div className=\"min-h-screen relative\">",
+      "      <FairyBackground />",
+      "      ",
+      "      <div className=\"relative z-10\">",
+      "        {/* Contenu de la page */}",
+      "        ${2}",
+      "      </div>",
+      "    </div>",
+      "  );",
+      "}"
+    ],
+    "description": "Page avec fond féerique"
+  },
+
+  "Gentle Shake Error": {
+    "prefix": "shake-error",
+    "body": [
+      "<motion.div",
+      "  animate={${1:hasError} ? {",
+      "    x: [0, -3, 3, -3, 3, 0],",
+      "    transition: { duration: 0.3 }",
+      "  } : undefined}",
+      ">",
+      "  ${2:content}",
+      "  ",
+      "  {${1:hasError} && (",
+      "    <motion.p",
+      "      className=\"text-pink-400 text-sm mt-2\"",
+      "      initial={{ opacity: 0 }}",
+      "      animate={{ opacity: 1 }}",
+      "    >",
+      "      💭 ${3:Presque ! Essaie encore}",
+      "    </motion.p>",
+      "  )}",
+      "</motion.div>"
+    ],
+    "description": "Shake doux avec message encourageant"
+  },
+
+  "Skeleton Loader": {
+    "prefix": "skeleton",
+    "body": [
+      "<div className=\"animate-shimmer bg-gradient-to-r from-pink-100/20 via-pink-200/40 to-pink-100/20 bg-[length:200%_100%]\">",
+      "  <div className=\"h-${1:4} bg-transparent rounded\" />",
+      "</div>"
+    ],
+    "description": "Skeleton loader animé"
+  },
+
+  "Magic Input Focus": {
+    "prefix": "magic-input",
+    "body": [
+      "<motion.input",
+      "  type=\"${1:number}\"",
+      "  className=\"text-${2:3xl} text-center p-4 rounded-2xl border-4 border-pink-200 focus:border-purple-400\"",
+      "  whileFocus={{",
+      "    scale: 1.05,",
+      "    boxShadow: '0 0 20px rgba(221, 160, 221, 0.5)',",
+      "    transition: { duration: 0.2 }",
+      "  }}",
+      "  value={${3:value}}",
+      "  onChange={(e) => ${4:setValue}(e.target.value)}",
+      "/>"
+    ],
+    "description": "Input avec effet magique au focus"
+  },
+
+  "Accessibility Check": {
+    "prefix": "a11y-check",
+    "body": [
+      "// Reduced Motion",
+      "const reducedMotion = useReducedMotion();",
+      "",
+      "// Screen Reader",
+      "const { announce } = useAnnouncer();",
+      "announce('${1:Message pour lecteur écran}');",
+      "",
+      "// Focus Management",
+      "const ref = useRef<HTMLElement>(null);",
+      "useEffect(() => {",
+      "  ref.current?.focus();",
+      "}, []);"
+    ],
+    "description": "Checklist accessibilité de base"
+  },
+
+  "Performance Optimization": {
+    "prefix": "perf-opt",
+    "body": [
+      "// Lazy load composant lourd",
+      "const ${1:HeavyComponent} = lazy(() => import('./${1:HeavyComponent}'));",
+      "",
+      "// Memoize composant",
+      "const ${2:MemoComponent} = memo(${3:Component});",
+      "",
+      "// Debounce animation",
+      "const debouncedValue = useDebounce(${4:value}, ${5:300});"
+    ],
+    "description": "Patterns optimisation performance"
+  },
+
+  "Test Component": {
+    "prefix": "test-component",
+    "body": [
+      "import { render, screen } from '@testing-library/react';",
+      "import { ${1:ComponentName} } from './${1:ComponentName}';",
+      "",
+      "describe('${1:ComponentName}', () => {",
+      "  it('renders correctly', () => {",
+      "    render(<${1:ComponentName} ${2:props} />);",
+      "    expect(screen.getByText('${3:expected text}')).toBeInTheDocument();",
+      "  });",
+      "",
+      "  it('handles user interaction', () => {",
+      "    const handleClick = jest.fn();",
+      "    render(<${1:ComponentName} onClick={handleClick} />);",
+      "    // TODO: Test interaction",
+      "  });",
+      "});"
+    ],
+    "description": "Template test composant"
+  }
+}
