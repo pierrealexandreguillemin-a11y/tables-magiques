@@ -21,13 +21,13 @@ export const EMMA_USER_FIXTURE: SafeUser = {
 
 /**
  * Utilisateur stocke avec password hash (pour tests unitaires)
- * Password: magique123 (hash bcrypt valide)
+ * Password: magique123 (hash bcrypt valide genere avec 10 rounds)
  */
 export const EMMA_STORED_FIXTURE: StoredUser = {
   id: 'user-456',
   username: 'emma',
-  // Hash bcrypt de "magique123" avec 10 rounds
-  passwordHash: '$2a$10$rQbYCJXsXLxWnNvWlWYrZ.WxZP1MJK0qJE5WxX0wY5WxWxWxWxWxW',
+  // Hash bcrypt REEL de "magique123" avec 10 rounds
+  passwordHash: '$2b$10$fmRaMOyS5DeBZefPQISK3uhWGzWfrP70qu7urxnUzAvywlSeH5xdW',
   createdAt: '2024-12-10T14:30:00.000Z',
   lastLoginAt: '2024-12-26T08:00:00.000Z',
 };

@@ -5,6 +5,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { hashPassword, verifyPassword } from '@/lib/auth/password';
+import { EMMA_STORED_FIXTURE, VALID_LOGIN_INPUT } from '@/tests/fixtures';
 
 describe('Password Utilities', () => {
   describe('hashPassword', () => {
@@ -42,6 +43,25 @@ describe('Password Utilities', () => {
       const result = await verifyPassword(password, hash);
 
       expect(result).toBe(true);
+    });
+
+    it('verifie le hash reel de la fixture EMMA', async () => {
+      // Test avec le hash REEL stocke dans la fixture
+      const result = await verifyPassword(
+        VALID_LOGIN_INPUT.password, // magique123
+        EMMA_STORED_FIXTURE.passwordHash
+      );
+
+      expect(result).toBe(true);
+    });
+
+    it('rejette mauvais password contre fixture EMMA', async () => {
+      const result = await verifyPassword(
+        'wrongpassword',
+        EMMA_STORED_FIXTURE.passwordHash
+      );
+
+      expect(result).toBe(false);
     });
 
     it('retourne false pour password incorrect', async () => {
