@@ -23,23 +23,28 @@ export const getRedis = (): Redis => {
   return redis;
 };
 
+// Préfixe application pour isolation multi-app sur base partagée
+const APP_PREFIX = 'tm'; // tables-magiques
+
 // Préfixes de clés pour l'organisation des données
 export const KEYS = {
   // Users
-  user: (username: string) => `user:${username}`,
-  userId: (id: string) => `user:id:${id}`,
+  user: (username: string) => `${APP_PREFIX}:user:${username}`,
+  userId: (id: string) => `${APP_PREFIX}:user:id:${id}`,
 
   // Sessions
-  session: (token: string) => `session:${token}`,
+  session: (token: string) => `${APP_PREFIX}:session:${token}`,
 
   // Scores
-  scores: (userId: string, mode: string) => `scores:${userId}:${mode}`,
+  scores: (userId: string, mode: string) =>
+    `${APP_PREFIX}:scores:${userId}:${mode}`,
 
   // Badges
-  badges: (userId: string, mode: string) => `badges:${userId}:${mode}`,
+  badges: (userId: string, mode: string) =>
+    `${APP_PREFIX}:badges:${userId}:${mode}`,
 
   // Leaderboard (optionnel)
-  leaderboard: (mode: string) => `leaderboard:${mode}`,
+  leaderboard: (mode: string) => `${APP_PREFIX}:leaderboard:${mode}`,
 } as const;
 
 // Helper pour vérifier si Redis est configuré
