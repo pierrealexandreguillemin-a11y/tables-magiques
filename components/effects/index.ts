@@ -7,3 +7,9 @@ export type { FairyBackgroundProps } from './FairyBackground';
 
 export { MagicCard } from './MagicCard';
 export type { MagicCardProps } from './MagicCard';
+
+export { MagicButton } from './MagicButton';
+export type { MagicButtonProps } from './MagicButton';
+
+export { AnswerIcon } from './AnswerIcon';
+export type { AnswerIconProps, AnswerType, IconSize } from './AnswerIcon';
