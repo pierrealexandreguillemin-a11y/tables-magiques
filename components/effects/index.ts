@@ -20,3 +20,6 @@ export type {
   CounterFormat,
   CounterSize,
 } from './MagicCounter';
+
+export { CrownProgress } from './CrownProgress';
+export type { CrownProgressProps, CrownSize } from './CrownProgress';
