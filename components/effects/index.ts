@@ -13,3 +13,10 @@ export type { MagicButtonProps } from './MagicButton';
 
 export { AnswerIcon } from './AnswerIcon';
 export type { AnswerIconProps, AnswerType, IconSize } from './AnswerIcon';
+
+export { MagicCounter } from './MagicCounter';
+export type {
+  MagicCounterProps,
+  CounterFormat,
+  CounterSize,
+} from './MagicCounter';
