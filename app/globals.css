@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import '../styles/tokens.css';
+@import '../styles/animations.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -122,4 +124,17 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* === CUSTOM UTILITIES - Tables Magiques === */
+@utility drop-shadow-pink {
+  filter: drop-shadow(0 0 8px rgba(255, 182, 217, 0.6));
+}
+
+@utility drop-shadow-purple {
+  filter: drop-shadow(0 0 8px rgba(221, 160, 221, 0.6));
+}
+
+@utility drop-shadow-yellow {
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
 }

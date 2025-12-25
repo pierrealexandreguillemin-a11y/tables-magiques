@@ -7,6 +7,7 @@
 
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import * as React from 'react';
 import { MagicCounter } from '@/components/effects/MagicCounter';
 
 // Mock GSAP
@@ -22,6 +23,20 @@ vi.mock('gsap', () => ({
       }
       return { kill: vi.fn() };
     },
+    registerPlugin: vi.fn(),
+  },
+}));
+
+// Mock @gsap/react useGSAP hook
+vi.mock('@gsap/react', () => ({
+  useGSAP: (
+    callback: () => void,
+    config?: { dependencies?: unknown[]; scope?: unknown }
+  ) => {
+    React.useEffect(() => {
+      callback();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, config?.dependencies ?? []);
   },
 }));
 

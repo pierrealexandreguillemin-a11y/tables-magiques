@@ -7,9 +7,13 @@
 
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+
+// Register GSAP plugin for React
+gsap.registerPlugin(useGSAP);
 import { cn } from '@/lib/utils';
 import type { ThemeVariant } from '@/types/effects';
 
@@ -111,43 +115,37 @@ export function MagicCounter({
   // For non-animated mode, display value directly
   const [animatedValue, setAnimatedValue] = useState(value);
   const counterRef = useRef({ value: value });
-  const tweenRef = useRef<gsap.core.Tween | null>(null);
+  const containerRef = useRef<HTMLSpanElement>(null);
 
   // Determine display value: animated or direct
   const displayValue = animate ? animatedValue : value;
 
-  useEffect(() => {
-    // Only animate if animation is enabled
-    if (!animate) {
-      counterRef.current.value = value;
-      return;
-    }
-
-    // Kill previous animation
-    if (tweenRef.current) {
-      tweenRef.current.kill();
-    }
-
-    // Animate with GSAP
-    tweenRef.current = gsap.to(counterRef.current, {
-      value: value,
-      duration: duration,
-      ease: 'power2.out',
-      onUpdate: () => {
-        // This is in a GSAP callback, not synchronously in effect
-        setAnimatedValue(counterRef.current.value);
-      },
-    });
-
-    return () => {
-      if (tweenRef.current) {
-        tweenRef.current.kill();
+  // Use GSAP hook for proper React integration
+  useGSAP(
+    () => {
+      // Only animate if animation is enabled
+      if (!animate) {
+        counterRef.current.value = value;
+        setAnimatedValue(value);
+        return;
       }
-    };
-  }, [value, duration, animate]);
+
+      // Animate with GSAP (contextSafe automatically handles cleanup)
+      gsap.to(counterRef.current, {
+        value: value,
+        duration: duration,
+        ease: 'power2.out',
+        onUpdate: () => {
+          setAnimatedValue(counterRef.current.value);
+        },
+      });
+    },
+    { dependencies: [value, duration, animate], scope: containerRef }
+  );
 
   return (
     <span
+      ref={containerRef}
       data-testid="magic-counter"
       data-format={format}
       data-animate={animate ? 'true' : 'false'}
