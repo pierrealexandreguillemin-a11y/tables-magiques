@@ -1,61 +1,109 @@
 'use client';
 
-import { useEffect, useRef, useMemo } from 'react';
+import { useRef, useMemo, useCallback } from 'react';
 import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 
-// Fonction utilitaire pour générer des valeurs pseudo-aléatoires stables
-const seededRandom = (seed: number) => {
+// Register GSAP plugins for React (required for proper cleanup)
+gsap.registerPlugin(useGSAP);
+
+// Fonction utilitaire pour générer des valeurs pseudo-aléatoires stables (SSR-safe)
+const seededRandom = (seed: number): number => {
   const x = Math.sin(seed * 9999) * 10000;
   return x - Math.floor(x);
 };
 
 export default function Home() {
+  const containerRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const unicornRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isMountedRef = useRef(false);
 
-  useEffect(() => {
-    isMountedRef.current = true;
+  /**
+   * GSAP Animations - Professional Implementation
+   *
+   * Uses useGSAP hook for:
+   * - Automatic cleanup on unmount (gsap.context)
+   * - Safe React 18 Strict Mode (no double animations)
+   * - Scoped selectors within containerRef
+   * - SSR-safe (useIsomorphicLayoutEffect internally)
+   *
+   * @see https://gsap.com/resources/React/
+   */
+  const { contextSafe } = useGSAP(
+    () => {
+      // Guard: ensure refs are available
+      if (!containerRef.current) return;
 
-    // GSAP: Animation titre avec effet élastique
-    if (titleRef.current) {
-      gsap.from(titleRef.current, {
-        opacity: 0,
-        y: -100,
-        scale: 0.5,
-        duration: 1.5,
-        ease: 'elastic.out(1, 0.5)',
-        delay: 0.3,
+      // Timeline for coordinated entrance animations
+      const tl = gsap.timeline({
+        defaults: {
+          ease: 'power3.out',
+          duration: 1,
+        },
       });
-    }
 
-    // GSAP: Licorne flottante infinie avec rotation subtile
-    if (unicornRef.current) {
-      gsap.to(unicornRef.current, {
-        y: -25,
-        rotation: 8,
-        duration: 2.5,
-        ease: 'power1.inOut',
-        yoyo: true,
-        repeat: -1,
-      });
-    }
+      // 1. Title entrance with elastic bounce
+      if (titleRef.current) {
+        tl.from(
+          titleRef.current,
+          {
+            opacity: 0,
+            y: -100,
+            scale: 0.5,
+            duration: 1.5,
+            ease: 'elastic.out(1, 0.5)',
+          },
+          0.3
+        );
+      }
 
-    // GSAP: Gradient animé du background
-    if (containerRef.current) {
+      // 2. Unicorn floating animation (infinite, will be cleaned up automatically)
+      if (unicornRef.current) {
+        gsap.to(unicornRef.current, {
+          y: -25,
+          rotation: 8,
+          duration: 2.5,
+          ease: 'power1.inOut',
+          yoyo: true,
+          repeat: -1,
+        });
+      }
+
+      // 3. Background gradient animation
       gsap.to(containerRef.current, {
         backgroundPosition: '200% 50%',
         duration: 20,
         ease: 'none',
         repeat: -1,
       });
+    },
+    {
+      scope: containerRef, // Scopes all selector text to descendants of containerRef
+      revertOnUpdate: false, // Don't revert on re-render (one-shot animations)
     }
-  }, []);
+  );
 
-  // Particules magiques flottantes - valeurs stables avec useMemo
+  /**
+   * Context-safe click handler for unicorn animation
+   * Uses GSAP contextSafe for proper cleanup on unmount
+   */
+  const handleUnicornClick = useCallback(() => {
+    const safeAnimation = contextSafe(() => {
+      if (!unicornRef.current) return;
+      gsap.to(unicornRef.current, {
+        scale: 1.5,
+        duration: 0.3,
+        yoyo: true,
+        repeat: 1,
+        ease: 'power2.out',
+      });
+    });
+    safeAnimation();
+  }, [contextSafe]);
+
+  // Particules magiques flottantes - valeurs stables avec useMemo (SSR-safe)
   const particles = useMemo(
     () =>
       Array.from({ length: 30 }, (_, i) => ({
@@ -171,6 +219,7 @@ export default function Home() {
         <motion.div
           ref={unicornRef}
           className="text-8xl sm:text-9xl mb-6 cursor-pointer select-none"
+          onClick={handleUnicornClick}
           whileHover={{
             scale: 1.3,
             rotate: [0, -10, 10, -10, 0],
