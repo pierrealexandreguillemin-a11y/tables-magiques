@@ -12,6 +12,11 @@ import {
   API_SESSION_FIXTURE,
   EARNED_BADGES_FIXTURE,
   ACTIVE_GAME_STATE_FIXTURE,
+  EMMA_USER_FIXTURE,
+  LOGIN_SUCCESS_RESPONSE,
+  LOGIN_ERROR_RESPONSE,
+  REGISTER_SUCCESS_RESPONSE,
+  REGISTER_USER_EXISTS_RESPONSE,
 } from '../fixtures';
 
 export const handlers = [
@@ -210,7 +215,7 @@ export const handlers = [
   }),
 
   // ============================================================================
-  // AUTH API (minimal pour tests)
+  // AUTH API (complet avec fixtures reelles)
   // ============================================================================
 
   // POST /api/auth/login
@@ -220,22 +225,101 @@ export const handlers = [
       password: string;
     };
 
+    // Validation basique
+    if (!body.username || body.username.length < 4) {
+      return HttpResponse.json(
+        {
+          success: false,
+          error: 'Le pseudo doit faire au moins 4 caracteres',
+          code: 'VALIDATION_ERROR',
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!body.password || body.password.length < 4) {
+      return HttpResponse.json(
+        {
+          success: false,
+          error: 'Le mot de passe doit faire au moins 4 caracteres',
+          code: 'VALIDATION_ERROR',
+        },
+        { status: 400 }
+      );
+    }
+
+    // Authentification avec fixture
     if (body.username === 'emma' && body.password === 'magique123') {
+      return HttpResponse.json(LOGIN_SUCCESS_RESPONSE);
+    }
+
+    return HttpResponse.json(LOGIN_ERROR_RESPONSE, { status: 401 });
+  }),
+
+  // POST /api/auth/register
+  http.post('/api/auth/register', async ({ request }) => {
+    const body = (await request.json()) as {
+      username: string;
+      password: string;
+      confirmPassword: string;
+    };
+
+    // Validation basique
+    if (!body.username || body.username.length < 4) {
+      return HttpResponse.json(
+        {
+          success: false,
+          error: 'Le pseudo doit faire au moins 4 caracteres',
+          code: 'VALIDATION_ERROR',
+        },
+        { status: 400 }
+      );
+    }
+
+    if (body.password !== body.confirmPassword) {
+      return HttpResponse.json(
+        {
+          success: false,
+          error: 'Les mots de passe ne correspondent pas',
+          code: 'VALIDATION_ERROR',
+        },
+        { status: 400 }
+      );
+    }
+
+    // Username deja pris (emma existe)
+    if (body.username.toLowerCase() === 'emma') {
+      return HttpResponse.json(REGISTER_USER_EXISTS_RESPONSE, { status: 409 });
+    }
+
+    // Succes inscription
+    return HttpResponse.json(REGISTER_SUCCESS_RESPONSE, { status: 201 });
+  }),
+
+  // GET /api/auth/me
+  http.get('/api/auth/me', ({ cookies }) => {
+    const sessionCookie = cookies.tm_session;
+
+    if (!sessionCookie) {
       return HttpResponse.json({
-        success: true,
-        user: { id: 'user-456', username: 'emma' },
+        authenticated: false,
+        user: null,
       });
     }
 
-    return HttpResponse.json(
-      { success: false, message: 'Identifiants incorrects' },
-      { status: 401 }
-    );
+    // Session valide = retourne Emma
+    return HttpResponse.json({
+      authenticated: true,
+      user: EMMA_USER_FIXTURE,
+    });
   }),
 
   // POST /api/auth/logout
   http.post('/api/auth/logout', () => {
-    return HttpResponse.json({ success: true });
+    return HttpResponse.json({
+      success: true,
+      message: 'Deconnexion reussie',
+    });
   }),
 ];
 
