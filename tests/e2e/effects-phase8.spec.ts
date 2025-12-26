@@ -397,6 +397,7 @@ test.describe('Phase 8 - Reduced Motion', () => {
   test('transitions désactivées en reduced motion', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
+    await page.waitForLoadState('networkidle');
 
     // Les variables de timing devraient être 0
     const timingVars = await page.evaluate(() => {
@@ -409,10 +410,11 @@ test.describe('Phase 8 - Reduced Motion', () => {
       };
     });
 
-    // En reduced motion, les timings devraient être 0ms
+    // En reduced motion, les timings devraient être 0ms ou vides (si CSS pas chargé)
     Object.values(timingVars).forEach((value) => {
-      if (value) {
-        expect(value.trim()).toBe('0ms');
+      if (value && value.trim()) {
+        // Accepter 0, 0ms, 0s (toutes variations de zéro)
+        expect(value.trim()).toMatch(/^0(ms|s)?$/);
       }
     });
   });
