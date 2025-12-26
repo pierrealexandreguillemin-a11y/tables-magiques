@@ -17,6 +17,10 @@ import {
   LOGIN_ERROR_RESPONSE,
   REGISTER_SUCCESS_RESPONSE,
   REGISTER_USER_EXISTS_RESPONSE,
+  PRACTICE_SCORES_FIXTURE,
+  CHALLENGE_SCORES_FIXTURE,
+  SCORE_STATS_PRACTICE_FIXTURE,
+  SCORE_STATS_CHALLENGE_FIXTURE,
 } from '../fixtures';
 
 export const handlers = [
@@ -130,35 +134,8 @@ export const handlers = [
   // BADGES API
   // ============================================================================
 
-  // GET /api/badges - Badges de l'utilisateur (format GetBadgesResponse)
+  // GET /api/badges - Badges de l'utilisateur connecte (via session)
   http.get('/api/badges', () => {
-    return HttpResponse.json({
-      badges: EARNED_BADGES_FIXTURE.map((b) => ({
-        ...b,
-        earned: true,
-        earnedAt: b.earnedAt,
-        emoji: '⭐',
-        name: `Badge ${b.id}`,
-        description: `Description ${b.id}`,
-        condition: { type: 'streak', value: 5 },
-      })),
-      earnedCount: EARNED_BADGES_FIXTURE.length,
-      totalCount: 13,
-    });
-  }),
-
-  // GET /api/badges/:userId - Badges spécifiques
-  http.get('/api/badges/:userId', ({ params }) => {
-    const { userId } = params;
-
-    if (userId !== 'user-456') {
-      return HttpResponse.json({
-        badges: [],
-        earnedCount: 0,
-        totalCount: 13,
-      });
-    }
-
     return HttpResponse.json({
       badges: EARNED_BADGES_FIXTURE.map((b) => ({
         ...b,
@@ -368,6 +345,71 @@ export const handlers = [
       success: true,
       message: 'Deconnexion reussie',
     });
+  }),
+
+  // ============================================================================
+  // SCORES API
+  // ============================================================================
+
+  // GET /api/scores - Scores utilisateur avec filtres
+  http.get('/api/scores', ({ request }) => {
+    const url = new URL(request.url);
+    const mode = url.searchParams.get('mode') || 'practice';
+    const limit = parseInt(url.searchParams.get('limit') || '20', 10);
+
+    const scores =
+      mode === 'challenge' ? CHALLENGE_SCORES_FIXTURE : PRACTICE_SCORES_FIXTURE;
+    const stats =
+      mode === 'challenge'
+        ? SCORE_STATS_CHALLENGE_FIXTURE
+        : SCORE_STATS_PRACTICE_FIXTURE;
+
+    return HttpResponse.json({
+      scores: scores.slice(0, limit),
+      stats,
+    });
+  }),
+
+  // POST /api/scores - Sauvegarder nouveau score
+  http.post('/api/scores', async ({ request }) => {
+    const body = (await request.json()) as {
+      mode: 'practice' | 'challenge';
+      table?: number;
+      correct: number;
+      total: number;
+      timeRemaining?: number;
+    };
+
+    // Validation basique
+    if (!body.mode || !['practice', 'challenge'].includes(body.mode)) {
+      return HttpResponse.json(
+        { error: 'Mode invalide', details: [{ path: ['mode'] }] },
+        { status: 400 }
+      );
+    }
+
+    if (body.correct === undefined || body.total === undefined) {
+      return HttpResponse.json(
+        {
+          error: 'Donnees invalides',
+          details: [{ path: ['correct', 'total'] }],
+        },
+        { status: 400 }
+      );
+    }
+
+    // Retourner score cree
+    return HttpResponse.json(
+      {
+        success: true,
+        score: {
+          userId: 'user-456',
+          ...body,
+          timestamp: new Date().toISOString(),
+        },
+      },
+      { status: 201 }
+    );
   }),
 ];
 

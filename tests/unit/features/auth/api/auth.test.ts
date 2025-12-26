@@ -36,14 +36,18 @@ describe('Auth API Functions', () => {
       const result = await loginUser(VALID_LOGIN_INPUT);
 
       expect(result.success).toBe(true);
-      expect(result.user?.username).toBe(EMMA_USER_FIXTURE.username);
+      if (result.success) {
+        expect(result.user.username).toBe(EMMA_USER_FIXTURE.username);
+      }
     });
 
     it('retourne erreur avec password invalide', async () => {
       const result = await loginUser(INVALID_PASSWORD_INPUT);
 
       expect(result.success).toBe(false);
-      expect(result.error).toBeDefined();
+      if (!result.success) {
+        expect(result.error).toBeDefined();
+      }
     });
 
     it('retourne erreur validation avec username trop court', async () => {
@@ -58,7 +62,9 @@ describe('Auth API Functions', () => {
       const result = await registerUser(VALID_REGISTER_INPUT);
 
       expect(result.success).toBe(true);
-      expect(result.user?.username).toBe(LUCAS_USER_FIXTURE.username);
+      if (result.success) {
+        expect(result.user.username).toBe(LUCAS_USER_FIXTURE.username);
+      }
     });
 
     it('retourne erreur si username existe', async () => {
