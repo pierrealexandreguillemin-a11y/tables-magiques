@@ -213,6 +213,7 @@ export function FairyBackground({
       className={cn(
         'fixed inset-0 -z-10 overflow-hidden',
         'bg-gradient-to-b from-purple-50 to-pink-50',
+        'particle-layer scroll-optimized',
         className
       )}
     >
@@ -221,7 +222,7 @@ export function FairyBackground({
         <Particles
           id="fairy-stars"
           data-testid="particles-container"
-          className="absolute inset-0"
+          className="absolute inset-0 gpu-accelerated"
           particlesLoaded={particlesLoaded}
           options={particlesConfig}
         />
@@ -232,7 +233,7 @@ export function FairyBackground({
         <motion.div
           key={cloud.id}
           data-testid={`cloud-${cloud.id}`}
-          className="absolute rounded-full pointer-events-none"
+          className="absolute rounded-full pointer-events-none gpu-accelerated"
           style={{
             width: cloud.size,
             height: cloud.size,

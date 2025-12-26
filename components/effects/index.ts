@@ -33,5 +33,30 @@ export type { GsapCelebrationProps, CelebrationType } from './GsapCelebration';
 export { ToastContainer } from './Toast';
 export type { ToastContainerProps } from './Toast';
 
+export { ToastProvider, useToastContext } from './ToastProvider';
+
 export { GentleShake } from './GentleShake';
 export { GradientText } from './GradientText';
+
+export { LottieAnimation } from './LottieAnimation';
+export { KawaiiMascot } from './KawaiiMascot';
+
+// Nouveaux composants Phase 8+
+export { PageTransition } from './PageTransition';
+export {
+  AnimatedDialog,
+  AnimatedDialogContent,
+  AnimatedDialogHeader,
+  AnimatedDialogTitle,
+  AnimatedDialogDescription,
+  AnimatedDialogFooter,
+  AnimatedDialogTrigger,
+} from './AnimatedDialog';
+export { ConfirmationModal } from './ConfirmationModal';
+export { NumberReveal } from './NumberReveal';
+export { SuccessExplosion } from './SuccessExplosion';
+export { BadgeUnlockModal } from './BadgeUnlockModal';
+export { StaggerList } from './StaggerList';
+export { MagneticButton } from './MagneticButton';
+export { PulseGlow } from './PulseGlow';
+export { ParticlesBackground } from './ParticlesBackground';
