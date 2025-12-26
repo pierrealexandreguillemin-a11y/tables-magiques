@@ -25,10 +25,18 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: '/icons/favicon-16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/icons/favicon-32.png', sizes: '32x32', type: 'image/png' },
       { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
       { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
     ],
-    apple: '/icons/icon-192.png',
+    apple: [
+      { url: '/icons/apple-touch-icon.png', sizes: '180x180' },
+      { url: '/icons/icon-152.png', sizes: '152x152' },
+      { url: '/icons/icon-120.png', sizes: '120x120' },
+      { url: '/icons/icon-76.png', sizes: '76x76' },
+      { url: '/icons/icon-60.png', sizes: '60x60' },
+    ],
   },
 };
 
@@ -62,7 +70,22 @@ export default function RootLayout({
     <html lang="fr" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <link
+          rel="apple-touch-icon"
+          sizes="152x152"
+          href="/icons/icon-152.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="167x167"
+          href="/icons/icon-167.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/icons/apple-touch-icon.png"
+        />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>

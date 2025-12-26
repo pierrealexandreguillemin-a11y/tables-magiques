@@ -6,6 +6,7 @@ import { useGSAP } from '@gsap/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { InstallButton } from '@/components/pwa/InstallButton';
 
 // Register GSAP plugins for React (required for proper cleanup)
 gsap.registerPlugin(useGSAP);
@@ -140,8 +141,9 @@ export default function Home() {
         backgroundSize: '400% 400%',
       }}
     >
-      {/* Theme Toggle - Position fixe top right */}
-      <div className="fixed top-4 right-4 z-50">
+      {/* Header fixe - Theme Toggle + Install Button */}
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+        <InstallButton />
         <ThemeToggle />
       </div>
 
