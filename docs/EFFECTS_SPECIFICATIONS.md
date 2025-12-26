@@ -761,6 +761,211 @@ Lazy (charge a la demande):
 
 ---
 
+## 10. BONNES PRATIQUES WCAG 2.2 (2025)
+
+> **Sources**: Recherche web officielle Dec 2025
+> **Standards**: WCAG 2.2, ISO/IEC 25010, European Accessibility Act (June 2025)
+
+### 10.1 Toast Notifications
+
+| Critere       | Recommandation                        | Source                                                                                                          |
+| ------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Duree**     | 6s minimum (5s + 1s/120 mots)         | [Sheri Byrne-Haber](https://sheribyrnehaber.medium.com/designing-toast-messages-for-accessibility-fb610ac364be) |
+| **ARIA**      | `role="alert"` + `aria-live="polite"` | [React-Toastify](https://fkhadra.github.io/react-toastify/accessibility/)                                       |
+| **Contraste** | 4.5:1 texte, 3.0:1 composants         | [WCAG 2.2](https://www.w3.org/TR/WCAG22/)                                                                       |
+| **Motion**    | `prefers-reduced-motion` obligatoire  | [LogRocket 2025](https://blog.logrocket.com/react-toastify-guide/)                                              |
+| **Pause**     | Pause on hover/focus obligatoire      | [Adobe React Spectrum](https://github.com/adobe/react-spectrum/blob/main/specs/accessibility/Toast.mdx)         |
+| **Keyboard**  | Alt+T focus, Tab navigation           | React-Toastify v11                                                                                              |
+
+**Implementation Pattern:**
+
+```tsx
+// Toast accessible avec Framer Motion
+<AnimatePresence>
+  <motion.div
+    role="alert"
+    aria-live="polite"
+    aria-atomic="true"
+    initial={{ opacity: 0, y: -20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0 }}
+    onMouseEnter={pauseTimer}
+    onFocus={pauseTimer}
+  >
+    {message}
+  </motion.div>
+</AnimatePresence>
+```
+
+### 10.2 GentleShake (Erreur Douce)
+
+| Critere            | Recommandation                          | Source                                                                                                |
+| ------------------ | --------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Amplitude**      | 3px max, 300ms duration                 | [Framer Motion Guide](https://kodaschool.com/blog/creaing-interactive-ui-elements-with-framer-motion) |
+| **Keyframes**      | `x: [0, 10, -10, 10, 0]`                | [react-spring](https://github.com/pmndrs/react-spring/discussions/1746)                               |
+| **Reduced Motion** | Fallback: opacity flash                 | [Motion.dev](https://motion.dev/docs/react-accessibility)                                             |
+| **Message**        | Jamais rouge vif, toujours encourageant | UX Enfants                                                                                            |
+
+**Implementation Pattern:**
+
+```tsx
+// Hook useShakeAnimation
+const useShakeAnimation = () => {
+  const controls = useAnimationControls();
+  const shake = () =>
+    controls.start({
+      x: [0, 10, -10, 10, 0],
+      transition: { duration: 0.4 },
+    });
+  return { controls, shake };
+};
+```
+
+### 10.3 GradientText (Performance)
+
+| Critere        | Recommandation                                  | Source                                                                                                  |
+| -------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **Technique**  | `background-clip: text` + `background-position` | [web.dev](https://web.dev/articles/speedy-css-tip-animated-gradient-text)                               |
+| **GPU**        | `transform: translateZ(0)` ou `will-change`     | [Hoverify](https://tryhoverify.com/blog/i-wish-i-had-known-this-sooner-about-css-gradient-performance/) |
+| **@property**  | Utiliser pour transitions smooth (2025)         | [Lexo Blog](https://www.lexo.ch/blog/2025/01/animating-gradients-with-pure-css/)                        |
+| **Limite**     | **1 seul gradient anime par page**              | Performance                                                                                             |
+| **Responsive** | Simplifier sur mobile via media query           | Best practice                                                                                           |
+
+**Implementation Pattern:**
+
+```css
+@property --gradient-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.gradient-text {
+  background: linear-gradient(var(--gradient-angle), #ff69b4, #ba55d3, #87ceeb);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: gradient-rotate 3s linear infinite;
+}
+
+@keyframes gradient-rotate {
+  to {
+    --gradient-angle: 360deg;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .gradient-text {
+    animation: none;
+  }
+}
+```
+
+### 10.4 High Contrast Mode
+
+| Critere           | Recommandation                            | Source                                                                                           |
+| ----------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **Media Query**   | `@media (prefers-contrast: high)`         | [AllAccessible](https://www.allaccessible.org/blog/color-contrast-accessibility-wcag-guide-2025) |
+| **Contraste AAA** | 7:1 texte normal, 4.5:1 grand texte       | [WCAG 2.2](https://www.w3.org/TR/WCAG22/)                                                        |
+| **Focus**         | `outline-width: 3px; outline-offset: 3px` | [WCAG 2.4.13](https://www.allaccessible.org/blog/wcag-2413-focus-appearance-guide)               |
+| **Variables**     | CSS custom properties pour themes         | [WebAIM](https://webaim.org/articles/contrast/)                                                  |
+
+**Implementation Pattern:**
+
+```css
+:root {
+  --text-primary: #1a1a1a;
+  --bg-primary: #ffffff;
+  --accent: #ff69b4;
+}
+
+@media (prefers-contrast: high) {
+  :root {
+    --text-primary: #000000;
+    --bg-primary: #ffffff;
+    --accent: #d60073; /* Plus saturé */
+  }
+
+  :focus-visible {
+    outline: 3px solid #000;
+    outline-offset: 3px;
+  }
+
+  /* Borders plus visibles */
+  .card {
+    border: 2px solid #000;
+  }
+}
+```
+
+### 10.5 Screen Reader Annonces
+
+| Critere       | Recommandation                                         | Source                                                                                               |
+| ------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| **Librairie** | `@react-aria/live-announcer`                           | [k9n.dev](https://k9n.dev/blog/2025-11-aria-live/)                                                   |
+| **Politesse** | `polite` 90%, `assertive` erreurs critiques            | [RightSaidJames](https://rightsaidjames.com/2025/08/aria-live-regions-when-to-use-polite-assertive/) |
+| **Montage**   | Live region **toujours montee**, jamais conditionnelle | [react-aria-live](https://github.com/AlmeroSteyn/react-aria-live)                                    |
+| **Position**  | Le plus haut possible dans l'arbre                     | [UXPin](https://www.uxpin.com/studio/blog/aria-live-regions-for-dynamic-content/)                    |
+| **Tests**     | NVDA, JAWS, VoiceOver + eslint-plugin-jsx-a11y         | Best practice                                                                                        |
+
+**Implementation Pattern:**
+
+```tsx
+// hooks/useAnnouncer.ts - Live region stable
+import { announce } from '@react-aria/live-announcer';
+
+export function useAnnouncer() {
+  return {
+    announcePolite: (message: string) => announce(message, 'polite'),
+    announceAssertive: (message: string) => announce(message, 'assertive'),
+  };
+}
+
+// Usage
+const { announcePolite } = useAnnouncer();
+announcePolite('Bravo! 8 sur 10 reponses correctes');
+```
+
+### 10.6 Checklist WCAG Phase 8
+
+```
+Toast Notifications:
+[ ] Duree >= 6 secondes
+[ ] Pause on hover/focus
+[ ] aria-live="polite" + role="alert"
+[ ] Contraste 4.5:1 minimum
+[ ] prefers-reduced-motion respecte
+[ ] Keyboard navigation (Alt+T)
+
+GentleShake:
+[ ] Amplitude <= 3px
+[ ] Duree <= 400ms
+[ ] Reduced motion fallback (opacity)
+[ ] Message encourageant (pas de rouge)
+
+GradientText:
+[ ] background-clip: text technique
+[ ] GPU acceleration (translateZ)
+[ ] 1 seul par page
+[ ] Reduced motion: animation none
+[ ] Responsive simplifie sur mobile
+
+High Contrast:
+[ ] prefers-contrast: high detection
+[ ] Contraste AAA (7:1)
+[ ] Focus visible 3px
+[ ] Borders renforces
+
+Screen Reader:
+[ ] Live region stable (toujours montee)
+[ ] Politesse correcte (polite/assertive)
+[ ] Position haute dans arbre
+[ ] Tests multi-lecteurs
+```
+
+---
+
 ## ANNEXE: CHEATSHEET ANIMATIONS TABLES MAGIQUES
 
 ### Framer Motion - Patterns frequents
