@@ -281,3 +281,128 @@ export interface UseGsapEffectsResult {
   /** Si les effets sont disponibles */
   isReady: boolean;
 }
+
+// ============================================================================
+// TOAST NOTIFICATIONS - Types WCAG 2.2
+// ============================================================================
+
+/**
+ * Type de toast (visuel + son)
+ */
+export type ToastType = 'success' | 'star' | 'crown' | 'error' | 'info';
+
+/**
+ * Configuration d'un toast
+ */
+export interface Toast {
+  /** ID unique */
+  id: string;
+  /** Type de toast */
+  type: ToastType;
+  /** Message a afficher */
+  message: string;
+  /** Duree en ms (min 6000 WCAG) */
+  duration?: number;
+  /** Icone optionnelle */
+  icon?: string;
+}
+
+/**
+ * Options pour creer un toast
+ */
+export interface ToastOptions {
+  /** Type de toast */
+  type?: ToastType;
+  /** Duree en ms (defaut: 6000) */
+  duration?: number;
+  /** Icone custom */
+  icon?: string;
+}
+
+/**
+ * Hook result pour useToast
+ */
+export interface UseToastResult {
+  /** Liste des toasts actifs */
+  toasts: Toast[];
+  /** Ajouter un toast */
+  toast: (message: string, options?: ToastOptions) => string;
+  /** Toast success avec etoile */
+  success: (message: string) => string;
+  /** Toast star celebration */
+  star: (message: string) => string;
+  /** Toast crown (niveau superieur) */
+  crown: (message: string) => string;
+  /** Toast erreur douce */
+  error: (message: string) => string;
+  /** Supprimer un toast */
+  dismiss: (id: string) => void;
+  /** Supprimer tous les toasts */
+  dismissAll: () => void;
+}
+
+// ============================================================================
+// GENTLE SHAKE - Types
+// ============================================================================
+
+/**
+ * Props du composant GentleShake
+ */
+export interface GentleShakeProps extends AnimatedComponentProps {
+  /** Declencher le shake */
+  trigger: boolean;
+  /** Callback apres shake */
+  onShakeComplete?: () => void;
+  /** Amplitude en pixels (max 10) */
+  amplitude?: number;
+  /** Message encourageant */
+  message?: string;
+  /** Enfants a wrapper */
+  children: React.ReactNode;
+}
+
+// ============================================================================
+// GRADIENT TEXT - Types
+// ============================================================================
+
+/**
+ * Variante de gradient
+ */
+export type GradientVariant = 'fairy' | 'unicorn' | 'rainbow' | 'gold';
+
+/**
+ * Props du composant GradientText
+ */
+export interface GradientTextProps {
+  /** Texte a afficher */
+  children: React.ReactNode;
+  /** Variante de gradient */
+  variant?: GradientVariant;
+  /** Animer le gradient */
+  animate?: boolean;
+  /** Tag HTML */
+  as?: 'h1' | 'h2' | 'h3' | 'span' | 'p';
+  /** Classes additionnelles */
+  className?: string;
+}
+
+// ============================================================================
+// ANNOUNCER - Types Screen Reader
+// ============================================================================
+
+/**
+ * Politesse pour aria-live
+ */
+export type AnnouncerPoliteness = 'polite' | 'assertive';
+
+/**
+ * Hook result pour useAnnouncer
+ */
+export interface UseAnnouncerResult {
+  /** Annonce polie (non-urgente) */
+  announcePolite: (message: string) => void;
+  /** Annonce assertive (urgente) */
+  announceAssertive: (message: string) => void;
+  /** Annonce avec politesse custom */
+  announce: (message: string, politeness?: AnnouncerPoliteness) => void;
+}
