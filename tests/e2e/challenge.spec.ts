@@ -7,8 +7,28 @@
 
 import { test, expect } from '@playwright/test';
 
+// Domaine dynamique selon l'environnement
+const getDomain = (): string => {
+  const baseURL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  try {
+    const url = new URL(baseURL);
+    return url.hostname;
+  } catch {
+    return 'localhost';
+  }
+};
+
 test.describe('Challenge Mode', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ context, page }) => {
+    // Mock session cookie pour tests
+    await context.addCookies([
+      {
+        name: 'tm_session',
+        value: 'test-session-token',
+        domain: getDomain(),
+        path: '/',
+      },
+    ]);
     await page.goto('/challenge');
   });
 
@@ -89,7 +109,8 @@ test.describe('Challenge Mode', () => {
       await page.getByRole('button', { name: '5' }).click();
       await page.getByRole('button', { name: '6' }).click();
 
-      await expect(page.getByText('56')).toBeVisible();
+      // Vérifier dans la zone de réponse spécifiquement
+      await expect(page.getByText('56', { exact: true })).toBeVisible();
     });
 
     test('valider passe a question suivante', async ({ page }) => {
@@ -114,8 +135,11 @@ test.describe('Challenge Mode', () => {
       await page.getByRole('button', { name: '6' }).click();
       await page.getByRole('button', { name: /effacer/i }).click();
 
-      await expect(page.getByText('5')).toBeVisible();
-      await expect(page.getByText('56')).not.toBeVisible();
+      // Vérifier dans la zone de réponse (pas le clavier)
+      await expect(
+        page.getByLabel('Question de multiplication').getByText('5')
+      ).toBeVisible();
+      await expect(page.getByText('56', { exact: true })).not.toBeVisible();
     });
   });
 

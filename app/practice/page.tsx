@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { InstallButton } from '@/components/pwa/InstallButton';
 import {
   generateRandomQuestion,
   generateAllQuestionsForTable,
@@ -153,8 +154,9 @@ export default function PracticePage() {
         backgroundSize: '400% 400%',
       }}
     >
-      {/* Theme Toggle - Position fixe */}
-      <div className="fixed top-4 right-4 z-50">
+      {/* Header fixe - Theme Toggle + Install Button */}
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+        <InstallButton />
         <ThemeToggle />
       </div>
 

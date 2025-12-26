@@ -32,6 +32,7 @@ export const metadata: Metadata = {
     ],
     apple: [
       { url: '/icons/apple-touch-icon.png', sizes: '180x180' },
+      { url: '/icons/icon-167.png', sizes: '167x167' },
       { url: '/icons/icon-152.png', sizes: '152x152' },
       { url: '/icons/icon-120.png', sizes: '120x120' },
       { url: '/icons/icon-76.png', sizes: '76x76' },
@@ -70,22 +71,7 @@ export default function RootLayout({
     <html lang="fr" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-        <link
-          rel="apple-touch-icon"
-          sizes="152x152"
-          href="/icons/icon-152.png"
-        />
-        <link
-          rel="apple-touch-icon"
-          sizes="167x167"
-          href="/icons/icon-167.png"
-        />
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/icons/apple-touch-icon.png"
-        />
+        {/* Les apple-touch-icons sont geres par metadata.icons.apple */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>

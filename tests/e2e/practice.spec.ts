@@ -1,9 +1,20 @@
 /**
  * Tests E2E - Mode Practice
- * ISO/IEC 29119 - Tests parcours utilisateur
+ * ISO/IEC 29119 - Tests parcours utilisateur PRODUCTION
  */
 
 import { test, expect } from '@playwright/test';
+
+// Domaine dynamique selon l'environnement
+const getDomain = (): string => {
+  const baseURL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  try {
+    const url = new URL(baseURL);
+    return url.hostname;
+  } catch {
+    return 'localhost';
+  }
+};
 
 test.describe('Mode Practice - Page Selection', () => {
   // Note: Ces tests necessitent une session authentifiee
@@ -32,7 +43,7 @@ test.describe('Mode Practice - Page Selection', () => {
         {
           name: 'tm_session',
           value: 'test-session-token',
-          domain: 'localhost',
+          domain: getDomain(),
           path: '/',
         },
       ]);
@@ -97,7 +108,7 @@ test.describe('Mode Practice - Page Selection', () => {
         {
           name: 'tm_session',
           value: 'test-session-token',
-          domain: 'localhost',
+          domain: getDomain(),
           path: '/',
         },
       ]);
@@ -132,7 +143,7 @@ test.describe('Mode Practice - Gameplay', () => {
       {
         name: 'tm_session',
         value: 'test-session-token',
-        domain: 'localhost',
+        domain: getDomain(),
         path: '/',
       },
     ]);
