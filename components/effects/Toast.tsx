@@ -227,6 +227,7 @@ export function ToastContainer({
 
   return (
     <div
+      role="region"
       className={cn(
         'fixed z-50 flex flex-col gap-2',
         positionClasses[position]
