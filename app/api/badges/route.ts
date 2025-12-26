@@ -17,24 +17,7 @@ import {
   getNewBadges,
 } from '@/features/badges';
 import { ALL_BADGES } from '@/config/badges';
-import { z } from 'zod';
-
-// Schemas Zod qui produisent des types compatibles avec les types metier
-const PracticeStatsSchema = z.object({
-  correctAnswers: z.number().min(0),
-  totalQuestions: z.number().min(0),
-  currentStreak: z.number().min(0),
-  maxStreak: z.number().min(0),
-});
-
-const ChallengeResultSchema = z.object({
-  correctAnswers: z.number().min(0),
-  totalQuestions: z.number().min(0),
-  accuracy: z.number().min(0).max(1),
-  timeBonus: z.number().min(0),
-  streakBonus: z.number().min(0),
-  totalScore: z.number().min(0),
-});
+import { CheckBadgesSchema } from '@/lib/validation/schemas';
 
 /**
  * GET /api/badges
@@ -75,22 +58,6 @@ export async function GET() {
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }
-
-// Schema validation pour POST - discriminated union
-const PracticeCheckSchema = z.object({
-  mode: z.literal('practice'),
-  practiceStats: PracticeStatsSchema,
-});
-
-const ChallengeCheckSchema = z.object({
-  mode: z.literal('challenge'),
-  challengeResult: ChallengeResultSchema,
-});
-
-const CheckBadgesSchema = z.discriminatedUnion('mode', [
-  PracticeCheckSchema,
-  ChallengeCheckSchema,
-]);
 
 /**
  * POST /api/badges
