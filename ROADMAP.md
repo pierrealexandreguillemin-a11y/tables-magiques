@@ -12,9 +12,10 @@ Plan de developpement structure selon ISO/IEC 25010.
 - [x] Phase 4.5 : React Query + Architecture ISO (2025-12-26)
 - [x] Phase 5 : Dark Mode (2025-12-26)
 - [x] Phase 6 : PWA Complete (2025-12-26)
-- [ ] Phase 7 : Page Profil + Historique ← PROCHAINE
-- [ ] Phase 8 : Sons + Badge Icons
-- [x] Phase 9 : Tests E2E (infrastructure)
+- [x] Phase 7 : Page Profil + Historique (2025-12-26)
+- [ ] Phase 8 : Effets et Animations P1 ← PROCHAINE
+- [ ] Phase 9 : Sons + Enrichissement P2
+- [x] Phase 10 : Tests E2E (infrastructure)
 
 ---
 
@@ -447,7 +448,7 @@ tests/unit/components/pwa/InstallButton.test.tsx - 8 tests
 
 ---
 
-## Phase 7 : Page Profil + Historique
+## Phase 7 : Page Profil + Historique (COMPLETE)
 
 ### Objectif
 
@@ -456,66 +457,219 @@ Page utilisateur avec statistiques et historique.
 ### Tasks
 
 ```
-[ ] 7.1 - Page /profile
-    - Stats utilisateur (total questions, accuracy)
-    - Collection badges avec progression
-    - Graphique historique
+[x] 7.1 - Types Profile (types/profile.ts)
+    - UserStats, ModeStats interfaces
+    - SessionSummary, TableProgress types
+    - ProfileData aggregate type
 
-[ ] 7.2 - Historique sessions
-    - Liste sessions passees
-    - Details par session
-    - Filtres (mode, date)
+[x] 7.2 - Storage stats (lib/stats/storage.ts)
+    - getUserStats()
+    - getModeStats()
+    - getSessionHistory()
+    - getTableProgress()
+    - getProfileData()
 
-[ ] 7.3 - API /api/stats
-    - GET: statistiques utilisateur
+[x] 7.3 - API /api/profile
+    - GET: donnees profil completes
     - Aggregation Redis
+
+[x] 7.4 - Feature profile React Query
+    - features/profile/api/profile.ts
+    - features/profile/hooks/useProfile.ts
+    - profileKeys pour cache invalidation
+
+[x] 7.5 - Composants Profile UI
+    - StatsCard: statistiques globales
+    - SessionHistory: sessions recentes
+    - ProgressChart: progression par table
+    - ProfilePage: page complete
+
+[x] 7.6 - Page /profile
+    - Stats utilisateur avec React Query
+    - Collection badges avec progression
+    - Historique sessions
+
+[x] 7.7 - Integration GSAP
+    - types/effects.ts enrichi (types GSAP)
+    - hooks/useGsapEffects.ts (12 effets)
+    - GsapCelebration component
+    - lib/animations/gsap-effects.ts integre
+```
+
+### Fichiers crees
+
+```
+types/profile.ts                           - Types profil
+lib/stats/storage.ts                       - Storage agregation
+app/api/profile/route.ts                   - API profil
+features/profile/api/profile.ts            - Fonctions API
+features/profile/hooks/useProfile.ts       - React Query hooks
+features/profile/components/StatsCard.tsx
+features/profile/components/SessionHistory.tsx
+features/profile/components/ProgressChart.tsx
+features/profile/components/ProfilePage.tsx
+features/profile/index.ts                  - Barrel export
+app/profile/page.tsx                       - Page profil
+hooks/useGsapEffects.ts                    - Hook GSAP
+components/effects/GsapCelebration.tsx     - Composant celebration
 ```
 
 ### Tests TDD
 
 ```
-tests/unit/features/profile/
-tests/e2e/profile.spec.ts
+tests/integration/api.test.ts - 30 tests (profile inclus)
+tests/e2e/profile.spec.ts - 15 tests
+tests/unit/lib/animations/gsap-effects.test.ts - 16 tests
 ```
 
 ---
 
-## Phase 8 : Sons + Badge Icons
+## Phase 8 : Effets et Animations P1 - Motivation
 
 ### Objectif
 
-Feedback audio et icones badges professionnelles.
+Composants P1 pour renforcement positif et feedback utilisateur.
+Ref: docs/EFFECTS_COMPONENTS_ANALYSIS.md, docs/EFFECTS_CHECKLIST.md
 
 ### Tasks
 
 ```
-[ ] 8.1 - Systeme audio
+[ ] 8.1 - Toast Notifications
+    - ToastContainer.tsx + useToast hook
+    - Types: success (🌟), star (✨), crown (👑)
+    - Stack max 3, auto-dismiss 3s
+    - Progress bar animation
+
+[ ] 8.2 - GentleShake (erreur douce)
+    - Wrapper composant avec shake subtil
+    - Amplitude reduite (3px max, 300ms)
+    - Message rose pastel "💭 Presque !"
+    - JAMAIS de rouge vif
+
+[ ] 8.3 - GradientText (titres)
+    - Gradient fairy (rose → violet → bleu)
+    - Gradient unicorn (rainbow)
+    - Animation slide 3s infinite
+
+[ ] 8.4 - AnimatedToggle
+    - Knob avec spring physics
+    - Glow quand active
+    - Toggle son 🔇/🔊
+    - Toggle difficulte 🐣/👑
+
+[ ] 8.5 - Elevation System
+    - Shadows colores (rose/violet)
+    - Dynamic shadows on hover
+    - Hierarchie visuelle cartes
+
+[ ] 8.6 - Screen Reader Annonces
+    - Hook useAnnouncer
+    - Annonces score/progression
+    - aria-live regions
+
+[ ] 8.7 - High Contrast Mode
+    - Detection prefers-contrast
+    - Variables CSS alternees
+    - Contraste AAA (7:1)
+```
+
+### Fichiers a creer
+
+```
+components/effects/Toast/ToastContainer.tsx
+components/effects/Toast/useToast.ts
+components/effects/GentleShake.tsx
+components/effects/GradientText.tsx
+components/effects/AnimatedToggle.tsx
+hooks/useAnnouncer.ts
+styles/high-contrast.css
+```
+
+### Tests TDD
+
+```
+tests/unit/components/effects/Toast.test.tsx
+tests/unit/components/effects/GentleShake.test.tsx
+tests/unit/hooks/useAnnouncer.test.ts
+```
+
+---
+
+## Phase 9 : Sons + Enrichissement P2
+
+### Objectif
+
+Feedback audio et composants P2 polish.
+Ref: docs/EFFECTS_CHECKLIST.md Phase 3
+
+### Tasks
+
+```
+[ ] 9.1 - Systeme audio
     - Howler.js ou Web Audio API
-    - Son correct/incorrect
+    - Son correct (magic-ding.mp3)
+    - Son incorrect (soft-oops.mp3)
+    - Son level-up (level-up.mp3)
     - Toggle mute (persistance)
+    - Volume 50% defaut
     - Respect prefers-reduced-motion
 
-[ ] 8.2 - Badge Icons (remplacer emojis)
-    - Recherche bibliotheques open-source
-    - Lucide / Heroicons / custom SVG
-    - Integration composant BadgeCard
-
-[ ] 8.3 - Hook useSound
+[ ] 9.2 - Hook useSound
     - playSound(type)
     - Chargement lazy
     - Volume control
+    - Son OFF par defaut
+
+[ ] 9.3 - Badge Icons (remplacer emojis)
+    - Lucide / Heroicons / custom SVG
+    - Integration composant BadgeCard
+
+[ ] 9.4 - Skeleton Loaders
+    - Skeletons en forme etoiles/nuages
+    - Card skeleton
+
+[ ] 9.5 - TextReveal
+    - Lettres apparaissent avec etoiles
+    - Introduction niveau
+
+[ ] 9.6 - ScrollReveal
+    - Trophees apparaissent progressivement
+    - Page resultats
+
+[ ] 9.7 - AnimatedCheckbox
+    - Cases deviennent coeurs/etoiles
+    - Mode QCM
+
+[ ] 9.8 - RippleEffect
+    - Boutons secondaires
+    - Ripple paillettes
+```
+
+### Fichiers a creer
+
+```
+hooks/useSound.ts
+public/sounds/magic-ding.mp3
+public/sounds/soft-oops.mp3
+public/sounds/level-up.mp3
+components/effects/Skeleton.tsx
+components/effects/TextReveal.tsx
+components/effects/ScrollReveal.tsx
+components/effects/AnimatedCheckbox.tsx
+components/effects/RippleButton.tsx
 ```
 
 ### Tests TDD
 
 ```
 tests/unit/hooks/useSound.test.ts
-tests/unit/components/badges/BadgeIcon.test.tsx
+tests/unit/components/effects/Skeleton.test.tsx
+tests/unit/components/effects/TextReveal.test.tsx
 ```
 
 ---
 
-## Phase 9 : Tests E2E Complets (INFRASTRUCTURE COMPLETE)
+## Phase 10 : Tests E2E Complets (INFRASTRUCTURE COMPLETE)
 
 ### Objectif
 
@@ -524,19 +678,19 @@ Couverture E2E des parcours critiques.
 ### Tasks
 
 ```
-[x] 7.1 - Setup Playwright
+[x] 10.1 - Setup Playwright
     - Config multi-browser
     - Mobile viewport
     - axe-core accessibility
 
-[~] 7.2 - Tests parcours (à compléter avec features)
+[~] 10.2 - Tests parcours (à compléter avec features)
     - [ ] Login complet
     - [ ] Practice session complete
     - [ ] Challenge session complete
     - [ ] Badge unlock flow
     - [ ] Dark mode toggle
 
-[x] 7.3 - Tests accessibilite
+[x] 10.3 - Tests accessibilite
     - Navigation clavier ✓
     - Screen reader (aria-labels) ✓
     - Contraste couleurs (axe-core) ✓
@@ -640,6 +794,30 @@ Chaque feature est complete quand :
 ---
 
 ## Changelog
+
+### 2025-12-26 (Nuit)
+
+- Phase 7 complete: Profil + Historique
+  - types/profile.ts avec UserStats, SessionSummary, etc.
+  - lib/stats/storage.ts avec aggregation Redis
+  - features/profile/ avec React Query hooks
+  - Composants: StatsCard, SessionHistory, ProgressChart
+  - Page /profile complete
+  - tests/e2e/profile.spec.ts (15 tests)
+- Integration GSAP complete (code mort resolu)
+  - types/effects.ts enrichi (+141 lignes types GSAP)
+  - hooks/useGsapEffects.ts (12 effets avec reduced motion)
+  - components/effects/GsapCelebration.tsx (declaratif)
+  - Barrel exports mis a jour
+- Architecture SRP ISO/IEC conforme
+  - types/index.ts corrige (auth + profile exports)
+  - Divergences justifiees documentees
+- Roadmap mise a jour
+  - Phase 8: Effets P1 (motivation)
+  - Phase 9: Sons + P2 (enrichissement)
+  - Phase 10: Tests E2E
+- 773 tests passent (100%)
+- 4 commits granulaires GSAP pousse
 
 ### 2025-12-26 (Soir)
 
