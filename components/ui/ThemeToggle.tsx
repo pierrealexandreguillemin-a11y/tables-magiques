@@ -77,6 +77,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
     <motion.button
       type="button"
       onClick={toggleTheme}
+      data-testid="theme-toggle"
       className={`
         relative inline-flex items-center justify-center
         w-10 h-10 rounded-full

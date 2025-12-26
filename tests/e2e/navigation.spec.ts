@@ -111,7 +111,12 @@ test.describe('Navigation Souris', () => {
   });
 
   test('clic sur la licorne déclenche animation', async ({ page }) => {
-    const unicorn = page.locator('text=🦄').first();
+    // Attendre que la page soit chargée
+    await page.waitForLoadState('networkidle');
+
+    // Utiliser un sélecteur plus spécifique pour la licorne
+    const unicorn = page.locator('div').filter({ hasText: '🦄' }).first();
+    await expect(unicorn).toBeVisible({ timeout: 5000 });
 
     // Clic sur la licorne
     await unicorn.click();
@@ -131,19 +136,25 @@ test.describe('Navigation Touch (Mobile)', () => {
   });
 
   test('tap sur Mode Pratique', async ({ page }) => {
-    const practiceBtn = page.getByRole('button', { name: /mode pratique/i });
+    // Utiliser le lien parent au lieu du bouton pour le tap mobile
+    const practiceLink = page.getByRole('link', { name: /mode pratique/i });
+    await expect(practiceLink).toBeVisible({ timeout: 5000 });
 
-    await practiceBtn.tap();
+    await practiceLink.tap();
 
-    await expect(practiceBtn).toBeVisible();
+    // Devrait rediriger vers /practice ou montrer le lien
+    await expect(practiceLink).toBeVisible();
   });
 
   test('tap sur Mode Challenge', async ({ page }) => {
-    const challengeBtn = page.getByRole('button', { name: /mode challenge/i });
+    // Utiliser le lien parent au lieu du bouton pour le tap mobile
+    const challengeLink = page.getByRole('link', { name: /mode challenge/i });
+    await expect(challengeLink).toBeVisible({ timeout: 5000 });
 
-    await challengeBtn.tap();
+    await challengeLink.tap();
 
-    await expect(challengeBtn).toBeVisible();
+    // Devrait rediriger vers /challenge ou montrer le lien
+    await expect(challengeLink).toBeVisible();
   });
 
   test('scroll fonctionne', async ({ page }) => {
