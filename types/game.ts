@@ -69,12 +69,37 @@ export interface ChallengeResult {
   totalScore: number;
 }
 
+/**
+ * Return type du hook useChallenge
+ */
+export interface UseChallengeReturn {
+  // État
+  state: ChallengeState;
+  userAnswer: string;
+  result: ChallengeResult | null;
+
+  // Actions
+  start: () => void;
+  answerQuestion: () => void;
+  appendDigit: (digit: number) => void;
+  deleteDigit: () => void;
+  replay: () => void;
+
+  // Dérivés
+  canSubmit: boolean;
+  isPlaying: boolean;
+  isReady: boolean;
+  isGameOver: boolean;
+}
+
 // =============================================================================
 // PRACTICE MODE - ÉTATS
 // =============================================================================
 
+export type PracticePhase = 'selection' | 'playing' | 'completed';
+
 export interface PracticeState {
-  phase: 'selection' | 'playing' | 'completed';
+  phase: PracticePhase;
   selectedTable: number | null;
   questions: Question[];
   currentIndex: number;
@@ -83,6 +108,31 @@ export interface PracticeState {
   streak: number;
   isCorrect: boolean | null;
   showFeedback: boolean;
+}
+
+export interface PracticeResult {
+  score: number;
+  total: number;
+  accuracy: number;
+  streak: number;
+  isPerfect: boolean;
+  bonus: number;
+}
+
+export interface UsePracticeReturn {
+  state: PracticeState;
+  currentQuestion: Question | null;
+  result: PracticeResult | null;
+  startGame: (table: number | null) => void;
+  handleNumberClick: (num: number) => void;
+  handleClear: () => void;
+  handleSubmit: () => void;
+  handleBack: () => void;
+  canSubmit: boolean;
+  isPlaying: boolean;
+  isSelection: boolean;
+  isCompleted: boolean;
+  progress: number;
 }
 
 // =============================================================================
@@ -97,6 +147,34 @@ export interface Score {
   total: number;
   timeRemaining?: number; // Pour le mode challenge
   timestamp: string; // ISO 8601
+}
+
+// =============================================================================
+// SCORE API RESPONSES
+// =============================================================================
+
+export interface SaveScoreInput {
+  mode: GameMode;
+  table?: number;
+  correct: number;
+  total: number;
+  timeRemaining?: number;
+}
+
+export interface SaveScoreResponse {
+  success: true;
+  score: Score;
+}
+
+export interface ScoreStats {
+  totalGames: number;
+  averageAccuracy: number;
+  bestStreak: number;
+}
+
+export interface GetScoresResponse {
+  scores: Score[];
+  stats: ScoreStats;
 }
 
 // =============================================================================

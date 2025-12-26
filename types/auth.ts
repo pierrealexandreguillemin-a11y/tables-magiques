@@ -124,6 +124,27 @@ export interface LogoutResponse {
   message: string;
 }
 
+/**
+ * Réponse GET /api/auth/me - Succès
+ */
+export interface MeSuccessResponse {
+  authenticated: true;
+  user: SafeUser;
+}
+
+/**
+ * Réponse GET /api/auth/me - Non authentifié
+ */
+export interface MeErrorResponse {
+  authenticated: false;
+  user: null;
+}
+
+/**
+ * Réponse GET /api/auth/me
+ */
+export type MeResponse = MeSuccessResponse | MeErrorResponse;
+
 // =============================================================================
 // CONSTANTES
 // =============================================================================

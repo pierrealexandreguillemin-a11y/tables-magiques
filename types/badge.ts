@@ -61,6 +61,45 @@ export interface BadgeUnlockResult {
 }
 
 // =============================================================================
+// TYPES API RESPONSES (SRP - Source unique)
+// =============================================================================
+
+/**
+ * Badge avec statut de gain pour l'API
+ */
+export interface BadgeWithStatus extends BadgeDefinition {
+  earned: boolean;
+  earnedAt: string | null;
+}
+
+/**
+ * Réponse GET /api/badges
+ */
+export interface GetBadgesResponse {
+  badges: BadgeWithStatus[];
+  earnedCount: number;
+  totalCount: number;
+}
+
+/**
+ * Badge nouvellement gagné
+ */
+export interface NewBadge {
+  id: string;
+  emoji: string;
+  name: string;
+  description: string;
+}
+
+/**
+ * Réponse POST /api/badges (check)
+ */
+export interface CheckBadgesResponse {
+  newBadges: NewBadge[];
+  message: string;
+}
+
+// =============================================================================
 // RE-EXPORTS CONFIG (backwards compatibility)
 // =============================================================================
 
