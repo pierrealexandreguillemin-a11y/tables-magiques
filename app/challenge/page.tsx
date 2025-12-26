@@ -15,6 +15,7 @@ import { useGSAP } from '@gsap/react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import {
   useChallenge,
   QuestionDisplay,
@@ -63,13 +64,16 @@ export default function ChallengePage() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen flex items-center justify-center overflow-hidden relative"
+      className="min-h-screen flex items-center justify-center overflow-hidden relative bg-gradient-to-br from-pink-400 via-red-400 to-blue-400 dark:from-slate-900 dark:via-red-900 dark:to-indigo-900"
       style={{
-        background:
-          'linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%)',
         backgroundSize: '400% 400%',
       }}
     >
+      {/* Theme Toggle - Position fixe */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+
       <div className="w-full max-w-4xl mx-auto px-4 py-8 relative z-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">

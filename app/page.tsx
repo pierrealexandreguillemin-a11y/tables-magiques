@@ -5,6 +5,7 @@ import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 // Register GSAP plugins for React (required for proper cleanup)
 gsap.registerPlugin(useGSAP);
@@ -134,13 +135,16 @@ export default function Home() {
   return (
     <main
       ref={containerRef}
-      className="min-h-screen flex items-center justify-center overflow-hidden relative"
+      className="min-h-screen flex items-center justify-center overflow-hidden relative bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-500 dark:from-indigo-900 dark:via-purple-900 dark:to-slate-900"
       style={{
-        background:
-          'linear-gradient(135deg, #ff69b4 0%, #ba55d3 20%, #9370db 40%, #667eea 60%, #764ba2 80%, #ff69b4 100%)',
         backgroundSize: '400% 400%',
       }}
     >
+      {/* Theme Toggle - Position fixe top right */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+
       {/* Particules flottantes */}
       <AnimatePresence>
         {particles.map((p) => (

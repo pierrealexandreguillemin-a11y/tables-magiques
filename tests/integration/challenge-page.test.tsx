@@ -19,21 +19,45 @@ vi.mock('next/link', () => ({
   }) => <a href={href}>{children}</a>,
 }));
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      ...props
-    }: {
-      children?: React.ReactNode;
-      [key: string]: unknown;
-    }) => <div {...props}>{children}</div>,
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
-  ),
-}));
+// Mock framer-motion - filtre les props motion pour éviter warnings React
+vi.mock('framer-motion', () => {
+  const filterMotionProps = (props: Record<string, unknown>) => {
+    const motionProps = [
+      'whileHover',
+      'whileTap',
+      'animate',
+      'initial',
+      'exit',
+      'transition',
+      'variants',
+    ];
+    return Object.fromEntries(
+      Object.entries(props).filter(([key]) => !motionProps.includes(key))
+    );
+  };
+
+  return {
+    motion: {
+      div: ({
+        children,
+        ...props
+      }: {
+        children?: React.ReactNode;
+        [key: string]: unknown;
+      }) => <div {...filterMotionProps(props)}>{children}</div>,
+      button: ({
+        children,
+        ...props
+      }: {
+        children?: React.ReactNode;
+        [key: string]: unknown;
+      }) => <button {...filterMotionProps(props)}>{children}</button>,
+    },
+    AnimatePresence: ({ children }: { children: React.ReactNode }) => (
+      <>{children}</>
+    ),
+  };
+});
 
 // Mock GSAP
 vi.mock('gsap', () => ({
@@ -45,6 +69,17 @@ vi.mock('gsap', () => ({
 
 vi.mock('@gsap/react', () => ({
   useGSAP: vi.fn(),
+}));
+
+// Mock useTheme for ThemeToggle
+vi.mock('@/hooks/useTheme', () => ({
+  useTheme: () => ({
+    theme: 'light',
+    isDark: false,
+    systemPreference: 'light',
+    setTheme: vi.fn(),
+    toggleTheme: vi.fn(),
+  }),
 }));
 
 import ChallengePage from '@/app/challenge/page';
