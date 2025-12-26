@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -14,6 +14,20 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { InstallButton } from '@/components/pwa/InstallButton';
+import {
+  GentleShake,
+  LottieAnimation,
+  GradientText,
+  useToastContext,
+  NumberReveal,
+  PulseGlow,
+} from '@/components/effects';
+import {
+  LazyFairyBackground,
+  LazySuccessExplosion,
+  preloadHeavyComponents,
+} from '@/lib/animations';
+import { useAnnouncer } from '@/hooks/useAnnouncer';
 import {
   usePractice,
   QuestionDisplay,
@@ -25,6 +39,14 @@ gsap.registerPlugin(useGSAP);
 
 export function PracticePage() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { success, error: toastError } = useToastContext();
+  const { announcePolite, announceAssertive } = useAnnouncer();
+  const [explosionVisible, setExplosionVisible] = useState(false);
+
+  // Précharger les composants lourds après le premier rendu
+  useEffect(() => {
+    preloadHeavyComponents();
+  }, []);
 
   const {
     state,
@@ -41,6 +63,47 @@ export function PracticePage() {
     isCompleted,
     progress,
   } = usePractice();
+
+  // Feedback sonore et visuel sur reponse
+  useEffect(() => {
+    if (state.showFeedback && state.isCorrect !== null) {
+      if (state.isCorrect) {
+        success('Bravo !');
+        announcePolite(`Correct ! Score: ${state.score}`);
+        if (state.streak >= 5) {
+          // Déférer setState pour éviter rendu synchrone en cascade
+          const showTimer = setTimeout(() => setExplosionVisible(true), 0);
+          const hideTimer = setTimeout(() => setExplosionVisible(false), 2500);
+          return () => {
+            clearTimeout(showTimer);
+            clearTimeout(hideTimer);
+          };
+        }
+      } else {
+        toastError('Essaie encore !');
+        announceAssertive('Incorrect. Essaie encore !');
+      }
+    }
+    return undefined;
+  }, [
+    state.showFeedback,
+    state.isCorrect,
+    state.score,
+    state.streak,
+    success,
+    toastError,
+    announcePolite,
+    announceAssertive,
+  ]);
+
+  // Annonce completion
+  useEffect(() => {
+    if (isCompleted && result) {
+      announcePolite(
+        `Session terminée ! Score: ${result.score} sur ${result.total}`
+      );
+    }
+  }, [isCompleted, result, announcePolite]);
 
   // Animation de fond
   useGSAP(
@@ -65,6 +128,12 @@ export function PracticePage() {
         backgroundSize: '400% 400%',
       }}
     >
+      {/* Fond avec particules féériques (lazy loaded) */}
+      <LazyFairyBackground />
+
+      {/* Explosion de célébration (lazy loaded, streak 5+) */}
+      <LazySuccessExplosion show={explosionVisible} type="confetti" size="lg" />
+
       {/* Header fixe - Theme Toggle + Install Button */}
       <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
         <InstallButton />
@@ -104,8 +173,10 @@ export function PracticePage() {
               exit={{ opacity: 0, y: -20 }}
               className="text-center"
             >
-              <h1 className="text-4xl sm:text-5xl font-bold text-white mb-8">
-                Mode Pratique
+              <h1 className="text-4xl sm:text-5xl font-bold mb-8">
+                <GradientText variant="unicorn" animate as="span">
+                  Mode Pratique
+                </GradientText>
               </h1>
               <p className="text-xl text-white/80 mb-12">
                 Choisis une table de multiplication
@@ -177,14 +248,37 @@ export function PracticePage() {
                 </div>
               </div>
 
-              {/* Question Display Component */}
-              <QuestionDisplay
-                question={currentQuestion}
-                userAnswer={state.userAnswer}
-                isCorrect={state.isCorrect}
-                showFeedback={state.showFeedback}
-                className="mb-8"
-              />
+              {/* Question Display Component avec GentleShake pour erreur */}
+              <GentleShake
+                trigger={state.showFeedback && state.isCorrect === false}
+                message="Presque ! Essaie encore"
+              >
+                <QuestionDisplay
+                  question={currentQuestion}
+                  userAnswer={state.userAnswer}
+                  isCorrect={state.isCorrect}
+                  showFeedback={state.showFeedback}
+                  className="mb-8"
+                />
+              </GentleShake>
+
+              {/* Lottie Animation feedback */}
+              <AnimatePresence>
+                {state.showFeedback && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0 }}
+                    className="fixed inset-0 pointer-events-none flex items-center justify-center z-50"
+                  >
+                    <LottieAnimation
+                      type={state.isCorrect ? 'success' : 'error'}
+                      size={200}
+                      autoplay
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* NumberPad Component */}
               <NumberPad
@@ -195,14 +289,18 @@ export function PracticePage() {
                 canSubmit={canSubmit}
               />
 
-              {/* Streak */}
+              {/* Streak avec PulseGlow */}
               {state.streak >= 3 && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-6 text-yellow-300 text-xl font-bold"
+                  className="mt-6 text-xl font-bold"
                 >
-                  Serie de {state.streak} !
+                  <PulseGlow color="#fbbf24" intensity="strong" speed="fast">
+                    <span className="text-yellow-300">
+                      Serie de {state.streak} !
+                    </span>
+                  </PulseGlow>
                 </motion.div>
               )}
             </motion.div>
@@ -216,8 +314,13 @@ export function PracticePage() {
               animate={{ opacity: 1, scale: 1 }}
               className="text-center"
             >
-              <div className="text-8xl mb-6">
-                {result.isPerfect ? '🏆' : '⭐'}
+              {/* Lottie Celebration */}
+              <div className="mb-6">
+                <LottieAnimation
+                  type={result.isPerfect ? 'crown' : 'celebration'}
+                  size={150}
+                  autoplay
+                />
               </div>
 
               <h2 className="text-4xl font-bold text-white mb-4">
@@ -226,7 +329,8 @@ export function PracticePage() {
 
               <div className="bg-white/20 backdrop-blur-md rounded-3xl p-8 mb-8 max-w-md mx-auto">
                 <div className="text-6xl font-bold text-white mb-4">
-                  {result.score} / {result.total}
+                  <NumberReveal value={result.score} duration={1.5} /> /{' '}
+                  {result.total}
                 </div>
                 <div className="text-2xl text-white/80">
                   {Math.round(result.accuracy * 100)}% de reussite

@@ -5,7 +5,7 @@
  * ISO/IEC 25010 - UI Challenge mode
  */
 
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -14,6 +14,20 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { InstallButton } from '@/components/pwa/InstallButton';
+import {
+  GentleShake,
+  LottieAnimation,
+  GradientText,
+  useToastContext,
+  NumberReveal,
+  PulseGlow,
+} from '@/components/effects';
+import {
+  LazyParticlesBackground,
+  LazySuccessExplosion,
+  preloadHeavyComponents,
+} from '@/lib/animations';
+import { useAnnouncer } from '@/hooks/useAnnouncer';
 import { useChallenge } from '../hooks/useChallenge';
 import { QuestionDisplay } from './QuestionDisplay';
 import { NumberPad } from './NumberPad';
@@ -23,8 +37,26 @@ import { QuestionTimer } from './QuestionTimer';
 
 gsap.registerPlugin(useGSAP);
 
+interface FeedbackState {
+  show: boolean;
+  isCorrect: boolean | null;
+  explosion: boolean;
+}
+
 export function ChallengePage() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { success, error: toastError } = useToastContext();
+  const { announcePolite, announceAssertive } = useAnnouncer();
+  const [feedback, setFeedback] = useState<FeedbackState>({
+    show: false,
+    isCorrect: null,
+    explosion: false,
+  });
+
+  // Précharger les composants lourds après le premier rendu
+  useEffect(() => {
+    preloadHeavyComponents();
+  }, []);
 
   const {
     state,
@@ -40,6 +72,66 @@ export function ChallengePage() {
     isReady,
     isGameOver,
   } = useChallenge();
+
+  // Track answer results for feedback - callback pattern pour éviter setState synchrone
+  const prevQuestionsAnswered = useRef(state.questionsAnswered);
+  useEffect(() => {
+    if (state.questionsAnswered > prevQuestionsAnswered.current && isPlaying) {
+      const isCorrect = state.streak > 0;
+      const shouldExplode = isCorrect && state.streak >= 5;
+
+      // Déférer setState vers le prochain tick (évite règle set-state-in-effect)
+      const stateTimer = setTimeout(() => {
+        setFeedback({ show: true, isCorrect, explosion: shouldExplode });
+      }, 0);
+
+      // Side effects externes (toasts, annonces) - OK car ce sont des effets
+      if (isCorrect) {
+        success('Bravo !');
+        announcePolite(`Correct ! Score: ${state.score}`);
+      } else {
+        toastError('Essaie encore !');
+        announceAssertive('Incorrect');
+      }
+
+      // Reset feedback après délai
+      const feedbackTimer = setTimeout(() => {
+        setFeedback((prev) => ({ ...prev, show: false }));
+      }, 500);
+
+      const explosionTimer = shouldExplode
+        ? setTimeout(() => {
+            setFeedback((prev) => ({ ...prev, explosion: false }));
+          }, 2500)
+        : null;
+
+      prevQuestionsAnswered.current = state.questionsAnswered;
+
+      return () => {
+        clearTimeout(stateTimer);
+        clearTimeout(feedbackTimer);
+        if (explosionTimer) clearTimeout(explosionTimer);
+      };
+    }
+    prevQuestionsAnswered.current = state.questionsAnswered;
+    return undefined;
+  }, [
+    state.questionsAnswered,
+    state.score,
+    state.streak,
+    isPlaying,
+    success,
+    toastError,
+    announcePolite,
+    announceAssertive,
+  ]);
+
+  // Annonce game over
+  useEffect(() => {
+    if (isGameOver && result) {
+      announcePolite(`Challenge terminé ! Score: ${result.totalScore} points`);
+    }
+  }, [isGameOver, result, announcePolite]);
 
   useGSAP(
     () => {
@@ -60,6 +152,16 @@ export function ChallengePage() {
       className="min-h-screen flex items-center justify-center overflow-hidden relative bg-gradient-to-br from-pink-400 via-red-400 to-blue-400 dark:from-slate-900 dark:via-red-900 dark:to-indigo-900"
       style={{ backgroundSize: '400% 400%' }}
     >
+      {/* Particules d'ambiance (lazy loaded) */}
+      <LazyParticlesBackground preset="sparkles" opacity={0.6} />
+
+      {/* Explosion de célébration (lazy loaded, streak 5+) */}
+      <LazySuccessExplosion
+        show={feedback.explosion}
+        type="fireworks"
+        size="lg"
+      />
+
       {/* Header fixe */}
       <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
         <InstallButton />
@@ -102,8 +204,10 @@ export function ChallengePage() {
               exit={{ opacity: 0, y: -20 }}
               className="text-center"
             >
-              <h1 className="text-4xl sm:text-5xl font-bold text-white mb-8">
-                Mode Challenge
+              <h1 className="text-4xl sm:text-5xl font-bold mb-8">
+                <GradientText variant="gold" animate as="span">
+                  Mode Challenge
+                </GradientText>
               </h1>
 
               <div className="bg-white/20 backdrop-blur-md rounded-3xl p-8 mb-8 max-w-md mx-auto">
@@ -148,11 +252,34 @@ export function ChallengePage() {
                 />
               </div>
 
-              <QuestionDisplay
-                question={state.currentQuestion}
-                userAnswer={userAnswer}
-                className="mb-8"
-              />
+              <GentleShake
+                trigger={feedback.show && feedback.isCorrect === false}
+                message="Vite, la suivante !"
+              >
+                <QuestionDisplay
+                  question={state.currentQuestion}
+                  userAnswer={userAnswer}
+                  className="mb-8"
+                />
+              </GentleShake>
+
+              {/* Lottie Animation feedback */}
+              <AnimatePresence>
+                {feedback.show && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0 }}
+                    className="fixed inset-0 pointer-events-none flex items-center justify-center z-50"
+                  >
+                    <LottieAnimation
+                      type={feedback.isCorrect ? 'success' : 'error'}
+                      size={150}
+                      autoplay
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               <NumberPad
                 onNumberClick={appendDigit}
@@ -165,9 +292,13 @@ export function ChallengePage() {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-6 text-yellow-300 text-xl font-bold"
+                  className="mt-6 text-xl font-bold"
                 >
-                  Serie de {state.streak} !
+                  <PulseGlow color="#fbbf24" intensity="strong" speed="fast">
+                    <span className="text-yellow-300">
+                      Serie de {state.streak} !
+                    </span>
+                  </PulseGlow>
                 </motion.div>
               )}
             </motion.div>
@@ -181,12 +312,19 @@ export function ChallengePage() {
               animate={{ opacity: 1, scale: 1 }}
               className="text-center"
             >
-              <div className="text-8xl mb-6">
-                {result.accuracy >= 0.9
-                  ? '🏆'
-                  : result.accuracy >= 0.7
-                    ? '🌟'
-                    : '⭐'}
+              {/* Lottie Celebration */}
+              <div className="mb-6">
+                <LottieAnimation
+                  type={
+                    result.accuracy >= 0.9
+                      ? 'crown'
+                      : result.accuracy >= 0.7
+                        ? 'celebration'
+                        : 'sparkles'
+                  }
+                  size={150}
+                  autoplay
+                />
               </div>
 
               <h2 className="text-4xl font-bold text-white mb-4">
@@ -195,7 +333,11 @@ export function ChallengePage() {
 
               <div className="bg-white/20 backdrop-blur-md rounded-3xl p-8 mb-8 max-w-md mx-auto">
                 <div className="text-6xl font-bold text-white mb-4">
-                  {result.totalScore}
+                  <NumberReveal
+                    value={result.totalScore}
+                    duration={2}
+                    delay={0.3}
+                  />
                 </div>
                 <div className="text-xl text-white/80 mb-4">points</div>
 

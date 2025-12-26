@@ -1,12 +1,13 @@
 /**
  * Providers - Tables Magiques
- * ISO/IEC 25010 - React Query + Context providers
+ * ISO/IEC 25010 - React Query + Context providers + Effects
  */
 
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
+import { ToastProvider } from '@/components/effects';
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -30,6 +31,8 @@ export function Providers({ children }: ProvidersProps) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <ToastProvider>{children}</ToastProvider>
+    </QueryClientProvider>
   );
 }

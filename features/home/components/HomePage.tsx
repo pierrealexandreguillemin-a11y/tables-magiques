@@ -10,9 +10,16 @@ import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { InstallButton } from '@/components/pwa/InstallButton';
+import {
+  GradientText,
+  KawaiiMascot,
+  FairyBackground,
+  PulseGlow,
+  StaggerList,
+  MagneticButton,
+} from '@/components/effects';
 
 gsap.registerPlugin(useGSAP);
 
@@ -127,6 +134,9 @@ export function HomePage() {
       className="min-h-screen flex items-center justify-center overflow-hidden relative bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-500 dark:from-indigo-900 dark:via-purple-900 dark:to-slate-900"
       style={{ backgroundSize: '400% 400%' }}
     >
+      {/* Fond avec particules féériques */}
+      <FairyBackground />
+
       {/* Header fixe */}
       <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
         <InstallButton />
@@ -223,16 +233,18 @@ export function HomePage() {
           🦄
         </motion.div>
 
-        {/* Titre principal */}
+        {/* Titre principal avec GradientText */}
         <h1
           ref={titleRef}
-          className="text-4xl sm:text-6xl md:text-7xl font-bold text-white mb-4"
+          className="text-4xl sm:text-6xl md:text-7xl font-bold mb-4"
           style={{
             textShadow:
               '0 0 40px rgba(255,255,255,0.6), 0 4px 20px rgba(0,0,0,0.3)',
           }}
         >
-          ✨ Tables Magiques ✨
+          <GradientText variant="rainbow" animate as="span">
+            Tables Magiques
+          </GradientText>
         </h1>
 
         {/* Sous-titre */}
@@ -253,42 +265,36 @@ export function HomePage() {
           transition={{ delay: 1.2, duration: 0.6, type: 'spring' }}
         >
           <Link href="/practice">
-            <Button
-              size="lg"
-              className="text-xl px-8 py-6 bg-white text-purple-600 hover:bg-white/90 rounded-full font-bold shadow-2xl transform transition-all hover:scale-110 hover:shadow-purple-500/50"
-            >
-              🎮 Mode Pratique
-            </Button>
+            <PulseGlow color="#a855f7" intensity="subtle">
+              <MagneticButton className="text-xl px-8 py-6 bg-white text-purple-600 hover:bg-white/90 rounded-full font-bold shadow-2xl">
+                🎮 Mode Pratique
+              </MagneticButton>
+            </PulseGlow>
           </Link>
           <Link href="/challenge">
-            <Button
-              size="lg"
-              className="text-xl px-8 py-6 bg-gradient-to-r from-yellow-400 to-orange-500 text-white hover:from-yellow-500 hover:to-orange-600 rounded-full font-bold shadow-2xl transform transition-all hover:scale-110 hover:shadow-orange-500/50"
-            >
-              🔥 Mode Challenge
-            </Button>
+            <PulseGlow color="#f97316" intensity="subtle">
+              <MagneticButton className="text-xl px-8 py-6 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full font-bold shadow-2xl">
+                🔥 Mode Challenge
+              </MagneticButton>
+            </PulseGlow>
           </Link>
         </motion.div>
 
-        {/* Stats de deploiement */}
-        <motion.div
+        {/* Stats de deploiement avec StaggerList */}
+        <StaggerList
+          items={DEPLOY_STATS.map((stat, i) => ({ ...stat, id: i }))}
+          keyExtractor={(item) => `stat-${item.id}`}
           className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.5, staggerChildren: 0.15 }}
-        >
-          {DEPLOY_STATS.map((stat, i) => (
+          staggerDelay={0.15}
+          direction="up"
+          renderItem={(stat) => (
             <motion.div
-              key={i}
               className="bg-white/15 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-white/25 cursor-pointer"
               whileHover={{
                 scale: 1.08,
                 backgroundColor: 'rgba(255,255,255,0.25)',
                 y: -5,
               }}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.5 + i * 0.15 }}
             >
               <div className="text-3xl sm:text-4xl mb-2">{stat.emoji}</div>
               <div className="text-xs sm:text-sm text-white/70">
@@ -298,17 +304,27 @@ export function HomePage() {
                 {stat.value}
               </div>
             </motion.div>
-          ))}
+          )}
+        />
+
+        {/* Mascotte Kawaii */}
+        <motion.div
+          className="mt-8 flex justify-center"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 2, type: 'spring', stiffness: 200 }}
+        >
+          <KawaiiMascot character="planet" mood="blissful" size={100} />
         </motion.div>
 
         {/* Message PWA */}
         <motion.p
-          className="mt-8 text-white/80 text-lg"
+          className="mt-4 text-white/80 text-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2.5 }}
         >
-          PWA Moderne - Prete pour tablette ! 📱
+          PWA Moderne - Prete pour tablette !
         </motion.p>
       </div>
 
