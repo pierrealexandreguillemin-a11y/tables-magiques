@@ -12,3 +12,8 @@ export type { UseInstallPromptReturn } from './useInstallPrompt';
 export { useGsapEffects } from './useGsapEffects';
 export { useToast } from './useToast';
 export { useAnnouncer, cleanupLiveRegions } from './useAnnouncer';
+export {
+  useAnimationVisibility,
+  useAnimationOnce,
+  useAnimationPause,
+} from './useAnimationVisibility';

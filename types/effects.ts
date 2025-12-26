@@ -406,3 +406,78 @@ export interface UseAnnouncerResult {
   /** Annonce avec politesse custom */
   announce: (message: string, politeness?: AnnouncerPoliteness) => void;
 }
+
+// ============================================================================
+// LOTTIE ANIMATION - Types
+// ============================================================================
+
+/**
+ * Type d'animation Lottie disponible
+ */
+export type LottieAnimationType =
+  | 'success'
+  | 'error'
+  | 'loading'
+  | 'celebration'
+  | 'streak'
+  | 'crown'
+  | 'sparkles';
+
+/**
+ * Props du composant LottieAnimation
+ */
+export interface LottieAnimationProps {
+  /** Type d'animation */
+  type: LottieAnimationType;
+  /** Lecture automatique */
+  autoplay?: boolean;
+  /** Boucle infinie */
+  loop?: boolean;
+  /** Taille en pixels */
+  size?: number;
+  /** Callback fin animation */
+  onComplete?: () => void;
+  /** Classes additionnelles */
+  className?: string;
+}
+
+// ============================================================================
+// KAWAII MASCOT - Types
+// ============================================================================
+
+/**
+ * Type de personnage kawaii
+ */
+export type KawaiiCharacter =
+  | 'planet'
+  | 'cat'
+  | 'ghost'
+  | 'iceCream'
+  | 'backpack';
+
+/**
+ * Humeur du personnage kawaii
+ */
+export type KawaiiMood =
+  | 'happy'
+  | 'sad'
+  | 'blissful'
+  | 'lovestruck'
+  | 'excited'
+  | 'ko';
+
+/**
+ * Props du composant KawaiiMascot
+ */
+export interface KawaiiMascotProps {
+  /** Personnage a afficher */
+  character?: KawaiiCharacter;
+  /** Humeur du personnage */
+  mood?: KawaiiMood;
+  /** Taille en pixels */
+  size?: number;
+  /** Couleur principale */
+  color?: string;
+  /** Classes additionnelles */
+  className?: string;
+}

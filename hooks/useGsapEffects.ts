@@ -4,13 +4,13 @@
  * Hook useGsapEffects - Integration GSAP pour React
  * ISO/IEC 25010 - Module reutilisable, performances visuelles optimisees
  *
- * Expose les 12 effets GSAP de lib/animations/gsap-effects.ts
+ * Expose les effets GSAP de lib/animations/gsap/effects.ts
  * avec support reduced motion et cleanup automatique.
  */
 
 import { useCallback, useMemo } from 'react';
 import { useReducedMotion } from './useReducedMotion';
-import * as gsapEffects from '@/lib/animations/gsap-effects';
+import * as gsapEffects from '@/lib/animations/gsap/effects';
 import type {
   UseGsapEffectsResult,
   GsapConfettiConfig,
@@ -45,7 +45,7 @@ export function useGsapEffects(): UseGsapEffectsResult {
   const confettiExplosion = useCallback(
     (container: HTMLElement, config?: GsapConfettiConfig) => {
       if (!shouldAnimate) return;
-      gsapEffects.confettiExplosion(container, config?.count ?? 50);
+      gsapEffects.confettiExplosion(container, { count: config?.count ?? 50 });
     },
     [shouldAnimate]
   );
@@ -136,7 +136,10 @@ export function useGsapEffects(): UseGsapEffectsResult {
   const glowPulse = useCallback(
     (element: HTMLElement, config?: GsapGlowConfig): GsapCleanupFunction => {
       if (!shouldAnimate) return () => {};
-      const tween = gsapEffects.glowPulse(element, config?.color ?? '#ff69b4');
+      const tween = gsapEffects.glowPulse(element, {
+        color: config?.color ?? '#ff69b4',
+        intensity: config?.intensity,
+      });
       return () => tween.kill();
     },
     [shouldAnimate]
@@ -149,7 +152,11 @@ export function useGsapEffects(): UseGsapEffectsResult {
         element.textContent = config.to.toString();
         return;
       }
-      gsapEffects.animateScore(element, config.from, config.to);
+      gsapEffects.animateScore(element, {
+        from: config.from,
+        to: config.to,
+        duration: config.duration,
+      });
     },
     [shouldAnimate]
   );

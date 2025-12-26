@@ -47,9 +47,11 @@ export function useToast(): UseToastResult {
 
   // Nettoyer les timers au demontage
   useEffect(() => {
+    // Capturer la référence pour le cleanup
+    const timers = timersRef.current;
     return () => {
-      timersRef.current.forEach((timer) => clearTimeout(timer));
-      timersRef.current.clear();
+      timers.forEach((timer) => clearTimeout(timer));
+      timers.clear();
     };
   }, []);
 
