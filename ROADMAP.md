@@ -9,9 +9,12 @@ Plan de developpement structure selon ISO/IEC 25010.
 - [x] Phase 2 : Mode Practice
 - [x] Phase 3 : Mode Challenge
 - [x] Phase 4 : Badges
+- [x] Phase 4.5 : React Query + Architecture ISO (2025-12-26)
 - [ ] Phase 5 : Dark Mode ← PROCHAINE
 - [ ] Phase 6 : PWA Complete
-- [x] Phase 7 : Tests E2E (infrastructure)
+- [ ] Phase 7 : Page Profil + Historique
+- [ ] Phase 8 : Sons + Badge Icons
+- [x] Phase 9 : Tests E2E (infrastructure)
 
 ---
 
@@ -289,6 +292,53 @@ tests/unit/components/badges/BadgeUnlockNotification.test.tsx - 10 tests
 
 ---
 
+## Phase 4.5 : React Query + Architecture ISO (COMPLETE)
+
+### Objectif
+
+Integration React Query et conformite ISO/IEC 25010.
+
+### Tasks
+
+```
+[x] 4.5.1 - React Query setup
+    - @tanstack/react-query installe
+    - QueryClientProvider dans app/providers.tsx
+    - Utilities de test (renderQueryHook)
+
+[x] 4.5.2 - Feature Auth avec React Query
+    - features/auth/api/auth.ts (fetchCurrentUser, loginUser, etc.)
+    - features/auth/hooks/useAuth.ts (useQuery + useMutation)
+
+[x] 4.5.3 - Feature Badges avec React Query
+    - features/badges/api/badges.ts (fetchBadges, checkBadges)
+    - features/badges/hooks/useBadges.ts (useQuery + useMutation)
+
+[x] 4.5.4 - Separation SRP types/config
+    - Types dans types/badge.ts
+    - Config dans config/badges.ts
+
+[x] 4.5.5 - Centralisation Zod schemas (DRY)
+    - lib/validation/schemas.ts
+    - z.infer<> pour types derives
+
+[x] 4.5.6 - Tests storage Redis
+    - tests/unit/lib/badges/storage.test.ts (15 tests)
+```
+
+### Tests TDD
+
+```
+tests/unit/features/auth/api/auth.test.ts - 8 tests
+tests/unit/features/auth/hooks/useAuth.test.tsx - 12 tests
+tests/unit/features/badges/api/badges.test.ts - 8 tests
+tests/unit/features/badges/hooks/useBadges.test.tsx - 14 tests
+tests/unit/app/providers.test.tsx - 4 tests
+tests/unit/lib/badges/storage.test.ts - 15 tests
+```
+
+---
+
 ## Phase 5 : Dark Mode
 
 ### Objectif
@@ -363,7 +413,75 @@ Lighthouse PWA audit > 90
 
 ---
 
-## Phase 7 : Tests E2E Complets (INFRASTRUCTURE COMPLETE)
+## Phase 7 : Page Profil + Historique
+
+### Objectif
+
+Page utilisateur avec statistiques et historique.
+
+### Tasks
+
+```
+[ ] 7.1 - Page /profile
+    - Stats utilisateur (total questions, accuracy)
+    - Collection badges avec progression
+    - Graphique historique
+
+[ ] 7.2 - Historique sessions
+    - Liste sessions passees
+    - Details par session
+    - Filtres (mode, date)
+
+[ ] 7.3 - API /api/stats
+    - GET: statistiques utilisateur
+    - Aggregation Redis
+```
+
+### Tests TDD
+
+```
+tests/unit/features/profile/
+tests/e2e/profile.spec.ts
+```
+
+---
+
+## Phase 8 : Sons + Badge Icons
+
+### Objectif
+
+Feedback audio et icones badges professionnelles.
+
+### Tasks
+
+```
+[ ] 8.1 - Systeme audio
+    - Howler.js ou Web Audio API
+    - Son correct/incorrect
+    - Toggle mute (persistance)
+    - Respect prefers-reduced-motion
+
+[ ] 8.2 - Badge Icons (remplacer emojis)
+    - Recherche bibliotheques open-source
+    - Lucide / Heroicons / custom SVG
+    - Integration composant BadgeCard
+
+[ ] 8.3 - Hook useSound
+    - playSound(type)
+    - Chargement lazy
+    - Volume control
+```
+
+### Tests TDD
+
+```
+tests/unit/hooks/useSound.test.ts
+tests/unit/components/badges/BadgeIcon.test.tsx
+```
+
+---
+
+## Phase 9 : Tests E2E Complets (INFRASTRUCTURE COMPLETE)
 
 ### Objectif
 
@@ -415,6 +533,63 @@ Couverture E2E des parcours critiques.
 
 ---
 
+## Qualite (P2) - Continu
+
+### Tasks
+
+```
+[ ] Q.1 - E2E CI/CD
+    - Activer Playwright sur Vercel
+    - Tests contre Upstash Redis prod
+    - GitHub Actions workflow
+
+[ ] Q.2 - Coverage 90%+
+    - Analyse zones non couvertes
+    - Completion tests manquants
+    - Report HTML
+
+[ ] Q.3 - Audit a11y WCAG 2.1 AA
+    - axe-core integration
+    - Lighthouse accessibility
+    - Tests screen reader
+
+[ ] Q.4 - Bundle analysis
+    - next/bundle-analyzer
+    - Lazy loading components
+    - Tree shaking verification
+```
+
+---
+
+## Architecture (P3) - Refactoring
+
+### Tasks
+
+```
+[ ] A.1 - Migrate hooks/
+    - Deplacer useAuth.ts → features/auth/hooks/
+    - Nettoyer hooks/index.ts
+
+[ ] A.2 - API game
+    - app/api/game/ endpoints
+    - Handlers MSW correspondants
+    - Tests integration
+
+[ ] A.3 - Storybook
+    - Setup Storybook 8
+    - Documentation composants effects/
+    - Documentation composants badges/
+    - Chromatic integration (optionnel)
+```
+
+---
+
+## YAGNI (Non planifie)
+
+- ~~Leaderboard~~ - Users cloisonnes, pas de valeur ajoutee
+
+---
+
 ## Definition of Done
 
 Chaque feature est complete quand :
@@ -427,3 +602,13 @@ Chaque feature est complete quand :
 - [ ] Review code
 - [ ] Deploye en production
 - [ ] Documente
+
+---
+
+## Changelog
+
+### 2025-12-26
+
+- Phase 4.5 complete (React Query + ISO)
+- 614 tests unitaires/integration
+- Ajout phases 7, 8 et sections Qualite/Architecture
