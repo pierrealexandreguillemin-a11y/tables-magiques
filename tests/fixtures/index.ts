@@ -91,3 +91,17 @@ export {
   GET_SCORES_RESPONSE_FIXTURE,
   SAVE_SCORE_RESPONSE_FIXTURE,
 } from './scores';
+
+// Profile - Statistiques et progression utilisateur
+export {
+  EMMA_PROFILE_USER,
+  EMMA_PRACTICE_SCORES,
+  EMMA_CHALLENGE_SCORES,
+  EMMA_EXPECTED_STATS,
+  EMMA_PRACTICE_STATS,
+  EMMA_CHALLENGE_STATS,
+  EMMA_TABLE_PROGRESS,
+  EMMA_RECENT_SESSIONS,
+  getEmmaScoresAsJson,
+  getAllEmmaScoresAsJson,
+} from './profile';
