@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { InstallButton } from '@/components/pwa/InstallButton';
+import { UserButton } from '@/features/auth';
 import {
   GradientText,
   KawaiiMascot,
@@ -139,6 +140,7 @@ export function HomePage() {
 
       {/* Header fixe */}
       <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+        <UserButton />
         <InstallButton />
         <ThemeToggle />
       </div>

@@ -13,7 +13,8 @@ Plan de developpement structure selon ISO/IEC 25010.
 - [x] Phase 5 : Dark Mode (2025-12-26)
 - [x] Phase 6 : PWA Complete (2025-12-26)
 - [x] Phase 7 : Page Profil + Historique (2025-12-26)
-- [ ] Phase 8 : Effets et Animations P1 ← PROCHAINE
+- [x] Phase 8 : Effets et Animations P1 (2025-12-26)
+- [ ] Phase 8.5 : Corrections E2E + Coverage ← EN COURS
 - [ ] Phase 9 : Sons + Enrichissement P2
 - [x] Phase 10 : Tests E2E (infrastructure)
 

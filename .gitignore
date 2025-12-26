@@ -45,3 +45,5 @@ next-env.d.ts
 
 # Test artifacts
 test-results/
+playwright-report/
+tests/e2e/.auth/
