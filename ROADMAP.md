@@ -7,9 +7,9 @@ Plan de developpement structure selon ISO/IEC 25010.
 - [x] Phase 0 : Deploiement initial
 - [x] Phase 1 : Authentification
 - [x] Phase 2 : Mode Practice
-- [ ] Phase 3 : Mode Challenge ← PROCHAINE
-- [ ] Phase 4 : Badges
-- [ ] Phase 5 : Dark Mode
+- [x] Phase 3 : Mode Challenge
+- [x] Phase 4 : Badges
+- [ ] Phase 5 : Dark Mode ← PROCHAINE
 - [ ] Phase 6 : PWA Complete
 - [x] Phase 7 : Tests E2E (infrastructure)
 
@@ -157,7 +157,7 @@ tests/e2e/practice.spec.ts - E2E tests (skipped pending auth) ✓
 
 ---
 
-## Phase 3 : Mode Challenge
+## Phase 3 : Mode Challenge (COMPLETE)
 
 ### Objectif
 
@@ -166,42 +166,71 @@ Mode chronometre : 3 minutes, 5 secondes par question.
 ### Tasks
 
 ```
-[ ] 3.1 - Timer global (3 min)
-    - Countdown display
-    - Animation pulse GSAP quand < 30s
-    - Game over quand temps ecoule
+[x] 3.1 - Timer global (3 min)
+    - Countdown display ✓
+    - Animation pulse quand < 30s ✓
+    - Game over quand temps ecoule ✓
 
-[ ] 3.2 - Timer par question (5 sec)
-    - Auto-skip si temps ecoule
-    - Barre de progression visuelle
-    - Animation urgence
+[x] 3.2 - Timer par question (5 sec)
+    - Auto-skip si temps ecoule ✓
+    - Barre de progression visuelle ✓
+    - Animation urgence ✓
 
-[ ] 3.3 - Page /challenge
-    - Ecran demarrage
-    - Ecran jeu avec timers
-    - Ecran resultats
+[x] 3.3 - Page /challenge
+    - Ecran demarrage ✓
+    - Ecran jeu avec timers ✓
+    - Ecran resultats ✓
 
-[ ] 3.4 - Logique challenge (lib/game/challenge.ts)
-    - startChallenge()
-    - endChallenge()
-    - calculateChallengeScore()
+[x] 3.4 - Logique challenge (features/game/hooks/challenge.ts)
+    - createChallengeState() ✓
+    - startChallenge() ✓
+    - tickGlobalTimer() / tickQuestionTimer() ✓
+    - answerQuestion() ✓
+    - endChallenge() ✓
+    - calculateChallengeScore() ✓
 
-[ ] 3.5 - API /api/scores/challenge
+[x] 3.5 - Hook useChallenge
+    - Encapsulation logique React ✓
+    - Timer effects ✓
+    - Actions (start, answer, replay) ✓
+
+[ ] 3.6 - API /api/scores/challenge (Phase 4)
     - POST: sauvegarder score challenge
     - Donnees: score, temps restant
+```
+
+### Architecture refactoring
+
+```
+features/game/
+├── components/
+│   ├── GlobalTimer.tsx      - Timer global 3 min
+│   ├── QuestionTimer.tsx    - Timer question 5 sec
+│   ├── QuestionDisplay.tsx
+│   ├── NumberPad.tsx
+│   └── ScoreBoard.tsx
+├── hooks/
+│   ├── challenge.ts         - Logique pure
+│   ├── useChallenge.ts      - Hook React
+│   ├── questions.ts
+│   └── scoring.ts
+└── index.ts
 ```
 
 ### Tests TDD
 
 ```
-tests/unit/game/challenge.test.ts
-tests/integration/api/challenge.test.ts
-tests/e2e/challenge-mode.spec.ts
+tests/unit/game/challenge.test.ts - 39 tests ✓
+tests/unit/hooks/useChallenge.test.ts - 23 tests ✓
+tests/unit/components/game/GlobalTimer.test.tsx - 12 tests ✓
+tests/unit/components/game/QuestionTimer.test.tsx - 16 tests ✓
+tests/integration/challenge-page.test.tsx - 23 tests ✓
+tests/e2e/challenge.spec.ts - 15 tests ✓
 ```
 
 ---
 
-## Phase 4 : Systeme de Badges
+## Phase 4 : Systeme de Badges (COMPLETE)
 
 ### Objectif
 
@@ -210,41 +239,52 @@ tests/e2e/challenge-mode.spec.ts
 ### Tasks
 
 ```
-[ ] 4.1 - Config badges (config/badges.ts)
-    - Definitions badges Practice
-    - Definitions badges Challenge
-    - Conditions de deblocage
+[x] 4.1 - Types badges (types/badge.ts)
+    - BadgeDefinition, EarnedBadge interfaces
+    - PRACTICE_BADGES (8 badges)
+    - CHALLENGE_BADGES (5 badges)
+    - PracticeSessionStats, UserBadgeStats types
 
-[ ] 4.2 - Logique badges (lib/game/badges.ts)
-    - checkBadgeUnlock()
-    - getBadgeInfo()
+[x] 4.2 - Logique badges (features/badges/hooks/badges.ts)
+    - checkPracticeBadges()
+    - checkChallengeBadges()
+    - getNewBadges()
+
+[x] 4.3 - API /api/badges
+    - GET: badges utilisateur avec definitions
+    - POST: verification et attribution badges
+
+[x] 4.4 - Storage badges (lib/badges/storage.ts)
     - getUserBadges()
+    - addUserBadges()
+    - getUserBadgeIds()
 
-[ ] 4.3 - API /api/badges
-    - GET: badges utilisateur
-    - POST: debloquer badge
+[x] 4.5 - Composants badges UI
+    - BadgeCard: badge individuel
+    - BadgeCollection: grille badges
+    - BadgeUnlockNotification: celebration
+```
 
-[ ] 4.4 - Composant BadgeCollection
-    - Affichage grille badges
-    - Badges gagnes vs non gagnes
-    - Animation GSAP deblocage
+### Fichiers crees
 
-[ ] 4.5 - Modal BadgeInfo
-    - Au toucher: afficher comment gagne
-    - Animation pop-in
-
-[ ] 4.6 - Notification nouveau badge
-    - Animation celebratoire
-    - Feux d'artifice
-    - Son optionnel
+```
+types/badge.ts                                - Types et definitions badges
+features/badges/hooks/badges.ts               - Logique verification
+features/badges/components/BadgeCard.tsx      - Composant badge
+features/badges/components/BadgeCollection.tsx - Grille badges
+features/badges/components/BadgeUnlockNotification.tsx - Modal celebration
+features/badges/index.ts                      - Barrel export
+lib/badges/storage.ts                         - Persistence Redis
+app/api/badges/route.ts                       - API badges
 ```
 
 ### Tests TDD
 
 ```
-tests/unit/game/badges.test.ts
-tests/integration/api/badges.test.ts
-tests/e2e/badges.spec.ts
+tests/unit/badges/badges.test.ts - 33 tests
+tests/unit/components/badges/BadgeCard.test.tsx - 15 tests
+tests/unit/components/badges/BadgeCollection.test.tsx - 11 tests
+tests/unit/components/badges/BadgeUnlockNotification.test.tsx - 10 tests
 ```
 
 ---

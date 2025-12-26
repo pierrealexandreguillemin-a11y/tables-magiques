@@ -39,9 +39,8 @@ export const KEYS = {
   scores: (userId: string, mode: string) =>
     `${APP_PREFIX}:scores:${userId}:${mode}`,
 
-  // Badges
-  badges: (userId: string, mode: string) =>
-    `${APP_PREFIX}:badges:${userId}:${mode}`,
+  // Badges (liste complete par utilisateur)
+  userBadges: (userId: string) => `${APP_PREFIX}:badges:${userId}`,
 
   // Leaderboard (optionnel)
   leaderboard: (mode: string) => `${APP_PREFIX}:leaderboard:${mode}`,

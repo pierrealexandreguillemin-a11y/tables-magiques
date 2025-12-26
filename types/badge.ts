@@ -138,3 +138,37 @@ export const ALL_BADGES = [...PRACTICE_BADGES, ...CHALLENGE_BADGES];
 export const getBadgeById = (id: string): BadgeDefinition | undefined => {
   return ALL_BADGES.find((badge) => badge.id === id);
 };
+
+// =============================================================================
+// TYPES POUR VERIFICATION BADGES
+// =============================================================================
+
+/**
+ * Statistiques session Practice pour verification badges
+ */
+export interface PracticeSessionStats {
+  correctAnswers: number;
+  totalQuestions: number;
+  currentStreak: number;
+  maxStreak: number;
+}
+
+/**
+ * Statistiques cumulées utilisateur pour badges
+ */
+export interface UserBadgeStats {
+  totalCorrectAnswers: number;
+  totalQuestions: number;
+  maxStreak: number;
+  challengeGamesPlayed: number;
+  perfectChallenges: number;
+}
+
+/**
+ * Resultat de verification de deblocage de badge
+ */
+export interface BadgeUnlockResult {
+  badgeId: string;
+  badge: BadgeDefinition;
+  isNew: boolean;
+}
