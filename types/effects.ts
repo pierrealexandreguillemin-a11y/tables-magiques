@@ -140,3 +140,144 @@ export interface ReducedMotionResult {
   /** true si on doit animer (inverse de prefersReducedMotion) */
   shouldAnimate: boolean;
 }
+
+// ============================================================================
+// GSAP EFFECTS - Types ISO/IEC 25010
+// ============================================================================
+
+/**
+ * Types d'effets GSAP disponibles
+ */
+export type GsapEffectType =
+  | 'confetti'
+  | 'fireworks'
+  | 'shake'
+  | 'badgeUnlock'
+  | 'timerPulse'
+  | 'staggerReveal'
+  | 'pageTransition'
+  | 'numberWave'
+  | 'celebrationCascade'
+  | 'glowPulse'
+  | 'scoreAnimate'
+  | 'magneticHover';
+
+/**
+ * Configuration confetti GSAP
+ */
+export interface GsapConfettiConfig {
+  /** Nombre de particules (defaut: 50) */
+  count?: number;
+  /** Couleurs des particules */
+  colors?: string[];
+}
+
+/**
+ * Configuration fireworks GSAP
+ */
+export interface GsapFireworksConfig {
+  /** Nombre de feux d'artifice */
+  burstCount?: number;
+  /** Delai entre chaque burst en ms */
+  burstDelay?: number;
+}
+
+/**
+ * Configuration shake GSAP
+ */
+export interface GsapShakeConfig {
+  /** Intensite du shake en pixels */
+  intensity?: number;
+  /** Nombre d'oscillations */
+  oscillations?: number;
+}
+
+/**
+ * Configuration score animation GSAP
+ */
+export interface GsapScoreConfig {
+  /** Valeur de depart */
+  from: number;
+  /** Valeur d'arrivee */
+  to: number;
+  /** Duree en secondes */
+  duration?: number;
+}
+
+/**
+ * Configuration glow pulse GSAP
+ */
+export interface GsapGlowConfig {
+  /** Couleur du glow */
+  color?: string;
+  /** Intensite (taille du glow en px) */
+  intensity?: number;
+}
+
+/**
+ * Configuration timer pulse GSAP
+ */
+export interface GsapTimerPulseConfig {
+  /** Couleur d'alerte */
+  alertColor?: string;
+  /** Echelle du pulse */
+  scale?: number;
+}
+
+/**
+ * Options de cleanup pour effets GSAP
+ */
+export interface GsapCleanupFunction {
+  (): void;
+}
+
+/**
+ * Resultat d'un effet GSAP
+ */
+export interface GsapEffectResult {
+  /** Fonction de nettoyage (kill animation) */
+  cleanup: GsapCleanupFunction;
+  /** Timeline GSAP si applicable */
+  timeline?: gsap.core.Timeline;
+}
+
+/**
+ * Hook result pour useGsapEffects
+ */
+export interface UseGsapEffectsResult {
+  /** Lance une explosion de confetti */
+  confettiExplosion: (
+    container: HTMLElement,
+    config?: GsapConfettiConfig
+  ) => void;
+  /** Lance un feu d'artifice */
+  fireworksDisplay: (container: HTMLElement) => void;
+  /** Shake doux pour erreur */
+  shakeError: (element: HTMLElement) => void;
+  /** Animation deblocage badge */
+  badgeUnlock: (element: HTMLElement) => void;
+  /** Pulse pour timer critique */
+  timerPulse: (element: HTMLElement) => GsapCleanupFunction;
+  /** Reveal progressif d'elements */
+  staggerReveal: (elements: HTMLElement[] | NodeListOf<Element>) => void;
+  /** Transition de page */
+  pageTransition: {
+    enter: (element: HTMLElement) => void;
+    exit: (element: HTMLElement, onComplete: () => void) => void;
+  };
+  /** Vague d'animation pour clavier */
+  numberWave: (elements: HTMLElement[] | NodeListOf<Element>) => void;
+  /** Cascade de celebration */
+  celebrationCascade: (container: HTMLElement) => void;
+  /** Glow pulsant */
+  glowPulse: (
+    element: HTMLElement,
+    config?: GsapGlowConfig
+  ) => GsapCleanupFunction;
+  /** Animation de score */
+  animateScore: (element: HTMLElement, config: GsapScoreConfig) => void;
+  /** Effet magnetique hover */
+  magneticHover: (element: HTMLElement) => GsapCleanupFunction;
+  /** Si les effets sont disponibles */
+  isReady: boolean;
+}
