@@ -2,7 +2,10 @@
  * Playwright Configuration - Tables Magiques
  * ISO/IEC 29119 - E2E Tests against PRODUCTION
  *
- * IMPORTANT: Tests run against Vercel production with authentication
+ * Projects:
+ * - setup: authenticates user
+ * - chromium/Mobile Safari: authenticated tests
+ * - chromium-no-auth: unauthenticated tests (login modal, redirects)
  */
 
 import { defineConfig, devices } from '@playwright/test';
@@ -33,7 +36,7 @@ export default defineConfig({
       name: 'setup',
       testMatch: /.*\.setup\.ts/,
     },
-    // Chromium tests - depend on setup for auth
+    // Chromium authenticated - for most tests
     {
       name: 'chromium',
       use: {
@@ -41,8 +44,17 @@ export default defineConfig({
         storageState: 'tests/e2e/.auth/user.json',
       },
       dependencies: ['setup'],
+      testIgnore: /auth\.spec\.ts/, // Auth tests run without auth
     },
-    // Mobile Safari tests - depend on setup for auth
+    // Chromium unauthenticated - for auth modal tests
+    {
+      name: 'chromium-no-auth',
+      use: {
+        ...devices['Desktop Chrome'],
+      },
+      testMatch: /auth\.spec\.ts/,
+    },
+    // Mobile Safari authenticated
     {
       name: 'Mobile Safari',
       use: {
@@ -50,6 +62,7 @@ export default defineConfig({
         storageState: 'tests/e2e/.auth/user.json',
       },
       dependencies: ['setup'],
+      testIgnore: /auth\.spec\.ts/,
     },
   ],
   // PAS de webServer - on teste contre la production Vercel
