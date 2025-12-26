@@ -641,7 +641,24 @@ Chaque feature est complete quand :
 
 ## Changelog
 
-### 2025-12-26
+### 2025-12-26 (Soir)
+
+- Audit ISO/IEC 25010/29119 complete
+  - Couverture tests: 70% → **91%** (766 tests)
+  - lib/auth: 3.94% → 98.68%
+  - lib/db: 0% → 100%
+  - lib/animations: 0% → 86.95%
+- Architecture SRP refactoring
+  - Types centralises dans types/ (auth, badge, game)
+  - Pages thin wrapper pattern (336 → 12 lignes)
+  - Features auth components moves
+- Scores API implemented (TDD)
+  - lib/scores/storage.ts
+  - app/api/scores/route.ts
+  - 18 tests API + storage
+- 15 commits granulaires normalises
+
+### 2025-12-26 (Matin)
 
 - Phase 6 complete (PWA)
   - 17 icons PWA/iOS generes avec sharp
