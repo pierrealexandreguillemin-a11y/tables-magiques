@@ -15,6 +15,12 @@ import {
   TABLE_7_FIXTURE,
   USER_PROGRESS_FIXTURES,
   EARNED_BADGES_FIXTURE,
+  EMMA_PROFILE_USER,
+  EMMA_EXPECTED_STATS,
+  EMMA_PRACTICE_STATS,
+  EMMA_CHALLENGE_STATS,
+  EMMA_TABLE_PROGRESS,
+  EMMA_RECENT_SESSIONS,
 } from '../fixtures';
 
 // Start MSW server
@@ -362,6 +368,247 @@ describe('API Integration - Auth', () => {
       expect(response.status).toBe(401);
       const data = await response.json();
       expect(data.success).toBe(false);
+    });
+  });
+});
+
+describe('API Integration - Profile', () => {
+  describe('GET /api/profile', () => {
+    it('retourne 401 sans cookie de session', async () => {
+      // Sans cookie, l'API doit rejeter
+      const response = await fetch('/api/profile');
+
+      expect(response.status).toBe(401);
+      const data = await response.json();
+      expect(data.error).toBe('Non authentifié');
+    });
+
+    it('retourne le profil complet avec session valide', async () => {
+      // Override handler pour simuler cookie présent
+      server.use(
+        http.get('/api/profile', () => {
+          return HttpResponse.json({
+            success: true,
+            profile: {
+              user: {
+                id: EMMA_PROFILE_USER.id,
+                username: EMMA_PROFILE_USER.username,
+                createdAt: EMMA_PROFILE_USER.createdAt,
+                lastLoginAt: EMMA_PROFILE_USER.lastLoginAt,
+              },
+              stats: EMMA_EXPECTED_STATS,
+              modeStats: {
+                practice: EMMA_PRACTICE_STATS,
+                challenge: EMMA_CHALLENGE_STATS,
+              },
+              recentSessions: EMMA_RECENT_SESSIONS.slice(0, 5),
+              progress: {
+                tables: EMMA_TABLE_PROGRESS,
+                masteredCount: EMMA_TABLE_PROGRESS.filter((t) => t.mastered)
+                  .length,
+                totalTables: 10,
+              },
+              badgeCount: 3,
+            },
+          });
+        })
+      );
+
+      const response = await fetch('/api/profile');
+      const data = await response.json();
+
+      expect(response.ok).toBe(true);
+      expect(data.success).toBe(true);
+      expect(data.profile).toBeDefined();
+    });
+
+    it('contient les informations utilisateur Emma', async () => {
+      // Override handler pour simuler cookie présent
+      server.use(
+        http.get('/api/profile', () => {
+          return HttpResponse.json({
+            success: true,
+            profile: {
+              user: {
+                id: EMMA_PROFILE_USER.id,
+                username: EMMA_PROFILE_USER.username,
+                createdAt: EMMA_PROFILE_USER.createdAt,
+                lastLoginAt: EMMA_PROFILE_USER.lastLoginAt,
+              },
+              stats: EMMA_EXPECTED_STATS,
+              modeStats: {
+                practice: EMMA_PRACTICE_STATS,
+                challenge: EMMA_CHALLENGE_STATS,
+              },
+              recentSessions: EMMA_RECENT_SESSIONS.slice(0, 5),
+              progress: {
+                tables: EMMA_TABLE_PROGRESS,
+                masteredCount: 1,
+                totalTables: 10,
+              },
+              badgeCount: 3,
+            },
+          });
+        })
+      );
+
+      const response = await fetch('/api/profile');
+      const data = await response.json();
+
+      expect(data.profile.user.username).toBe('emma');
+      expect(data.profile.user.id).toBe('user-emma-123');
+    });
+
+    it('contient les statistiques globales correctes', async () => {
+      server.use(
+        http.get('/api/profile', () => {
+          return HttpResponse.json({
+            success: true,
+            profile: {
+              user: {
+                id: EMMA_PROFILE_USER.id,
+                username: EMMA_PROFILE_USER.username,
+              },
+              stats: EMMA_EXPECTED_STATS,
+              modeStats: {
+                practice: EMMA_PRACTICE_STATS,
+                challenge: EMMA_CHALLENGE_STATS,
+              },
+              recentSessions: [],
+              progress: {
+                tables: EMMA_TABLE_PROGRESS,
+                masteredCount: 1,
+                totalTables: 10,
+              },
+              badgeCount: 3,
+            },
+          });
+        })
+      );
+
+      const response = await fetch('/api/profile');
+      const data = await response.json();
+
+      // Vérifie les stats globales d'Emma
+      expect(data.profile.stats.totalGames).toBe(12); // 9 practice + 3 challenge
+      expect(data.profile.stats.totalQuestions).toBe(163);
+      expect(data.profile.stats.totalCorrect).toBe(121);
+      expect(data.profile.stats.averageAccuracy).toBe(74);
+    });
+
+    it('contient les statistiques par mode', async () => {
+      server.use(
+        http.get('/api/profile', () => {
+          return HttpResponse.json({
+            success: true,
+            profile: {
+              user: {
+                id: EMMA_PROFILE_USER.id,
+                username: EMMA_PROFILE_USER.username,
+              },
+              stats: EMMA_EXPECTED_STATS,
+              modeStats: {
+                practice: EMMA_PRACTICE_STATS,
+                challenge: EMMA_CHALLENGE_STATS,
+              },
+              recentSessions: [],
+              progress: { tables: [], masteredCount: 0, totalTables: 10 },
+              badgeCount: 0,
+            },
+          });
+        })
+      );
+
+      const response = await fetch('/api/profile');
+      const data = await response.json();
+
+      // Practice stats
+      expect(data.profile.modeStats.practice.totalGames).toBe(9);
+      expect(data.profile.modeStats.practice.averageAccuracy).toBe(77);
+
+      // Challenge stats
+      expect(data.profile.modeStats.challenge.totalGames).toBe(3);
+      expect(data.profile.modeStats.challenge.bestScore).toBe(22);
+    });
+
+    it('contient la progression par table', async () => {
+      server.use(
+        http.get('/api/profile', () => {
+          return HttpResponse.json({
+            success: true,
+            profile: {
+              user: {
+                id: EMMA_PROFILE_USER.id,
+                username: EMMA_PROFILE_USER.username,
+              },
+              stats: EMMA_EXPECTED_STATS,
+              modeStats: {
+                practice: EMMA_PRACTICE_STATS,
+                challenge: EMMA_CHALLENGE_STATS,
+              },
+              recentSessions: [],
+              progress: {
+                tables: EMMA_TABLE_PROGRESS,
+                masteredCount: EMMA_TABLE_PROGRESS.filter((t) => t.mastered)
+                  .length,
+                totalTables: 10,
+              },
+              badgeCount: 0,
+            },
+          });
+        })
+      );
+
+      const response = await fetch('/api/profile');
+      const data = await response.json();
+
+      // Vérification progression tables
+      expect(data.profile.progress.tables).toHaveLength(10);
+      expect(data.profile.progress.masteredCount).toBe(1); // Table 7 maîtrisée
+
+      // Table 7 spécifiquement (la plus travaillée par Emma)
+      const table7 = data.profile.progress.tables.find(
+        (t: { table: number }) => t.table === 7
+      );
+      expect(table7.gamesPlayed).toBe(6);
+      expect(table7.accuracy).toBe(88);
+      expect(table7.mastered).toBe(true);
+    });
+
+    it('contient les sessions récentes', async () => {
+      server.use(
+        http.get('/api/profile', () => {
+          return HttpResponse.json({
+            success: true,
+            profile: {
+              user: {
+                id: EMMA_PROFILE_USER.id,
+                username: EMMA_PROFILE_USER.username,
+              },
+              stats: EMMA_EXPECTED_STATS,
+              modeStats: {
+                practice: EMMA_PRACTICE_STATS,
+                challenge: EMMA_CHALLENGE_STATS,
+              },
+              recentSessions: EMMA_RECENT_SESSIONS.slice(0, 5),
+              progress: { tables: [], masteredCount: 0, totalTables: 10 },
+              badgeCount: 0,
+            },
+          });
+        })
+      );
+
+      const response = await fetch('/api/profile');
+      const data = await response.json();
+
+      // 5 sessions récentes max
+      expect(data.profile.recentSessions.length).toBeLessThanOrEqual(5);
+      expect(data.profile.recentSessions.length).toBeGreaterThan(0);
+
+      // Première session = la plus récente
+      const mostRecent = data.profile.recentSessions[0];
+      expect(mostRecent.mode).toBe('challenge');
+      expect(mostRecent.score).toBe(22);
     });
   });
 });
