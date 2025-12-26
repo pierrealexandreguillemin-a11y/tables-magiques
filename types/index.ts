@@ -10,3 +10,4 @@ export * from './api';
 export * from './effects';
 export * from './auth';
 export * from './profile';
+export * from './sound';

@@ -17,3 +17,5 @@ export {
   useAnimationOnce,
   useAnimationPause,
 } from './useAnimationVisibility';
+export { useSound } from './useSound';
+export type { UseSoundReturn } from './useSound';
