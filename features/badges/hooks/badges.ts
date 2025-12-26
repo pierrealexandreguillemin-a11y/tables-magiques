@@ -8,7 +8,7 @@
  * Il ne definit PAS de types (principe SRP)
  */
 
-import { getBadgeById } from '@/types/badge';
+import { getBadgeById } from '@/config/badges';
 import type { PracticeSessionStats, BadgeUnlockResult } from '@/types/badge';
 import type { ChallengeResult } from '@/types/game';
 

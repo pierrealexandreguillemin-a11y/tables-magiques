@@ -10,6 +10,21 @@ export {
   getNewBadges,
 } from './hooks/badges';
 
+// React Query Hooks
+export { useBadges, useCheckBadges, badgesKeys } from './hooks/useBadges';
+
+// API
+export {
+  fetchBadges,
+  checkPracticeBadges as checkPracticeBadgesApi,
+} from './api/badges';
+export type {
+  BadgeWithStatus,
+  NewBadge,
+  GetBadgesResponse,
+  CheckBadgesResponse,
+} from './api/badges';
+
 // Components
 export { BadgeCard } from './components/BadgeCard';
 export { BadgeCollection } from './components/BadgeCollection';
@@ -29,4 +44,4 @@ export {
   CHALLENGE_BADGES,
   ALL_BADGES,
   getBadgeById,
-} from '@/types/badge';
+} from '@/config/badges';

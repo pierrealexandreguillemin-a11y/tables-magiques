@@ -16,7 +16,7 @@ import {
   checkChallengeBadges,
   getNewBadges,
 } from '@/features/badges';
-import { ALL_BADGES } from '@/types/badge';
+import { ALL_BADGES } from '@/config/badges';
 import { z } from 'zod';
 
 // Schemas Zod qui produisent des types compatibles avec les types metier
