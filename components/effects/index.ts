@@ -26,3 +26,6 @@ export type { CrownProgressProps, CrownSize } from './CrownProgress';
 
 export { MagicLoader } from './MagicLoader';
 export type { MagicLoaderProps, LoaderType, LoaderSize } from './MagicLoader';
+
+export { GsapCelebration } from './GsapCelebration';
+export type { GsapCelebrationProps, CelebrationType } from './GsapCelebration';

@@ -9,3 +9,4 @@ export { useTheme } from './useTheme';
 export type { Theme, UseThemeReturn } from './useTheme';
 export { useInstallPrompt } from './useInstallPrompt';
 export type { UseInstallPromptReturn } from './useInstallPrompt';
+export { useGsapEffects } from './useGsapEffects';
