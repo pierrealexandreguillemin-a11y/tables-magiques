@@ -21,6 +21,12 @@ import {
   CHALLENGE_SCORES_FIXTURE,
   SCORE_STATS_PRACTICE_FIXTURE,
   SCORE_STATS_CHALLENGE_FIXTURE,
+  EMMA_PROFILE_USER,
+  EMMA_EXPECTED_STATS,
+  EMMA_PRACTICE_STATS,
+  EMMA_CHALLENGE_STATS,
+  EMMA_TABLE_PROGRESS,
+  EMMA_RECENT_SESSIONS,
 } from '../fixtures';
 
 export const handlers = [
@@ -410,6 +416,44 @@ export const handlers = [
       },
       { status: 201 }
     );
+  }),
+
+  // ============================================================================
+  // PROFILE API
+  // ============================================================================
+
+  // GET /api/profile - Données profil utilisateur
+  http.get('/api/profile', ({ cookies }) => {
+    const sessionCookie = cookies.session || cookies.tm_session;
+
+    if (!sessionCookie) {
+      return HttpResponse.json({ error: 'Non authentifié' }, { status: 401 });
+    }
+
+    // Profil Emma complet avec fixtures réelles
+    return HttpResponse.json({
+      success: true,
+      profile: {
+        user: {
+          id: EMMA_PROFILE_USER.id,
+          username: EMMA_PROFILE_USER.username,
+          createdAt: EMMA_PROFILE_USER.createdAt,
+          lastLoginAt: EMMA_PROFILE_USER.lastLoginAt,
+        },
+        stats: EMMA_EXPECTED_STATS,
+        modeStats: {
+          practice: EMMA_PRACTICE_STATS,
+          challenge: EMMA_CHALLENGE_STATS,
+        },
+        recentSessions: EMMA_RECENT_SESSIONS.slice(0, 5),
+        progress: {
+          tables: EMMA_TABLE_PROGRESS,
+          masteredCount: EMMA_TABLE_PROGRESS.filter((t) => t.mastered).length,
+          totalTables: 10,
+        },
+        badgeCount: 3,
+      },
+    });
   }),
 ];
 
