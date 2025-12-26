@@ -5,7 +5,7 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { NumberPad } from '@/components/game/NumberPad';
+import { NumberPad } from '@/features/game/components/NumberPad';
 
 describe('NumberPad', () => {
   describe('Rendu des boutons', () => {

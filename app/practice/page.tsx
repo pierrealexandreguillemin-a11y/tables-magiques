@@ -11,15 +11,15 @@ import {
   generateRandomQuestion,
   generateAllQuestionsForTable,
   shuffleArray,
-} from '@/lib/game/questions';
-import {
   checkAnswer,
   updateStreak,
   calculateAccuracy,
   calculateBonus,
   checkPerfect,
-} from '@/lib/game/scoring';
-import { QuestionDisplay, NumberPad, ScoreBoard } from '@/components/game';
+  QuestionDisplay,
+  NumberPad,
+  ScoreBoard,
+} from '@/features/game';
 import type { Question } from '@/types/game';
 
 gsap.registerPlugin(useGSAP);

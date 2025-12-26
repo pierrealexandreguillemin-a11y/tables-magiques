@@ -5,7 +5,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { QuestionDisplay } from '@/components/game/QuestionDisplay';
+import { QuestionDisplay } from '@/features/game/components/QuestionDisplay';
 import type { Question } from '@/types/game';
 
 const QUESTION_7x8: Question = { a: 7, b: 8, answer: 56 };

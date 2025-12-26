@@ -170,7 +170,7 @@ describe('Game Flow Integration', () => {
     });
 
     it('challenge mode a 180 secondes', () => {
-      expect(DEFAULT_CONFIG_FIXTURE.challenge.totalTime).toBe(180);
+      expect(DEFAULT_CONFIG_FIXTURE.challenge.globalTime).toBe(180);
     });
 
     it('challenge mode a 5 secondes par question', () => {

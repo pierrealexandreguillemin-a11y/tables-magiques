@@ -5,7 +5,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { ScoreBoard } from '@/components/game/ScoreBoard';
+import { ScoreBoard } from '@/features/game/components/ScoreBoard';
 
 describe('ScoreBoard', () => {
   describe('Affichage score', () => {

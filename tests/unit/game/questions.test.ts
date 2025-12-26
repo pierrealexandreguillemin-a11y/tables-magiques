@@ -17,7 +17,7 @@ import {
   generateAllQuestionsForTable,
   shuffleArray,
   validateTable,
-} from '@/lib/game/questions';
+} from '@/features/game/hooks/questions';
 import type { Question } from '@/types/game';
 import { TABLE_7_QUESTIONS_FIXTURE } from '@/tests/fixtures';
 

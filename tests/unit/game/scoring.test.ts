@@ -19,7 +19,7 @@ import {
   checkPerfect,
   calculateBonus,
   checkAnswer,
-} from '@/lib/game/scoring';
+} from '@/features/game/hooks/scoring';
 import {
   CORRECT_ANSWER_STATE_FIXTURE,
   WRONG_ANSWER_STATE_FIXTURE,

@@ -145,7 +145,7 @@ export const DEFAULT_CONFIG_FIXTURE: GameConfig = {
     questionsPerTable: 10,
   },
   challenge: {
-    totalTime: 180,
+    globalTime: 180,
     questionTime: 5,
   },
 };
@@ -158,7 +158,7 @@ export const CUSTOM_CONFIG_FIXTURE: GameConfig = {
     questionsPerTable: 5, // Version courte
   },
   challenge: {
-    totalTime: 120, // 2 minutes
+    globalTime: 120, // 2 minutes
     questionTime: 3, // Plus rapide
   },
 };
