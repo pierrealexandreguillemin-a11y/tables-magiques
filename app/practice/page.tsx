@@ -19,6 +19,7 @@ import {
   calculateBonus,
   checkPerfect,
 } from '@/lib/game/scoring';
+import { QuestionDisplay, NumberPad, ScoreBoard } from '@/components/game';
 import type { Question } from '@/types/game';
 
 gsap.registerPlugin(useGSAP);
@@ -71,10 +72,8 @@ export default function PracticePage() {
     let questions: Question[];
 
     if (table === null) {
-      // Toutes les tables: 10 questions aleatoires
       questions = Array.from({ length: 10 }, () => generateRandomQuestion());
     } else {
-      // Table specifique: toutes les questions melangees
       questions = shuffleArray(generateAllQuestionsForTable(table));
     }
 
@@ -120,7 +119,6 @@ export default function PracticePage() {
       };
     });
 
-    // Auto-avancer apres feedback
     setTimeout(() => {
       setGame((prev) => {
         const nextIndex = prev.currentIndex + 1;
@@ -171,9 +169,11 @@ export default function PracticePage() {
           </Link>
 
           {game.phase === 'playing' && (
-            <div className="text-white text-lg font-medium">
-              Score: {game.score} / {game.currentIndex + 1}
-            </div>
+            <ScoreBoard
+              score={game.score}
+              total={game.currentIndex + 1}
+              streak={game.streak}
+            />
           )}
         </div>
 
@@ -236,7 +236,6 @@ export default function PracticePage() {
               exit={{ opacity: 0, scale: 0.9 }}
               className="text-center"
             >
-              {/* Bouton retour */}
               <Button
                 onClick={handleBack}
                 variant="ghost"
@@ -263,99 +262,25 @@ export default function PracticePage() {
                 </div>
               </div>
 
-              {/* Question */}
-              <motion.div
-                className="bg-white/20 backdrop-blur-md rounded-3xl p-8 mb-8"
-                animate={
-                  game.showFeedback
-                    ? {
-                        backgroundColor: game.isCorrect
-                          ? 'rgba(34, 197, 94, 0.3)'
-                          : 'rgba(239, 68, 68, 0.3)',
-                      }
-                    : {}
-                }
-              >
-                <div className="text-6xl sm:text-8xl font-bold text-white mb-6">
-                  {currentQuestion.a} × {currentQuestion.b} = ?
-                </div>
+              {/* Question Display Component */}
+              <QuestionDisplay
+                question={currentQuestion}
+                userAnswer={game.userAnswer}
+                isCorrect={game.isCorrect}
+                showFeedback={game.showFeedback}
+                className="mb-8"
+              />
 
-                {/* Reponse utilisateur */}
-                <div className="min-h-[80px] flex items-center justify-center">
-                  <span className="text-5xl font-bold text-white">
-                    {game.userAnswer || '...'}
-                  </span>
-                </div>
+              {/* NumberPad Component */}
+              <NumberPad
+                onNumberClick={handleNumberClick}
+                onClear={handleClear}
+                onSubmit={handleSubmit}
+                disabled={game.showFeedback}
+                canSubmit={!!game.userAnswer}
+              />
 
-                {/* Feedback */}
-                {game.showFeedback && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="mt-4"
-                    data-testid={
-                      game.isCorrect ? 'feedback-correct' : 'feedback-incorrect'
-                    }
-                  >
-                    {game.isCorrect ? (
-                      <span className="text-4xl">✨ Bravo ! ✨</span>
-                    ) : (
-                      <span className="text-2xl text-white">
-                        La réponse était {currentQuestion.answer}
-                      </span>
-                    )}
-                  </motion.div>
-                )}
-              </motion.div>
-
-              {/* Clavier numerique */}
-              <div className="grid grid-cols-3 gap-3 max-w-xs mx-auto">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-                  <motion.div key={num} whileTap={{ scale: 0.9 }}>
-                    <Button
-                      onClick={() => handleNumberClick(num)}
-                      disabled={game.showFeedback}
-                      className="w-full h-16 text-2xl font-bold bg-white/20 hover:bg-white/30 text-white rounded-xl"
-                    >
-                      {num}
-                    </Button>
-                  </motion.div>
-                ))}
-
-                <motion.div whileTap={{ scale: 0.9 }}>
-                  <Button
-                    onClick={handleClear}
-                    disabled={game.showFeedback}
-                    className="w-full h-16 text-xl font-bold bg-red-500/30 hover:bg-red-500/50 text-white rounded-xl"
-                    aria-label="Effacer"
-                  >
-                    ⌫
-                  </Button>
-                </motion.div>
-
-                <motion.div whileTap={{ scale: 0.9 }}>
-                  <Button
-                    onClick={() => handleNumberClick(0)}
-                    disabled={game.showFeedback}
-                    className="w-full h-16 text-2xl font-bold bg-white/20 hover:bg-white/30 text-white rounded-xl"
-                  >
-                    0
-                  </Button>
-                </motion.div>
-
-                <motion.div whileTap={{ scale: 0.9 }}>
-                  <Button
-                    onClick={handleSubmit}
-                    disabled={game.showFeedback || !game.userAnswer}
-                    className="w-full h-16 text-xl font-bold bg-green-500/30 hover:bg-green-500/50 text-white rounded-xl"
-                    aria-label="Valider"
-                  >
-                    ✓
-                  </Button>
-                </motion.div>
-              </div>
-
-              {/* Streak */}
+              {/* Streak (from ScoreBoard logic) */}
               {game.streak >= 3 && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
