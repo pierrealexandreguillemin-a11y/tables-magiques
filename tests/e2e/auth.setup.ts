@@ -38,8 +38,8 @@ setup('authenticate', async ({ page }) => {
   await page.getByLabel(/pseudo/i).fill(TEST_USER.username);
   await page.getByLabel(/mot de passe/i).fill(TEST_USER.password);
 
-  // 6. Submit
-  await page.getByRole('button', { name: /se connecter/i }).click();
+  // 6. Submit (button text is "C'est parti !")
+  await page.getByRole('button', { name: /c'est parti/i }).click();
 
   // 7. Wait for auth complete - button shows username with emoji
   await expect(
