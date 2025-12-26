@@ -3,6 +3,10 @@
  * ISO/IEC 25010 - Feature module encapsulation
  */
 
+// Components
+export { AuthModal, UserButton } from './components';
+export type { AuthModalProps, UserButtonProps } from './components';
+
 // React Query Hooks
 export { useAuth, authKeys } from './hooks/useAuth';
 

@@ -8,10 +8,14 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks';
+import { useAuth } from '../hooks/useAuth';
 import { AuthModal } from './AuthModal';
 
-export function UserButton() {
+export interface UserButtonProps {
+  className?: string;
+}
+
+export function UserButton({ className }: UserButtonProps) {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -33,7 +37,7 @@ export function UserButton() {
       <>
         <Button
           onClick={() => setShowAuthModal(true)}
-          className="bg-white/20 hover:bg-white/30 text-white rounded-full px-6 backdrop-blur-sm"
+          className={`bg-white/20 hover:bg-white/30 text-white rounded-full px-6 backdrop-blur-sm ${className ?? ''}`}
         >
           Connexion 🔐
         </Button>
@@ -46,7 +50,7 @@ export function UserButton() {
     <div className="relative">
       <Button
         onClick={() => setShowMenu(!showMenu)}
-        className="bg-white/20 hover:bg-white/30 text-white rounded-full px-6 backdrop-blur-sm"
+        className={`bg-white/20 hover:bg-white/30 text-white rounded-full px-6 backdrop-blur-sm ${className ?? ''}`}
       >
         {user?.username} 👋
       </Button>

@@ -17,9 +17,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAuth } from '@/hooks';
+import { useAuth } from '../hooks/useAuth';
 
-interface AuthModalProps {
+export interface AuthModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -33,7 +33,8 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
 
-  const { login, register, isLoading, error } = useAuth();
+  const { login, register, isLoading, error, loginError, registerError } =
+    useAuth();
 
   const resetForm = () => {
     setUsername('');
@@ -87,7 +88,9 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     }
   };
 
-  const displayError = formError || error;
+  // Combine all possible errors: form validation, API errors, network errors
+  const apiError = mode === 'login' ? loginError : registerError;
+  const displayError = formError || apiError || error;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
