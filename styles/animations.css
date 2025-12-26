@@ -218,6 +218,98 @@
   animation: gradient-x 3s ease-in-out infinite;
 }
 
+/* =============================================================================
+   GPU COMPOSITING - Performance Optimizations
+   ISO/IEC 25010 - Efficacité des performances
+
+   Ces classes forcent le GPU pour les animations, libérant le thread principal.
+   Utiliser sur les éléments avec animations continues ou complexes.
+   ============================================================================= */
+
+/**
+ * Force GPU compositing pour animations fluides
+ * Utiliser sur: éléments animés fréquemment (particules, transitions)
+ */
+.gpu-accelerated {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/**
+ * Layer isolation pour particules
+ * Évite le repaint des éléments parents
+ */
+.particle-layer {
+  contain: strict;
+  isolation: isolate;
+  will-change: contents;
+}
+
+/**
+ * Optimisation pour conteneurs d'animation
+ * Utiliser sur les wrappers de zones animées
+ */
+.animation-container {
+  contain: layout style paint;
+  will-change: auto;
+}
+
+/**
+ * Force nouveau layer sans will-change permanent
+ * Pour animations ponctuelles (hover, click)
+ */
+.force-layer {
+  transform: translateZ(0);
+}
+
+/**
+ * Optimisation pour scroll containers avec particules
+ */
+.scroll-optimized {
+  overflow: hidden;
+  contain: strict;
+  -webkit-overflow-scrolling: touch;
+}
+
+/**
+ * Réinitialisation will-change après animation
+ * À appliquer via JS après la fin de l'animation
+ */
+.animation-complete {
+  will-change: auto;
+}
+
+/* =============================================================================
+   PERFORMANCE HINTS - Classes utilitaires
+   ============================================================================= */
+
+/**
+ * Masquer pendant le chargement (skeleton)
+ */
+.loading-hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+
+/**
+ * Transition optimisée (GPU only properties)
+ */
+.transition-gpu {
+  transition-property: transform, opacity;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/**
+ * Désactiver pointer events pendant animations
+ * Évite les conflits de hover
+ */
+.animating {
+  pointer-events: none;
+}
+
 /* === REDUCED MOTION (A11Y) === */
 @media (prefers-reduced-motion: reduce) {
   .animate-shimmer,
@@ -233,5 +325,13 @@
   .animate-star-burst,
   .animate-cloud {
     animation: none;
+  }
+
+  /* Désactiver GPU hints en reduced motion */
+  .gpu-accelerated,
+  .particle-layer,
+  .animation-container {
+    will-change: auto;
+    contain: none;
   }
 }
