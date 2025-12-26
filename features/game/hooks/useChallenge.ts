@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * useChallenge - Hook React pour le mode Challenge
  * ISO/IEC 25010 - Séparation logique métier / UI

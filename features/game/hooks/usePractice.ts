@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * usePractice - Hook React pour le mode Practice
  * ISO/IEC 25010 - Séparation logique métier / UI
