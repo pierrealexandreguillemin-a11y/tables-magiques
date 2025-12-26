@@ -130,9 +130,21 @@ export const handlers = [
   // BADGES API
   // ============================================================================
 
-  // GET /api/badges - Badges de l'utilisateur
+  // GET /api/badges - Badges de l'utilisateur (format GetBadgesResponse)
   http.get('/api/badges', () => {
-    return HttpResponse.json(EARNED_BADGES_FIXTURE);
+    return HttpResponse.json({
+      badges: EARNED_BADGES_FIXTURE.map((b) => ({
+        ...b,
+        earned: true,
+        earnedAt: b.earnedAt,
+        emoji: '⭐',
+        name: `Badge ${b.id}`,
+        description: `Description ${b.id}`,
+        condition: { type: 'streak', value: 5 },
+      })),
+      earnedCount: EARNED_BADGES_FIXTURE.length,
+      totalCount: 13,
+    });
   }),
 
   // GET /api/badges/:userId - Badges spécifiques
@@ -140,23 +152,59 @@ export const handlers = [
     const { userId } = params;
 
     if (userId !== 'user-456') {
-      return HttpResponse.json([], { status: 200 }); // Nouvel utilisateur = pas de badges
+      return HttpResponse.json({
+        badges: [],
+        earnedCount: 0,
+        totalCount: 13,
+      });
     }
 
-    return HttpResponse.json(EARNED_BADGES_FIXTURE);
+    return HttpResponse.json({
+      badges: EARNED_BADGES_FIXTURE.map((b) => ({
+        ...b,
+        earned: true,
+        earnedAt: b.earnedAt,
+        emoji: '⭐',
+        name: `Badge ${b.id}`,
+        description: `Description ${b.id}`,
+        condition: { type: 'streak', value: 5 },
+      })),
+      earnedCount: EARNED_BADGES_FIXTURE.length,
+      totalCount: 13,
+    });
   }),
 
-  // POST /api/badges - Attribuer nouveau badge
+  // POST /api/badges - Check badges (practice ou challenge)
   http.post('/api/badges', async ({ request }) => {
-    const body = (await request.json()) as Record<string, unknown>;
+    const body = (await request.json()) as {
+      mode: 'practice' | 'challenge';
+      practiceStats?: unknown;
+      challengeResult?: unknown;
+    };
+
+    // Simuler nouveau badge gagne
+    const newBadges =
+      body.mode === 'practice'
+        ? [
+            {
+              id: 'streak5',
+              emoji: '🔥',
+              name: 'Serie de 5',
+              description: '5 bonnes reponses',
+            },
+          ]
+        : [
+            {
+              id: 'speed5',
+              emoji: '⚡',
+              name: 'Eclair Rapide',
+              description: '5 questions en 30s',
+            },
+          ];
 
     return HttpResponse.json({
-      success: true,
-      badge: {
-        id: body.badgeId,
-        mode: body.mode,
-        earnedAt: new Date().toISOString(),
-      },
+      newBadges,
+      message: `${newBadges.length} nouveau(x) badge(s) debloque(s)`,
     });
   }),
 

@@ -148,23 +148,24 @@ describe('API Integration - User Progress', () => {
 
 describe('API Integration - Badges', () => {
   describe('GET /api/badges', () => {
-    it('retourne les badges gagnés', async () => {
+    it('retourne les badges avec compteurs', async () => {
       const response = await fetch('/api/badges');
       const data = await response.json();
 
       expect(response.ok).toBe(true);
-      expect(data).toEqual(EARNED_BADGES_FIXTURE);
-      expect(data.length).toBeGreaterThan(0);
+      expect(data.badges).toBeDefined();
+      expect(data.earnedCount).toBe(EARNED_BADGES_FIXTURE.length);
+      expect(data.totalCount).toBe(13);
     });
 
     it('contient des badges practice et challenge', async () => {
       const response = await fetch('/api/badges');
       const data = await response.json();
 
-      const practiceBadges = data.filter(
+      const practiceBadges = data.badges.filter(
         (b: { mode: string }) => b.mode === 'practice'
       );
-      const challengeBadges = data.filter(
+      const challengeBadges = data.badges.filter(
         (b: { mode: string }) => b.mode === 'challenge'
       );
 
@@ -174,22 +175,26 @@ describe('API Integration - Badges', () => {
   });
 
   describe('POST /api/badges', () => {
-    it('attribue un nouveau badge', async () => {
+    it('check badges et retourne nouveaux badges', async () => {
       const response = await fetch('/api/badges', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          badgeId: 'streak10',
           mode: 'practice',
+          practiceStats: {
+            correctAnswers: 10,
+            totalQuestions: 12,
+            currentStreak: 5,
+            maxStreak: 8,
+          },
         }),
       });
 
       const data = await response.json();
 
       expect(response.ok).toBe(true);
-      expect(data.success).toBe(true);
-      expect(data.badge.id).toBe('streak10');
-      expect(data.badge.earnedAt).toBeDefined();
+      expect(data.newBadges).toBeDefined();
+      expect(data.message).toBeDefined();
     });
   });
 });
