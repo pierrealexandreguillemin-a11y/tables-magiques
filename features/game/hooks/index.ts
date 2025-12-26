@@ -6,6 +6,13 @@
 // React Hooks
 export { useChallenge } from './useChallenge';
 export type { UseChallengeReturn } from './useChallenge';
+export { usePractice } from './usePractice';
+export type {
+  UsePracticeReturn,
+  PracticeState,
+  PracticePhase,
+  PracticeResult,
+} from './usePractice';
 
 // Question generation
 export {

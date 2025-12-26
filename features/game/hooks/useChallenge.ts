@@ -20,27 +20,11 @@ import type {
   ChallengeState,
   ChallengeResult,
   ChallengeConfig,
+  UseChallengeReturn,
 } from '@/types/game';
 
-export interface UseChallengeReturn {
-  // État
-  state: ChallengeState;
-  userAnswer: string;
-  result: ChallengeResult | null;
-
-  // Actions
-  start: () => void;
-  answerQuestion: () => void;
-  appendDigit: (digit: number) => void;
-  deleteDigit: () => void;
-  replay: () => void;
-
-  // Dérivés
-  canSubmit: boolean;
-  isPlaying: boolean;
-  isReady: boolean;
-  isGameOver: boolean;
-}
+// Re-export type pour compatibilité imports existants
+export type { UseChallengeReturn } from '@/types/game';
 
 /**
  * Hook pour gérer le mode challenge
