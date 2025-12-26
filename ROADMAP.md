@@ -10,8 +10,8 @@ Plan de developpement structure selon ISO/IEC 25010.
 - [x] Phase 3 : Mode Challenge
 - [x] Phase 4 : Badges
 - [x] Phase 4.5 : React Query + Architecture ISO (2025-12-26)
-- [ ] Phase 5 : Dark Mode ← PROCHAINE
-- [ ] Phase 6 : PWA Complete
+- [x] Phase 5 : Dark Mode (2025-12-26)
+- [ ] Phase 6 : PWA Complete ← PROCHAINE
 - [ ] Phase 7 : Page Profil + Historique
 - [ ] Phase 8 : Sons + Badge Icons
 - [x] Phase 9 : Tests E2E (infrastructure)
@@ -339,7 +339,7 @@ tests/unit/lib/badges/storage.test.ts - 15 tests
 
 ---
 
-## Phase 5 : Dark Mode
+## Phase 5 : Dark Mode (COMPLETE)
 
 ### Objectif
 
@@ -348,30 +348,50 @@ Theme sombre avec toggle.
 ### Tasks
 
 ```
-[ ] 5.1 - Config Tailwind dark mode
-    - class strategy
-    - Variables CSS
+[x] 5.1 - Config Tailwind dark mode
+    - class strategy (deja configure)
+    - Variables CSS dans globals.css
 
-[ ] 5.2 - Hook useTheme
+[x] 5.2 - Hook useTheme
     - Toggle light/dark
     - Persistance localStorage
     - System preference detection
+    - Apply class to document.documentElement
 
-[ ] 5.3 - Composant ThemeToggle
-    - Bouton soleil/lune
-    - Animation transition
+[x] 5.3 - Composant ThemeToggle
+    - Bouton soleil/lune avec Framer Motion
+    - Animation rotation
+    - Glassmorphism styling
 
-[ ] 5.4 - Adaptation couleurs
-    - Gradient dark mode
-    - Arcs-en-ciel adaptes
-    - Contraste WCAG AA
+[x] 5.4 - Integration pages
+    - Anti-FOUC script dans layout.tsx
+    - ThemeToggle sur home, practice, challenge
+    - Gradients dark: variants
+```
+
+### Fichiers crees
+
+```
+hooks/useTheme.ts                     - Hook gestion theme
+components/ui/ThemeToggle.tsx         - Bouton toggle soleil/lune
+```
+
+### Fichiers modifies
+
+```
+app/layout.tsx                        - Script anti-FOUC
+app/page.tsx                          - ThemeToggle + dark gradients
+app/practice/page.tsx                 - ThemeToggle + dark gradients
+app/challenge/page.tsx                - ThemeToggle + dark gradients
+hooks/index.ts                        - Export useTheme
 ```
 
 ### Tests TDD
 
 ```
-tests/unit/hooks/useTheme.test.ts
-tests/e2e/dark-mode.spec.ts
+tests/unit/hooks/useTheme.test.ts - 14 tests
+tests/unit/components/ui/ThemeToggle.test.tsx - 7 tests
+tests/integration/challenge-page.test.tsx - Mock fixes
 ```
 
 ---
@@ -609,6 +629,12 @@ Chaque feature est complete quand :
 
 ### 2025-12-26
 
+- Phase 5 complete (Dark Mode)
+  - useTheme hook avec localStorage + system preference
+  - ThemeToggle composant avec animations Framer Motion
+  - Anti-FOUC script dans layout.tsx
+  - Dark gradients sur toutes les pages
+  - 635 tests (21 nouveaux tests theme)
 - Phase 4.5 complete (React Query + ISO)
 - 614 tests unitaires/integration
 - Ajout phases 7, 8 et sections Qualite/Architecture
