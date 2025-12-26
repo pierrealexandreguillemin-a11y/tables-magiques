@@ -110,9 +110,13 @@ export function useAuth() {
     isRegistering: registerMutation.isPending,
     isLoggingOut: logoutMutation.isPending,
 
-    // Errors from mutations
-    loginError: loginMutation.data?.error ?? null,
-    registerError: registerMutation.data?.error ?? null,
+    // Errors from mutations (narrowing union type)
+    loginError:
+      loginMutation.data?.success === false ? loginMutation.data.error : null,
+    registerError:
+      registerMutation.data?.success === false
+        ? registerMutation.data.error
+        : null,
   };
 }
 

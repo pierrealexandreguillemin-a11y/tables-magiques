@@ -6,35 +6,20 @@
  * Les hooks React Query sont dans useBadges.ts
  */
 
-import type { BadgeDefinition, PracticeSessionStats } from '@/types/badge';
+import type {
+  PracticeSessionStats,
+  GetBadgesResponse,
+  CheckBadgesResponse,
+} from '@/types/badge';
 import type { ChallengeResult } from '@/types/game';
 
-// =============================================================================
-// TYPES RESPONSE API
-// =============================================================================
-
-export interface BadgeWithStatus extends BadgeDefinition {
-  earned: boolean;
-  earnedAt: string | null;
-}
-
-export interface GetBadgesResponse {
-  badges: BadgeWithStatus[];
-  earnedCount: number;
-  totalCount: number;
-}
-
-export interface NewBadge {
-  id: string;
-  emoji: string;
-  name: string;
-  description: string;
-}
-
-export interface CheckBadgesResponse {
-  newBadges: NewBadge[];
-  message: string;
-}
+// Re-export types pour compatibilité imports existants
+export type {
+  BadgeWithStatus,
+  GetBadgesResponse,
+  NewBadge,
+  CheckBadgesResponse,
+} from '@/types/badge';
 
 // =============================================================================
 // API FUNCTIONS

@@ -3,22 +3,15 @@
  * ISO/IEC 25010 - Fonctions API authentification
  */
 
-import type { SafeUser, LoginInput, RegisterInput } from '@/types/auth';
+import type {
+  LoginInput,
+  RegisterInput,
+  MeResponse,
+  AuthResponse,
+} from '@/types/auth';
 
-// =============================================================================
-// TYPES RESPONSE API
-// =============================================================================
-
-export interface AuthResponse {
-  success: boolean;
-  user?: SafeUser;
-  error?: string;
-}
-
-export interface MeResponse {
-  authenticated: boolean;
-  user?: SafeUser;
-}
+// Re-export types pour compatibilité imports existants
+export type { AuthResponse, MeResponse } from '@/types/auth';
 
 // =============================================================================
 // API FUNCTIONS

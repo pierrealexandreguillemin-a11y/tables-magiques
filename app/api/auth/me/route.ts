@@ -5,19 +5,12 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { SESSION_COOKIE_NAME } from '@/types/auth';
+import {
+  SESSION_COOKIE_NAME,
+  type MeSuccessResponse,
+  type MeErrorResponse,
+} from '@/types/auth';
 import { getSession, getUserById } from '@/lib/auth';
-import type { SafeUser } from '@/types/auth';
-
-interface MeSuccessResponse {
-  authenticated: true;
-  user: SafeUser;
-}
-
-interface MeErrorResponse {
-  authenticated: false;
-  user: null;
-}
 
 const notAuthenticatedResponse: MeErrorResponse = {
   authenticated: false,
