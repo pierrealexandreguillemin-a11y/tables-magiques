@@ -1,42 +1,75 @@
 /**
- * Script pour générer les icônes PWA à partir du SVG
+ * Generate PWA Icons from SVG
+ * ISO/IEC 25010 - Script de generation des icones PWA
  * Usage: node scripts/generate-icons.mjs
  */
 
-import fs from 'fs';
-import path from 'path';
+import sharp from 'sharp';
+import { readFileSync } from 'fs';
+import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = join(__dirname, '..');
+const ICONS_DIR = join(ROOT, 'public', 'icons');
+const SVG_PATH = join(ICONS_DIR, 'icon.svg');
 
-// Créer des icônes placeholder en base64 (violet/rose avec emoji licorne)
-const createPlaceholderIcon = (size) => {
-  return `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-      <defs>
-        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#ff69b4"/>
-          <stop offset="100%" style="stop-color:#ba55d3"/>
-        </linearGradient>
-      </defs>
-      <rect width="${size}" height="${size}" rx="${size * 0.2}" fill="url(#bg)"/>
-      <text x="50%" y="55%" font-size="${size * 0.5}" text-anchor="middle" dominant-baseline="middle">🦄</text>
-    </svg>
-  `;
-};
+// Tailles requises pour PWA (Android + iOS)
+const PWA_SIZES = [72, 96, 128, 144, 152, 192, 384, 512];
 
-// Écrire les fichiers SVG (pour développement)
-const sizes = [192, 512];
-const iconsDir = path.join(__dirname, '..', 'public', 'icons');
+// Tailles iOS obligatoires
+const IOS_SIZES = [
+  { size: 60, name: 'icon-60' }, // iPhone
+  { size: 76, name: 'icon-76' }, // iPad
+  { size: 120, name: 'icon-120' }, // iPhone @2x
+  { size: 152, name: 'icon-152' }, // iPad @2x
+  { size: 167, name: 'icon-167' }, // iPad Pro
+  { size: 180, name: 'apple-touch-icon' }, // iPhone @3x
+  { size: 1024, name: 'icon-1024' }, // App Store
+];
 
-sizes.forEach(size => {
-  const svgContent = createPlaceholderIcon(size);
-  const filename = `icon-${size}.svg`;
-  fs.writeFileSync(path.join(iconsDir, filename), svgContent);
-  console.log(`Created ${filename}`);
+async function generateIcons() {
+  console.log('Generating PWA icons from icon.svg...\n');
+
+  // Lire le SVG
+  const svgBuffer = readFileSync(SVG_PATH);
+
+  console.log('📱 PWA Icons (Android):');
+  // Generer chaque taille PWA
+  for (const size of PWA_SIZES) {
+    const outputPath = join(ICONS_DIR, `icon-${size}.png`);
+    await sharp(svgBuffer).resize(size, size).png().toFile(outputPath);
+    console.log(`  ✓ icon-${size}.png (${size}x${size})`);
+  }
+
+  console.log('\n🍎 iOS Icons:');
+  // Generer chaque taille iOS
+  for (const { size, name } of IOS_SIZES) {
+    const outputPath = join(ICONS_DIR, `${name}.png`);
+    await sharp(svgBuffer).resize(size, size).png().toFile(outputPath);
+    console.log(`  ✓ ${name}.png (${size}x${size})`);
+  }
+
+  console.log('\n🌐 Favicon:');
+  // Generer favicon-32 pour fallback
+  await sharp(svgBuffer)
+    .resize(32, 32)
+    .png()
+    .toFile(join(ICONS_DIR, 'favicon-32.png'));
+  console.log('  ✓ favicon-32.png (32x32)');
+
+  // Generer favicon-16
+  await sharp(svgBuffer)
+    .resize(16, 16)
+    .png()
+    .toFile(join(ICONS_DIR, 'favicon-16.png'));
+  console.log('  ✓ favicon-16.png (16x16)');
+
+  console.log('\n✅ All PWA icons generated successfully!');
+  console.log(`   Total: ${PWA_SIZES.length + IOS_SIZES.length + 2} icons`);
+}
+
+generateIcons().catch((error) => {
+  console.error('Failed to generate icons:', error);
+  process.exit(1);
 });
-
-console.log('\nPour la production, convertissez les SVG en PNG avec:');
-console.log('npx svgexport public/icons/icon-192.svg public/icons/icon-192.png 192:192');
-console.log('npx svgexport public/icons/icon-512.svg public/icons/icon-512.png 512:512');
