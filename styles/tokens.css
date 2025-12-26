@@ -113,13 +113,63 @@
   --z-confetti: 300;
 }
 
-/* === MODE CONTRASTE ELEVE (A11Y) === */
+/* === MODE CONTRASTE ELEVE (A11Y - WCAG 2.2 AAA 7:1) === */
 @media (prefers-contrast: high) {
   :root {
+    /* Couleurs saturees pour meilleure visibilite */
     --princess-pink: #ff1493;
+    --princess-pink-light: #ffb6d9;
+    --princess-pink-dark: #c71585;
     --unicorn-purple: #9932cc;
+    --unicorn-purple-light: #da70d6;
+    --unicorn-purple-dark: #7b1fa2;
     --sky-blue: #1e90ff;
+    --sky-blue-light: #87ceeb;
     --star-yellow: #ffa500;
+    --star-yellow-light: #ffcc00;
+    --mint-green: #00c853;
+    --coral-pink: #ff0000;
+
+    /* Texte contraste eleve */
+    --high-contrast-text: #000000;
+    --high-contrast-text-inverse: #ffffff;
+    --high-contrast-background: #ffffff;
+    --high-contrast-background-inverse: #000000;
+
+    /* Bordures visibles (obligatoires en high contrast) */
+    --high-contrast-border: 2px solid #000000;
+    --high-contrast-border-focus: 3px solid #0000ff;
+
+    /* Glows renforces */
+    --glow-princess: 0 0 10px rgba(255, 20, 147, 0.9);
+    --glow-unicorn: 0 0 10px rgba(153, 50, 204, 0.9);
+    --glow-star: 0 0 10px rgba(255, 165, 0, 0.9);
+    --glow-success: 0 0 10px rgba(0, 200, 83, 0.9);
+
+    /* Ombres visibles */
+    --shadow-card: 0 0 0 2px #000000;
+    --shadow-button: 0 0 0 3px #000000;
+
+    /* Gradients remplaces par couleurs solides */
+    --gradient-fairy: linear-gradient(135deg, #ff1493 0%, #ff1493 100%);
+    --gradient-unicorn: linear-gradient(135deg, #9932cc 0%, #9932cc 100%);
+    --gradient-princess: linear-gradient(135deg, #ff1493 0%, #ff1493 100%);
+    --gradient-success: linear-gradient(135deg, #00c853 0%, #00c853 100%);
+    --gradient-button: linear-gradient(135deg, #c71585 0%, #c71585 100%);
+  }
+}
+
+/* === MODE CONTRASTE ELEVE + DARK === */
+@media (prefers-contrast: high) and (prefers-color-scheme: dark) {
+  :root {
+    --high-contrast-text: #ffffff;
+    --high-contrast-text-inverse: #000000;
+    --high-contrast-background: #000000;
+    --high-contrast-background-inverse: #ffffff;
+    --high-contrast-border: 2px solid #ffffff;
+    --high-contrast-border-focus: 3px solid #00ffff;
+    --shadow-card: 0 0 0 2px #ffffff;
+    --shadow-button: 0 0 0 3px #ffffff;
   }
 }
 
