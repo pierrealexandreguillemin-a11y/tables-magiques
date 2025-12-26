@@ -67,3 +67,29 @@ export const CheckBadgesSchema = z.discriminatedUnion('mode', [
 ]);
 
 export type CheckBadgesInput = z.infer<typeof CheckBadgesSchema>;
+
+// =============================================================================
+// API SCORES - SAVE SCORE REQUEST
+// =============================================================================
+
+/**
+ * Schema pour POST /api/scores
+ * Sauvegarde un score de session (practice ou challenge)
+ */
+export const SaveScoreSchema = z.object({
+  mode: z.enum(['practice', 'challenge']),
+  table: z.number().min(1).max(10).optional(),
+  correct: z.number().min(0),
+  total: z.number().min(1),
+  timeRemaining: z.number().min(0).optional(),
+});
+
+export type SaveScoreSchemaInput = z.infer<typeof SaveScoreSchema>;
+
+/**
+ * Schema pour GET /api/scores query params
+ */
+export const GetScoresQuerySchema = z.object({
+  mode: z.enum(['practice', 'challenge']).optional(),
+  limit: z.coerce.number().min(1).max(100).optional().default(20),
+});
