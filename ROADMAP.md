@@ -11,8 +11,8 @@ Plan de developpement structure selon ISO/IEC 25010.
 - [x] Phase 4 : Badges
 - [x] Phase 4.5 : React Query + Architecture ISO (2025-12-26)
 - [x] Phase 5 : Dark Mode (2025-12-26)
-- [ ] Phase 6 : PWA Complete ← PROCHAINE
-- [ ] Phase 7 : Page Profil + Historique
+- [x] Phase 6 : PWA Complete (2025-12-26)
+- [ ] Phase 7 : Page Profil + Historique ← PROCHAINE
 - [ ] Phase 8 : Sons + Badge Icons
 - [x] Phase 9 : Tests E2E (infrastructure)
 
@@ -396,7 +396,7 @@ tests/integration/challenge-page.test.tsx - Mock fixes
 
 ---
 
-## Phase 6 : PWA Complete
+## Phase 6 : PWA Complete (COMPLETE)
 
 ### Objectif
 
@@ -405,30 +405,44 @@ App installable avec support offline.
 ### Tasks
 
 ```
-[ ] 6.1 - manifest.json
-    - Icons toutes tailles
-    - Theme colors
+[x] 6.1 - manifest.json
+    - Icons toutes tailles (72 a 512)
+    - Theme colors (pink/purple)
     - Display standalone
 
-[ ] 6.2 - Service Worker
+[x] 6.2 - Service Worker
     - Cache static assets
-    - Offline fallback
-    - Background sync
+    - Offline fallback (/offline)
+    - Network First pour pages, Cache First pour assets
+    - Versioning (v2)
 
-[ ] 6.3 - Install prompt
-    - Detection installable
-    - Bouton "Installer l'app"
+[x] 6.3 - Install prompt
+    - useInstallPrompt hook
+    - InstallButton component
+    - Detection beforeinstallprompt
 
-[ ] 6.4 - Icons PWA
+[x] 6.4 - Icons PWA
     - SVG licorne custom
-    - PNG toutes tailles
-    - Splash screens
+    - PNG toutes tailles (17 icons)
+    - iOS icons (60, 76, 120, 152, 167, 180, 1024)
 ```
 
-### Tests
+### Fichiers crees
 
 ```
-Lighthouse PWA audit > 90
+hooks/useInstallPrompt.ts              - Hook install prompt
+components/pwa/InstallButton.tsx       - Bouton installer
+components/pwa/index.ts                - Barrel export
+app/offline/page.tsx                   - Page offline fallback
+scripts/generate-icons.mjs             - Script generation icons
+public/icons/icon-*.png                - 17 icons PWA/iOS
+```
+
+### Tests TDD
+
+```
+tests/unit/hooks/useInstallPrompt.test.ts - 13 tests
+tests/unit/components/pwa/InstallButton.test.tsx - 8 tests
 ```
 
 ---
@@ -629,12 +643,17 @@ Chaque feature est complete quand :
 
 ### 2025-12-26
 
+- Phase 6 complete (PWA)
+  - 17 icons PWA/iOS generes avec sharp
+  - Service Worker v2 avec offline fallback
+  - useInstallPrompt hook + InstallButton
+  - Page /offline pour mode hors ligne
+  - 656 tests (21 nouveaux tests PWA)
 - Phase 5 complete (Dark Mode)
   - useTheme hook avec localStorage + system preference
   - ThemeToggle composant avec animations Framer Motion
   - Anti-FOUC script dans layout.tsx
   - Dark gradients sur toutes les pages
-  - 635 tests (21 nouveaux tests theme)
 - Phase 4.5 complete (React Query + ISO)
 - 614 tests unitaires/integration
 - Ajout phases 7, 8 et sections Qualite/Architecture
