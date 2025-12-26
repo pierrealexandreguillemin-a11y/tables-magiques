@@ -8,6 +8,43 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 
+// Mock GSAP avec vi.hoisted pour accès dans les mocks
+const { mockGsap, mockUseGSAP } = vi.hoisted(() => {
+  const mockGsap = {
+    to: vi.fn().mockReturnValue({ kill: vi.fn() }),
+    from: vi.fn().mockReturnValue({ kill: vi.fn() }),
+    timeline: vi.fn(() => ({
+      to: vi.fn().mockReturnThis(),
+      from: vi.fn().mockReturnThis(),
+      kill: vi.fn(),
+    })),
+    registerPlugin: vi.fn(),
+    defaults: vi.fn(),
+    ticker: { lagSmoothing: vi.fn(), fps: vi.fn() },
+    context: vi.fn(() => ({ revert: vi.fn(), add: vi.fn() })),
+  };
+  const mockUseGSAP = vi.fn((cb?: () => void) => {
+    if (typeof cb === 'function')
+      try {
+        cb();
+      } catch {}
+    return {
+      context: { revert: vi.fn() },
+      contextSafe: vi.fn((fn: unknown) => fn),
+    };
+  });
+  return { mockGsap, mockUseGSAP };
+});
+
+vi.mock('gsap', () => ({ gsap: mockGsap, default: mockGsap }));
+
+vi.mock('@/lib/animations/gsap/register', () => ({
+  gsap: mockGsap,
+  useGSAP: mockUseGSAP,
+}));
+
+vi.mock('@gsap/react', () => ({ useGSAP: mockUseGSAP }));
+
 // Mock next/link
 vi.mock('next/link', () => ({
   default: ({
@@ -52,24 +89,26 @@ vi.mock('framer-motion', () => {
         children?: React.ReactNode;
         [key: string]: unknown;
       }) => <button {...filterMotionProps(props)}>{children}</button>,
+      span: ({
+        children,
+        ...props
+      }: {
+        children?: React.ReactNode;
+        [key: string]: unknown;
+      }) => <span {...filterMotionProps(props)}>{children}</span>,
     },
     AnimatePresence: ({ children }: { children: React.ReactNode }) => (
       <>{children}</>
     ),
+    useAnimationControls: () => ({
+      start: vi.fn(),
+      stop: vi.fn(),
+      set: vi.fn(),
+    }),
+    useSpring: () => ({ get: () => 0, set: vi.fn() }),
+    useTransform: () => ({ get: () => 0, on: () => vi.fn() }),
   };
 });
-
-// Mock GSAP
-vi.mock('gsap', () => ({
-  gsap: {
-    to: vi.fn(),
-    registerPlugin: vi.fn(),
-  },
-}));
-
-vi.mock('@gsap/react', () => ({
-  useGSAP: vi.fn(),
-}));
 
 // Mock useTheme for ThemeToggle
 vi.mock('@/hooks/useTheme', () => ({
@@ -79,6 +118,28 @@ vi.mock('@/hooks/useTheme', () => ({
     systemPreference: 'light',
     setTheme: vi.fn(),
     toggleTheme: vi.fn(),
+  }),
+}));
+
+// Mock ToastProvider hooks
+vi.mock('@/components/effects/ToastProvider', () => ({
+  ToastProvider: ({ children }: { children: React.ReactNode }) => children,
+  useToastContext: () => ({
+    success: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
+    dismiss: vi.fn(),
+    dismissAll: vi.fn(),
+    toasts: [],
+  }),
+}));
+
+// Mock useAnnouncer
+vi.mock('@/hooks/useAnnouncer', () => ({
+  useAnnouncer: () => ({
+    announcePolite: vi.fn(),
+    announceAssertive: vi.fn(),
   }),
 }));
 

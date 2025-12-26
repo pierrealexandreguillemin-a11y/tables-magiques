@@ -119,27 +119,35 @@ vi.mock('lottie-web', () => ({
 
 // GSAP Mock - pour tests unitaires rapides
 // Les tests d'intégration peuvent importer le vrai GSAP
-vi.mock('gsap', () => ({
-  gsap: {
-    to: vi.fn().mockReturnValue({ kill: vi.fn() }),
-    from: vi.fn().mockReturnValue({ kill: vi.fn() }),
-    fromTo: vi.fn().mockReturnValue({ kill: vi.fn() }),
-    set: vi.fn(),
-    timeline: vi.fn(() => ({
-      to: vi.fn().mockReturnThis(),
-      from: vi.fn().mockReturnThis(),
-      fromTo: vi.fn().mockReturnThis(),
-      add: vi.fn().mockReturnThis(),
-      play: vi.fn().mockReturnThis(),
-      pause: vi.fn().mockReturnThis(),
-      kill: vi.fn(),
-    })),
-    registerPlugin: vi.fn(),
-    context: vi.fn(() => ({
-      revert: vi.fn(),
-      add: vi.fn(),
-    })),
+const mockGsap = {
+  to: vi.fn().mockReturnValue({ kill: vi.fn() }),
+  from: vi.fn().mockReturnValue({ kill: vi.fn() }),
+  fromTo: vi.fn().mockReturnValue({ kill: vi.fn() }),
+  set: vi.fn(),
+  timeline: vi.fn(() => ({
+    to: vi.fn().mockReturnThis(),
+    from: vi.fn().mockReturnThis(),
+    fromTo: vi.fn().mockReturnThis(),
+    add: vi.fn().mockReturnThis(),
+    play: vi.fn().mockReturnThis(),
+    pause: vi.fn().mockReturnThis(),
+    kill: vi.fn(),
+  })),
+  registerPlugin: vi.fn(),
+  defaults: vi.fn(),
+  ticker: {
+    lagSmoothing: vi.fn(),
+    fps: vi.fn(),
   },
+  context: vi.fn(() => ({
+    revert: vi.fn(),
+    add: vi.fn(),
+  })),
+};
+
+vi.mock('gsap', () => ({
+  gsap: mockGsap,
+  default: mockGsap,
 }));
 
 // useGSAP Mock - simule le hook React
