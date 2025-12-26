@@ -1,16 +1,27 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Lexend, JetBrains_Mono } from 'next/font/google';
 import { Providers } from './providers';
 import './globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+/**
+ * Lexend - Police optimisée pour la dyslexie
+ * Recherche Stanford: +17% fluence lecture
+ * ISO/IEC 25010 - Accessibilité enfants
+ */
+const lexend = Lexend({
+  variable: '--font-lexend',
   subsets: ['latin'],
+  display: 'swap',
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+/**
+ * JetBrains Mono - Police monospace accessible
+ * Pour affichage des chiffres/scores
+ */
+const jetbrainsMono = JetBrains_Mono({
+  variable: '--font-mono',
   subsets: ['latin'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -75,7 +86,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${lexend.variable} ${jetbrainsMono.variable} antialiased`}
       >
         <Providers>{children}</Providers>
         <script
