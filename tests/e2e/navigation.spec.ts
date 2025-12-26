@@ -130,6 +130,12 @@ test.describe('Navigation Souris', () => {
 });
 
 test.describe('Navigation Touch (Mobile)', () => {
+  // Skip tap tests on non-mobile browsers (Chromium desktop doesn't support tap properly)
+  test.skip(
+    ({ browserName }) => browserName !== 'webkit',
+    'Skip tap tests on non-touch devices'
+  );
+
   test.beforeEach(async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');
