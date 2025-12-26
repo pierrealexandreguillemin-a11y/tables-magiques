@@ -6,8 +6,7 @@
 import { getRedis, KEYS } from '@/lib/db/upstash';
 import type { Score, GameMode, ScoreStats, SaveScoreInput } from '@/types/game';
 
-// Re-export for backwards compatibility
-export type { ScoreStats };
+// NOTE: ScoreStats import depuis @/types/game (source unique de verite)
 
 /**
  * Recupere tous les scores d'un utilisateur pour un mode
