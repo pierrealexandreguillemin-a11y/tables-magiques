@@ -14,8 +14,8 @@ Plan de developpement structure selon ISO/IEC 25010.
 - [x] Phase 6 : PWA Complete (2025-12-26)
 - [x] Phase 7 : Page Profil + Historique (2025-12-26)
 - [x] Phase 8 : Effets et Animations P1 (2025-12-26)
-- [ ] Phase 8.5 : Corrections E2E + Coverage ← EN COURS
-- [ ] Phase 9 : Sons + Enrichissement P2
+- [x] Phase 8.5 : Corrections E2E + Production (2025-12-26)
+- [ ] Phase 9 : Sons + Enrichissement P2 ← EN COURS
 - [x] Phase 10 : Tests E2E (infrastructure)
 
 ---
@@ -795,6 +795,23 @@ Chaque feature est complete quand :
 ---
 
 ## Changelog
+
+### 2025-12-26 (Phase 8.5 Complete)
+
+- Phase 8.5 complete: E2E Production Tests
+  - playwright.config.ts → baseURL production Vercel
+  - auth.setup.ts pour authentification e2e_test
+  - chromium-no-auth project pour tests modal login
+  - practice.spec.ts rewritten avec storageState auth
+  - profile.spec.ts rewritten avec auth state detection
+  - effects-phase8.spec.ts fix reduced motion (0s regex)
+  - navigation.spec.ts fix animated unicorn (force click)
+- 237 tests E2E passent contre production
+  - Vercel: https://tables-magiques.vercel.app
+  - Backend: Upstash Redis production
+- 860 tests unitaires passent (100%)
+- 6 commits granulaires ISO/IEC poussés
+- 0 erreur TypeScript, 0 warning ESLint
 
 ### 2025-12-26 (Nuit)
 
