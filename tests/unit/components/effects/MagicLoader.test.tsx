@@ -9,14 +9,13 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MagicLoader } from '@/components/effects/MagicLoader';
 
-// Mock lottie-react
+// Mock lottie-react - filtre animationData pour éviter warning React
 vi.mock('lottie-react', () => ({
   default: ({
     'data-testid': testId,
     className,
     loop,
     autoplay,
-    ...props
   }: {
     'data-testid'?: string;
     className?: string;
@@ -29,7 +28,6 @@ vi.mock('lottie-react', () => ({
       className={className}
       data-loop={loop?.toString()}
       data-autoplay={autoplay?.toString()}
-      {...props}
     />
   ),
 }));
