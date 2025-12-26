@@ -8,3 +8,5 @@ export * from './game';
 export * from './badge';
 export * from './api';
 export * from './effects';
+export * from './auth';
+export * from './profile';
