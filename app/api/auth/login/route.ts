@@ -7,10 +7,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { LoginSchema, SESSION_COOKIE_NAME } from '@/types/auth';
 import { authenticateUser, createSession } from '@/lib/auth';
+import { rateLimitMiddleware } from '@/lib/auth/rateLimit';
 import type { AuthErrorResponse, AuthSuccessResponse } from '@/types/auth';
 
 export async function POST(request: NextRequest) {
   try {
+    // 0. Rate limiting (5 tentatives/min par IP)
+    const rateLimitResponse = await rateLimitMiddleware(request, 'login');
+    if (rateLimitResponse) return rateLimitResponse;
+
     // 1. Parser le body
     const body = await request.json();
 
