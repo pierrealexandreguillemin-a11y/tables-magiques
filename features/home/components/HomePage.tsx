@@ -81,10 +81,11 @@ export function HomePage() {
       }
 
       gsap.to(containerRef.current, {
-        backgroundPosition: '200% 50%',
-        duration: 20,
-        ease: 'none',
+        backgroundPosition: '100% 50%',
+        duration: 15,
+        ease: 'power1.inOut',
         repeat: -1,
+        yoyo: true,
       });
     },
     { scope: containerRef, revertOnUpdate: false }

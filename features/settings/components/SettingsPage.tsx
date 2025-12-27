@@ -14,7 +14,9 @@ import {
   RotateCcw,
   Download,
   Upload,
+  X,
 } from 'lucide-react';
+import Link from 'next/link';
 import { useSettings } from '../hooks/useSettings';
 import { SettingsSection } from './SettingsSection';
 import { SettingsToggle } from './SettingsToggle';
@@ -184,9 +186,26 @@ export function SettingsPage() {
   return (
     <main className="min-h-screen py-8">
       <div className="container mx-auto px-4">
-        <h1 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
-          Parametres
-        </h1>
+        {/* Header with close button */}
+        <div className="flex items-center justify-between mb-8 max-w-2xl mx-auto">
+          <div className="w-10" /> {/* Spacer for centering */}
+          <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+            Parametres
+          </h1>
+          <Link
+            href="/"
+            className={cn(
+              'flex h-10 w-10 items-center justify-center rounded-full',
+              'bg-pink-100 dark:bg-slate-700',
+              'text-pink-600 dark:text-pink-300',
+              'hover:bg-pink-200 dark:hover:bg-slate-600',
+              'transition-colors'
+            )}
+            aria-label="Fermer les parametres"
+          >
+            <X size={20} />
+          </Link>
+        </div>
         <motion.div
           className="space-y-6 max-w-2xl mx-auto p-4"
           variants={shouldAnimate ? containerVariants : undefined}
@@ -408,13 +427,6 @@ export function SettingsPage() {
                 checked={settings.privacy.analyticsEnabled}
                 onChange={(v) => updateSetting('privacy.analyticsEnabled', v)}
                 testId="toggle-analytics"
-              />
-              <SettingsToggle
-                label="Partager ma progression"
-                description="Visible par les parents/enseignants"
-                checked={settings.privacy.shareProgress}
-                onChange={(v) => updateSetting('privacy.shareProgress', v)}
-                testId="toggle-share"
               />
             </SettingsSection>
           </motion.div>
