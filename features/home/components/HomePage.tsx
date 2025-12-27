@@ -21,6 +21,9 @@ import {
   StaggerList,
   MagneticButton,
 } from '@/components/effects';
+import { OnboardingTour } from '@/features/onboarding';
+import { HelpButton } from '@/components/ui/HelpButton';
+import { Settings, User } from 'lucide-react';
 
 gsap.registerPlugin(useGSAP);
 
@@ -140,6 +143,23 @@ export function HomePage() {
 
       {/* Header fixe */}
       <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+        <Link
+          href="/profile"
+          data-tour="profile-button"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-white/80 hover:bg-white/20 transition-colors"
+          aria-label="Mon profil"
+        >
+          <User className="h-5 w-5" />
+        </Link>
+        <Link
+          href="/settings"
+          data-tour="settings-button"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-white/80 hover:bg-white/20 transition-colors"
+          aria-label="Parametres"
+        >
+          <Settings className="h-5 w-5" />
+        </Link>
+        <HelpButton className="text-white/80 hover:bg-white/20" />
         <UserButton />
         <InstallButton />
         <ThemeToggle />
@@ -222,6 +242,7 @@ export function HomePage() {
         {/* Licorne animee */}
         <motion.div
           ref={unicornRef}
+          data-tour="logo"
           className="text-8xl sm:text-9xl mb-6 cursor-pointer select-none"
           onClick={handleUnicornClick}
           whileHover={{
@@ -266,14 +287,14 @@ export function HomePage() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 1.2, duration: 0.6, type: 'spring' }}
         >
-          <Link href="/practice">
+          <Link href="/practice" data-tour="practice-button">
             <PulseGlow color="#a855f7" intensity="subtle">
               <MagneticButton className="text-xl px-8 py-6 bg-white text-purple-600 hover:bg-white/90 rounded-full font-bold shadow-2xl">
                 🎮 Mode Pratique
               </MagneticButton>
             </PulseGlow>
           </Link>
-          <Link href="/challenge">
+          <Link href="/challenge" data-tour="challenge-button">
             <PulseGlow color="#f97316" intensity="subtle">
               <MagneticButton className="text-xl px-8 py-6 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full font-bold shadow-2xl">
                 🔥 Mode Challenge
@@ -332,6 +353,9 @@ export function HomePage() {
 
       {/* Effet de vague en bas */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-purple-900/40 to-transparent pointer-events-none" />
+
+      {/* Tour guide onboarding */}
+      <OnboardingTour autoStart />
     </main>
   );
 }
