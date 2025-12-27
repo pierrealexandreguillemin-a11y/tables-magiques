@@ -6,6 +6,7 @@
 'use client';
 
 import { BadgeCard } from './BadgeCard';
+import { ScrollRevealList } from '@/components/effects/ScrollReveal';
 import { PRACTICE_BADGES, CHALLENGE_BADGES } from '@/types/badge';
 import type { EarnedBadge } from '@/types/badge';
 import type { GameMode } from '@/types/game';
@@ -48,7 +49,11 @@ export function BadgeCollection({ earnedBadges, mode }: BadgeCollectionProps) {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <ScrollRevealList
+            variant="fade-up"
+            staggerDelay={0.1}
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
+          >
             {practiceBadges.map((badge) => (
               <BadgeCard
                 key={badge.id}
@@ -57,7 +62,7 @@ export function BadgeCollection({ earnedBadges, mode }: BadgeCollectionProps) {
                 earnedAt={getEarnedAt(badge.id)}
               />
             ))}
-          </div>
+          </ScrollRevealList>
         </section>
       )}
 
@@ -72,7 +77,11 @@ export function BadgeCollection({ earnedBadges, mode }: BadgeCollectionProps) {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+          <ScrollRevealList
+            variant="fade-up"
+            staggerDelay={0.1}
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4"
+          >
             {challengeBadges.map((badge) => (
               <BadgeCard
                 key={badge.id}
@@ -81,7 +90,7 @@ export function BadgeCollection({ earnedBadges, mode }: BadgeCollectionProps) {
                 earnedAt={getEarnedAt(badge.id)}
               />
             ))}
-          </div>
+          </ScrollRevealList>
         </section>
       )}
     </div>
