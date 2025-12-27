@@ -1,10 +1,25 @@
 /**
  * Feature Onboarding - Tables Magiques
+ * ISO/IEC 25010 - Encapsulation feature
+ *
  * Tour guide premiere visite
  *
  * @example
  * import { OnboardingTour, useFirstVisit, useOnboarding } from '@/features/onboarding';
  */
+
+// API
+export {
+  isFirstVisit,
+  markAsVisited,
+  clearFirstVisit,
+  isTourCompleted,
+  markTourCompleted,
+  clearTourCompleted,
+  resetOnboardingState,
+  getInitialFirstVisit,
+  getInitialTourCompleted,
+} from './api/onboardingStorage';
 
 // Hooks
 export { useFirstVisit } from './hooks/useFirstVisit';
