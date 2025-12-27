@@ -18,6 +18,7 @@ import {
   GentleShake,
   LottieAnimation,
   GradientText,
+  TextReveal,
   useToastContext,
   NumberReveal,
   PulseGlow,
@@ -175,7 +176,9 @@ export function PracticePage() {
             >
               <h1 className="text-4xl sm:text-5xl font-bold mb-8">
                 <GradientText variant="unicorn" animate as="span">
-                  Mode Pratique
+                  <TextReveal variant="slide" delay={0.2}>
+                    Mode Pratique
+                  </TextReveal>
                 </GradientText>
               </h1>
               <p className="text-xl text-white/80 mb-12">

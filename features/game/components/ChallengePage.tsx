@@ -18,6 +18,7 @@ import {
   GentleShake,
   LottieAnimation,
   GradientText,
+  TextReveal,
   useToastContext,
   NumberReveal,
   PulseGlow,
@@ -206,7 +207,9 @@ export function ChallengePage() {
             >
               <h1 className="text-4xl sm:text-5xl font-bold mb-8">
                 <GradientText variant="gold" animate as="span">
-                  Mode Challenge
+                  <TextReveal variant="slide" delay={0.2}>
+                    Mode Challenge
+                  </TextReveal>
                 </GradientText>
               </h1>
 
