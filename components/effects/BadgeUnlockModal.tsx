@@ -11,6 +11,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { useGsapEffects } from '@/hooks/useGsapEffects';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { LottieAnimation } from './LottieAnimation';
+import { BadgeIcon, type BadgeId } from './BadgeIcon';
 import { MagicButton } from './MagicButton';
 import { GradientText } from './GradientText';
 import { cn } from '@/lib/utils';
@@ -128,7 +129,11 @@ export function BadgeUnlockModal({
                     transition: { type: 'spring', stiffness: 150, delay: 0.3 },
                   }}
                 >
-                  <span className="text-5xl">{badge.icon}</span>
+                  <BadgeIcon
+                    badgeId={badge.id as BadgeId}
+                    size={64}
+                    animate={true}
+                  />
                 </motion.div>
 
                 {/* Nom et description */}

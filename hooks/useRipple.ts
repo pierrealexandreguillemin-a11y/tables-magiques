@@ -16,8 +16,8 @@ export function useRipple(duration: number = 600): UseRippleResult {
   const cleanupRef = useRef<NodeJS.Timeout | null>(null);
 
   const addRipple = useCallback(
-    (event: React.MouseEvent) => {
-      const element = event.currentTarget as HTMLElement;
+    (event: React.MouseEvent<HTMLElement>) => {
+      const element = event.currentTarget;
       const rect = element.getBoundingClientRect();
 
       // Position relative au centre du click

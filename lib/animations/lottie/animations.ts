@@ -16,6 +16,7 @@ import loadingStars from '@/lib/lottie/loading-stars.json';
 import fireworks from '@/lib/lottie/fireworks.json';
 import starFavorite from '@/lib/lottie/star-favorite.json';
 import thumbsUp from '@/lib/lottie/thumbs-up.json';
+import unicorn from '@/lib/lottie/unicorn.json';
 
 // =============================================================================
 // TYPES
@@ -31,7 +32,8 @@ export type LottieAnimationId =
   | 'sparkles'
   | 'magic-wand'
   | 'fireworks'
-  | 'thumbs-up';
+  | 'thumbs-up'
+  | 'unicorn';
 
 export interface LottieAnimationData {
   /** Animation JSON data */
@@ -126,6 +128,13 @@ export const LOTTIE_ANIMATIONS: Record<LottieAnimationId, LottieAnimationData> =
       fallbackEmoji: '👍',
       description: 'Animation pouce leve',
     },
+    unicorn: {
+      data: unicorn,
+      loop: true,
+      autoplay: true,
+      fallbackEmoji: '🦄',
+      description: 'Animation licorne magique',
+    },
   };
 
 // =============================================================================
@@ -168,6 +177,7 @@ const ANIMATION_IDS: readonly LottieAnimationId[] = [
   'magic-wand',
   'fireworks',
   'thumbs-up',
+  'unicorn',
 ] as const;
 
 export function listAnimations(): LottieAnimationId[] {

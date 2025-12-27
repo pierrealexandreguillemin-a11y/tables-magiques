@@ -139,3 +139,27 @@
 @utility drop-shadow-yellow {
   filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
 }
+
+/* Ripple animation for buttons */
+@keyframes ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.5;
+  }
+  100% {
+    width: 500px;
+    height: 500px;
+    opacity: 0;
+  }
+}
+
+.animate-ripple {
+  animation: ripple 600ms ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ripple {
+    animation: none;
+  }
+}

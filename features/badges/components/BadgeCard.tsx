@@ -6,6 +6,7 @@
 'use client';
 
 import type { BadgeDefinition } from '@/types/badge';
+import { BadgeIcon, type BadgeId } from '@/components/effects/BadgeIcon';
 import { cn } from '@/lib/utils';
 
 export interface BadgeCardProps {
@@ -15,22 +16,22 @@ export interface BadgeCardProps {
   size?: 'small' | 'medium' | 'large';
 }
 
-const sizeClasses = {
+const sizeConfig = {
   small: {
     container: 'p-2',
-    emoji: 'text-2xl',
+    iconSize: 32,
     name: 'text-xs',
     description: 'text-xs',
   },
   medium: {
     container: 'p-4',
-    emoji: 'text-4xl',
+    iconSize: 48,
     name: 'text-sm',
     description: 'text-xs',
   },
   large: {
     container: 'p-6',
-    emoji: 'text-6xl',
+    iconSize: 72,
     name: 'text-base',
     description: 'text-sm',
   },
@@ -50,7 +51,7 @@ export function BadgeCard({
   earnedAt,
   size = 'medium',
 }: BadgeCardProps) {
-  const classes = sizeClasses[size];
+  const config = sizeConfig[size];
   const statusLabel = earned ? 'gagne' : 'non gagne';
 
   return (
@@ -59,22 +60,24 @@ export function BadgeCard({
       aria-label={`Badge ${badge.name} - ${statusLabel}`}
       className={cn(
         'flex flex-col items-center text-center rounded-xl bg-white/80 shadow-sm transition-transform hover:scale-105',
-        classes.container,
+        config.container,
         !earned && 'opacity-50'
       )}
     >
-      <span
-        className={cn(classes.emoji, 'mb-2', !earned && 'grayscale')}
-        aria-hidden="true"
-      >
-        {badge.emoji}
-      </span>
+      <div className="mb-2">
+        <BadgeIcon
+          badgeId={badge.id as BadgeId}
+          size={config.iconSize}
+          locked={!earned}
+          animate={earned}
+        />
+      </div>
 
-      <h3 className={cn(classes.name, 'font-semibold text-gray-800')}>
+      <h3 className={cn(config.name, 'font-semibold text-gray-800')}>
         {badge.name}
       </h3>
 
-      <p className={cn(classes.description, 'text-gray-600 mt-1')}>
+      <p className={cn(config.description, 'text-gray-600 mt-1')}>
         {earned ? badge.description : badge.condition}
       </p>
 
