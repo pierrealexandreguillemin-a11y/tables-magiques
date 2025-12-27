@@ -162,3 +162,53 @@ export const CUSTOM_CONFIG_FIXTURE: GameConfig = {
     questionTime: 3, // Plus rapide
   },
 };
+
+// =============================================================================
+// API RESPONSES - Réponses déterministes (pas de Math.random)
+// =============================================================================
+
+/**
+ * Réponse POST /api/game/answer - réponse CORRECTE (7×8=56)
+ */
+export const GAME_ANSWER_CORRECT_RESPONSE = {
+  success: true,
+  isCorrect: true,
+  correctAnswer: 56,
+  newScore: 5,
+  streak: 4,
+};
+
+/**
+ * Réponse POST /api/game/answer - réponse INCORRECTE (7×8≠48)
+ */
+export const GAME_ANSWER_WRONG_RESPONSE = {
+  success: true,
+  isCorrect: false,
+  correctAnswer: 56,
+  newScore: 4,
+  streak: 0,
+};
+
+/**
+ * Réponse POST /api/game/start
+ */
+export const GAME_START_RESPONSE = {
+  success: true,
+  gameId: 'game-fixture-001',
+  mode: 'practice' as const,
+  table: 7,
+  startedAt: '2025-12-26T14:00:00.000Z',
+};
+
+/**
+ * Réponse POST /api/game/end
+ */
+export const GAME_END_RESPONSE = {
+  success: true,
+  gameId: 'game-fixture-001',
+  finalScore: 8,
+  totalQuestions: 10,
+  accuracy: 0.8,
+  newBadges: [],
+  endedAt: '2025-12-26T14:15:00.000Z',
+};

@@ -14,6 +14,7 @@ import { renderQueryHook, createTestQueryClient } from '../../../../utils';
 import type { PracticeSessionStats } from '@/types/badge';
 import type { ChallengeResult } from '@/types/game';
 import { EARNED_BADGES_FIXTURE } from '../../../../fixtures';
+import { ALL_BADGES } from '@/config/badges';
 
 // MSW server is started globally in tests/setup.ts
 
@@ -47,14 +48,15 @@ describe('useBadges Hook', () => {
   });
 
   describe('Loaded state', () => {
-    it('charge les badges', async () => {
+    it('charge tous les badges avec statut earned', async () => {
       const { result } = renderQueryHook(() => useBadges());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
       });
 
-      expect(result.current.badges.length).toBe(EARNED_BADGES_FIXTURE.length);
+      // L'API retourne TOUS les badges (13) avec leur statut earned
+      expect(result.current.badges.length).toBe(ALL_BADGES.length);
     });
 
     it('retourne earnedCount correct', async () => {
@@ -160,7 +162,8 @@ describe('useBadges Hook', () => {
         await result.current.refetch();
       });
 
-      expect(result.current.badges.length).toBe(EARNED_BADGES_FIXTURE.length);
+      // Après refetch, tous les badges sont rechargés
+      expect(result.current.badges.length).toBe(ALL_BADGES.length);
     });
   });
 });

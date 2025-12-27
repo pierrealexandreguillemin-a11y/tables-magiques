@@ -3,24 +3,39 @@
  * ISO/IEC 29119 - Mock TRANSPORT only, NOT data
  *
  * MSW intercepte le réseau, les données viennent des fixtures RÉELLES
+ * AUCUNE donnée inventée - TOUT vient des fixtures
  */
 
 import { http, HttpResponse } from 'msw';
 import {
+  // Multiplications
   MULTIPLICATION_FIXTURES,
+  // User Progress
   USER_PROGRESS_FIXTURES,
+  // Sessions
   API_SESSION_FIXTURE,
+  // Badges
   EARNED_BADGES_FIXTURE,
+  CHECK_BADGES_PRACTICE_RESPONSE,
+  CHECK_BADGES_CHALLENGE_RESPONSE,
+  // Game State
   ACTIVE_GAME_STATE_FIXTURE,
+  GAME_ANSWER_CORRECT_RESPONSE,
+  GAME_START_RESPONSE,
+  GAME_END_RESPONSE,
+  // Auth
   EMMA_USER_FIXTURE,
   LOGIN_SUCCESS_RESPONSE,
   LOGIN_ERROR_RESPONSE,
   REGISTER_SUCCESS_RESPONSE,
   REGISTER_USER_EXISTS_RESPONSE,
+  // Scores
   PRACTICE_SCORES_FIXTURE,
   CHALLENGE_SCORES_FIXTURE,
   SCORE_STATS_PRACTICE_FIXTURE,
   SCORE_STATS_CHALLENGE_FIXTURE,
+  SCORE_PRACTICE_FIXTURE,
+  // Profile
   EMMA_PROFILE_USER,
   EMMA_EXPECTED_STATS,
   EMMA_PRACTICE_STATS,
@@ -28,6 +43,7 @@ import {
   EMMA_TABLE_PROGRESS,
   EMMA_RECENT_SESSIONS,
 } from '../fixtures';
+import { ALL_BADGES } from '@/config/badges';
 
 export const handlers = [
   // ============================================================================
@@ -98,7 +114,7 @@ export const handlers = [
       success: true,
       data: {
         ...body,
-        recordedAt: new Date().toISOString(),
+        recordedAt: '2025-12-26T14:00:00.000Z', // Date fixe depuis fixtures
       },
     });
   }),
@@ -119,9 +135,9 @@ export const handlers = [
     return HttpResponse.json({
       success: true,
       session: {
-        id: `session-${Date.now()}`,
+        id: 'session-fixture-001',
         userId: body.userId || 'user-456',
-        startedAt: new Date().toISOString(),
+        startedAt: '2025-12-26T14:00:00.000Z',
         mode: body.mode || 'practice',
         tableSelected: body.table || null,
       },
@@ -137,27 +153,30 @@ export const handlers = [
   }),
 
   // ============================================================================
-  // BADGES API
+  // BADGES API - 100% fixtures, 0 données inventées
   // ============================================================================
 
-  // GET /api/badges - Badges de l'utilisateur connecte (via session)
+  // GET /api/badges - Badges de l'utilisateur connecté
   http.get('/api/badges', () => {
+    // Combiner badges gagnés avec définitions complètes
+    const badgesWithStatus = ALL_BADGES.map((badge) => {
+      const earned = EARNED_BADGES_FIXTURE.find((e) => e.id === badge.id);
+      return {
+        ...badge,
+        earned: !!earned,
+        earnedAt: earned?.earnedAt || null,
+      };
+    });
+
     return HttpResponse.json({
-      badges: EARNED_BADGES_FIXTURE.map((b) => ({
-        ...b,
-        earned: true,
-        earnedAt: b.earnedAt,
-        emoji: '⭐',
-        name: `Badge ${b.id}`,
-        description: `Description ${b.id}`,
-        condition: { type: 'streak', value: 5 },
-      })),
+      badges: badgesWithStatus,
       earnedCount: EARNED_BADGES_FIXTURE.length,
-      totalCount: 13,
+      totalCount: ALL_BADGES.length,
     });
   }),
 
   // POST /api/badges - Check badges (practice ou challenge)
+  // Retourne des fixtures RÉELLES, pas des données inventées
   http.post('/api/badges', async ({ request }) => {
     const body = (await request.json()) as {
       mode: 'practice' | 'challenge';
@@ -165,34 +184,15 @@ export const handlers = [
       challengeResult?: unknown;
     };
 
-    // Simuler nouveau badge gagne
-    const newBadges =
-      body.mode === 'practice'
-        ? [
-            {
-              id: 'streak5',
-              emoji: '🔥',
-              name: 'Serie de 5',
-              description: '5 bonnes reponses',
-            },
-          ]
-        : [
-            {
-              id: 'speed5',
-              emoji: '⚡',
-              name: 'Eclair Rapide',
-              description: '5 questions en 30s',
-            },
-          ];
-
-    return HttpResponse.json({
-      newBadges,
-      message: `${newBadges.length} nouveau(x) badge(s) debloque(s)`,
-    });
+    // Retourne la fixture appropriée selon le mode
+    if (body.mode === 'practice') {
+      return HttpResponse.json(CHECK_BADGES_PRACTICE_RESPONSE);
+    }
+    return HttpResponse.json(CHECK_BADGES_CHALLENGE_RESPONSE);
   }),
 
   // ============================================================================
-  // GAME API
+  // GAME API - Réponses déterministes depuis fixtures
   // ============================================================================
 
   // GET /api/game/state - État du jeu en cours
@@ -202,51 +202,28 @@ export const handlers = [
 
   // POST /api/game/start - Démarrer partie
   http.post('/api/game/start', async ({ request }) => {
-    const body = (await request.json()) as Record<string, unknown>;
-
+    const body = (await request.json()) as { mode?: string; table?: number };
     return HttpResponse.json({
-      success: true,
-      gameId: `game-${Date.now()}`,
-      mode: body.mode || 'practice',
-      table: body.table,
-      startedAt: new Date().toISOString(),
+      ...GAME_START_RESPONSE,
+      mode: body.mode || GAME_START_RESPONSE.mode,
+      table: body.table || GAME_START_RESPONSE.table,
     });
   }),
 
   // POST /api/game/answer - Soumettre réponse
-  http.post('/api/game/answer', async ({ request }) => {
-    // Parse request to validate format
-    await request.json();
-
-    // Simuler vérification
-    const isCorrect = Math.random() > 0.3; // 70% de réussite simulée
-
-    return HttpResponse.json({
-      success: true,
-      isCorrect,
-      correctAnswer: 56, // Fixe pour les tests
-      newScore: isCorrect ? 1 : 0,
-      streak: isCorrect ? 1 : 0,
-    });
+  // DÉTERMINISTE: toujours retourne une réponse correcte (fixture)
+  // Pas de Math.random() - comportement prévisible pour tests
+  http.post('/api/game/answer', () => {
+    return HttpResponse.json(GAME_ANSWER_CORRECT_RESPONSE);
   }),
 
   // POST /api/game/end - Terminer partie
-  http.post('/api/game/end', async ({ request }) => {
-    const body = (await request.json()) as Record<string, unknown>;
-
-    return HttpResponse.json({
-      success: true,
-      gameId: body.gameId,
-      finalScore: 8,
-      totalQuestions: 10,
-      accuracy: 0.8,
-      newBadges: [],
-      endedAt: new Date().toISOString(),
-    });
+  http.post('/api/game/end', () => {
+    return HttpResponse.json(GAME_END_RESPONSE);
   }),
 
   // ============================================================================
-  // AUTH API (complet avec fixtures reelles)
+  // AUTH API - 100% fixtures réelles
   // ============================================================================
 
   // POST /api/auth/login
@@ -318,12 +295,12 @@ export const handlers = [
       );
     }
 
-    // Username deja pris (emma existe)
+    // Username déjà pris (emma existe dans fixtures)
     if (body.username.toLowerCase() === 'emma') {
       return HttpResponse.json(REGISTER_USER_EXISTS_RESPONSE, { status: 409 });
     }
 
-    // Succes inscription
+    // Succès inscription
     return HttpResponse.json(REGISTER_SUCCESS_RESPONSE, { status: 201 });
   }),
 
@@ -338,7 +315,7 @@ export const handlers = [
       });
     }
 
-    // Session valide = retourne Emma
+    // Session valide = retourne Emma (fixture)
     return HttpResponse.json({
       authenticated: true,
       user: EMMA_USER_FIXTURE,
@@ -404,14 +381,14 @@ export const handlers = [
       );
     }
 
-    // Retourner score cree
+    // Retourne le score de fixture avec les données du body
     return HttpResponse.json(
       {
         success: true,
         score: {
-          userId: 'user-456',
+          ...SCORE_PRACTICE_FIXTURE,
           ...body,
-          timestamp: new Date().toISOString(),
+          timestamp: '2025-12-26T14:00:00.000Z',
         },
       },
       { status: 201 }
@@ -451,7 +428,7 @@ export const handlers = [
           masteredCount: EMMA_TABLE_PROGRESS.filter((t) => t.mastered).length,
           totalTables: 10,
         },
-        badgeCount: 3,
+        badgeCount: EARNED_BADGES_FIXTURE.length,
       },
     });
   }),

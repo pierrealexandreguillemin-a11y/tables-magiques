@@ -94,3 +94,53 @@ export const BADGE_STATS_FIXTURE = {
     progress: 7, // 7/10 vers le badge parfait
   },
 };
+
+// =============================================================================
+// FIXTURES POUR POST /api/badges (nouveau badge gagné)
+// =============================================================================
+
+import type { NewBadge, CheckBadgesResponse } from '@/types/badge';
+
+/**
+ * Nouveau badge practice (streak5) - réponse API réelle
+ */
+export const NEW_PRACTICE_BADGE_FIXTURE: NewBadge = {
+  id: 'streak5',
+  emoji: '🦄',
+  name: 'Licorne Magique',
+  description: '5 bonnes reponses',
+};
+
+/**
+ * Nouveau badge challenge (speed5) - réponse API réelle
+ */
+export const NEW_CHALLENGE_BADGE_FIXTURE: NewBadge = {
+  id: 'speed5',
+  emoji: '⚡',
+  name: 'Eclair Rapide',
+  description: '5 reponses en challenge',
+};
+
+/**
+ * Réponse POST /api/badges - practice
+ */
+export const CHECK_BADGES_PRACTICE_RESPONSE: CheckBadgesResponse = {
+  newBadges: [NEW_PRACTICE_BADGE_FIXTURE],
+  message: '1 nouveau(x) badge(s) debloque(s)',
+};
+
+/**
+ * Réponse POST /api/badges - challenge
+ */
+export const CHECK_BADGES_CHALLENGE_RESPONSE: CheckBadgesResponse = {
+  newBadges: [NEW_CHALLENGE_BADGE_FIXTURE],
+  message: '1 nouveau(x) badge(s) debloque(s)',
+};
+
+/**
+ * Réponse POST /api/badges - aucun nouveau badge
+ */
+export const CHECK_BADGES_EMPTY_RESPONSE: CheckBadgesResponse = {
+  newBadges: [],
+  message: '0 nouveau(x) badge(s) debloque(s)',
+};
