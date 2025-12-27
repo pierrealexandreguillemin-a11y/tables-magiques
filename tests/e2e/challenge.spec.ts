@@ -34,9 +34,9 @@ test.describe('Challenge Mode', () => {
 
   test.describe('Phase Ready', () => {
     test('affiche titre Mode Challenge', async ({ page }) => {
-      await expect(
-        page.getByRole('heading', { name: /challenge/i })
-      ).toBeVisible();
+      // TextReveal fragmente le texte, chercher le h1 directement
+      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.getByText(/challenge/i).first()).toBeVisible();
     });
 
     test('affiche bouton commencer', async ({ page }) => {

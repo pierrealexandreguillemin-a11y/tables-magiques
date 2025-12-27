@@ -16,9 +16,9 @@ test.describe('Mode Practice - Page Selection', () => {
     });
 
     test('affiche titre Mode Pratique', async ({ page }) => {
-      await expect(
-        page.getByRole('heading', { name: /pratique/i })
-      ).toBeVisible();
+      // TextReveal fragmente le texte, chercher le h1 directement
+      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.getByText(/pratique/i).first()).toBeVisible();
     });
 
     test('affiche boutons de selection tables', async ({ page }) => {
