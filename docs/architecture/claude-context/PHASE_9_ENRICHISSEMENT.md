@@ -1,9 +1,9 @@
 # Phase 9 - Enrichissement P2 : Effets & Animations
 
 > **ISO/IEC 25010** - Utilisabilité, Accessibilité enfants
-> **Status**: En cours
+> **Status**: COMPLETE
 > **Dernière MAJ**: 2025-12-27
-> **Progression**: 90%
+> **Progression**: 100%
 
 ---
 
@@ -23,7 +23,7 @@
 | [x] 9.9      RippleEffect boutons                            COMPLETE     |
 | [x] 9.10a    Settings types ISO/IEC                          COMPLETE     |
 | [x] 9.10b    Settings page + hooks + tests                   COMPLETE     |
-| [ ] 9.11     Tour guidé (onboarding) + tests                 PENDING      |
+| [x] 9.11     Tour guidé (onboarding) + tests                 COMPLETE     |
 |                                                                           |
 +===========================================================================+
 ```
@@ -496,24 +496,22 @@ types/onboarding.ts           # Déjà créé
 <button data-tour="help-button">?</button>
 ```
 
-### Fichiers à créer
+### Fichiers créés
 
-- [ ] `features/onboarding/hooks/useFirstVisit.ts`
-- [ ] `features/onboarding/hooks/useOnboarding.ts`
-- [ ] `features/onboarding/components/OnboardingTour.tsx`
-- [ ] `features/onboarding/components/TourStep.tsx`
-- [ ] `features/onboarding/components/TourHighlight.tsx`
-- [ ] `features/onboarding/components/TourTooltip.tsx`
-- [ ] `features/onboarding/components/TourProgress.tsx`
-- [ ] `features/onboarding/index.ts`
-- [ ] `components/ui/HelpButton.tsx` (bouton `?` header)
-- [ ] Modifier `app/page.tsx` - ajouter data-tour attributes
-- [ ] Modifier `components/layout/Header.tsx` - ajouter HelpButton
-- [ ] `tests/unit/features/onboarding/hooks/useFirstVisit.test.ts`
-- [ ] `tests/unit/features/onboarding/hooks/useOnboarding.test.ts`
-- [ ] `tests/unit/features/onboarding/components/OnboardingTour.test.tsx`
-- [ ] `tests/integration/onboarding.test.tsx`
-- [ ] `tests/e2e/onboarding.spec.ts`
+- [x] `features/onboarding/hooks/useFirstVisit.ts`
+- [x] `features/onboarding/hooks/useOnboarding.ts`
+- [x] `features/onboarding/components/OnboardingTour.tsx`
+- [x] `features/onboarding/components/TourHighlight.tsx`
+- [x] `features/onboarding/components/TourTooltip.tsx`
+- [x] `features/onboarding/components/TourProgress.tsx`
+- [x] `features/onboarding/index.ts`
+- [x] `components/ui/HelpButton.tsx` (bouton `?` header)
+- [x] `features/home/components/HomePage.tsx` - data-tour attributes ajoutés
+- [x] `tests/unit/features/onboarding/hooks/useFirstVisit.test.ts`
+- [x] `tests/unit/features/onboarding/hooks/useOnboarding.test.ts`
+- [x] `tests/unit/features/onboarding/components/OnboardingTour.test.tsx`
+- [x] `tests/integration/onboarding.test.tsx`
+- [x] `tests/e2e/onboarding.spec.ts`
 
 ### Tests TDD requis
 
@@ -712,7 +710,7 @@ tests/
 ### Features
 
 - [x] `features/settings/` - hooks + components + index
-- [ ] `features/onboarding/` - hooks + components + index
+- [x] `features/onboarding/` - hooks + components + index
 
 ### Routes
 
@@ -723,16 +721,16 @@ tests/
 - [x] Unit tests Settings + effects (coverage >= 80%)
 - [x] Integration tests Settings
 - [x] E2E tests Settings
-- [ ] Unit tests Onboarding
-- [ ] Integration tests Onboarding
-- [ ] E2E tests Onboarding
+- [x] Unit tests Onboarding
+- [x] Integration tests Onboarding
+- [x] E2E tests Onboarding
 
 ### Accessibilité
 
 - [x] Reduced motion supporté (tous composants)
 - [x] Navigation clavier (Settings)
-- [ ] Navigation clavier (Onboarding)
-- [ ] Screen reader announcements (Onboarding)
+- [x] Navigation clavier (Onboarding)
+- [x] Screen reader announcements (Onboarding)
 
 ### Production
 
