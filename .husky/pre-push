@@ -208,6 +208,35 @@ else
 fi
 
 # ============================================
+# 10. VERIFICATION COMMITS (bypass detection)
+# ============================================
+echo ""
+echo "🔍 Verification commits..."
+
+VALID_COMMITS_LOG=".git/tm-valid-commits.log"
+if [ -f "$VALID_COMMITS_LOG" ]; then
+  # Compter commits non verifies dans les 5 derniers
+  LAST_COMMITS=$(git log --format="%H" -n 5 2>/dev/null)
+  UNVERIFIED=0
+
+  for commit in $LAST_COMMITS; do
+    short=$(echo "$commit" | cut -c1-7)
+    if ! grep -q "$short" "$VALID_COMMITS_LOG" 2>/dev/null; then
+      ((UNVERIFIED++))
+    fi
+  done
+
+  if [ "$UNVERIFIED" -gt 0 ]; then
+    echo "  ⚠️  $UNVERIFIED commit(s) recent(s) sans verification hooks"
+    echo "  ℹ️  Rappel: Eviter --no-verify pour la qualite du code"
+  else
+    echo "  ✅ Tous les commits recents sont verifies"
+  fi
+else
+  echo "  ℹ️  Log de verification non disponible (nouveau repo)"
+fi
+
+# ============================================
 # RÉSUMÉ
 # ============================================
 echo ""

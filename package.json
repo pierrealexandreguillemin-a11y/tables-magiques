@@ -19,6 +19,7 @@
     "test:e2e:ui": "playwright test --ui",
     "quality:circular": "madge --circular --extensions ts,tsx lib app components",
     "quality:duplication": "jscpd lib app components --reporters html --output reports/duplication",
+    "quality:verify-commits": "bash scripts/verify-commits.sh",
     "fixtures:export": "tsx scripts/export-fixtures.ts",
     "prepare": "husky"
   },

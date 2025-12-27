@@ -1,0 +1,26 @@
+#!/bin/sh
+# Tables Magiques Post-Commit Hook v1.0
+# ISO/IEC 25010 - Quality Assurance (Hook Bypass Detection)
+#
+# Ce hook:
+# 1. Marque les commits "valides" (passes par pre-commit)
+# 2. Log l'activite pour audit
+# 3. Permet de detecter les bypass --no-verify
+
+# Fichier de trace des commits valides
+VALID_COMMITS_LOG=".git/tm-valid-commits.log"
+
+# Recuperer info du commit
+COMMIT_HASH=$(git rev-parse HEAD)
+COMMIT_SHORT=$(git rev-parse --short HEAD)
+COMMIT_MSG=$(git log -1 --format="%s" HEAD)
+COMMIT_DATE=$(date +"%Y-%m-%d %H:%M:%S")
+AUTHOR=$(git log -1 --format="%an <%ae>" HEAD)
+
+# Logger le commit comme valide (passe par les hooks)
+echo "$COMMIT_DATE | $COMMIT_SHORT | $AUTHOR | VALID | $COMMIT_MSG" >> "$VALID_COMMITS_LOG"
+
+# Message de confirmation
+echo ""
+echo "✅ Commit $COMMIT_SHORT enregistre avec validation qualite"
+echo ""
