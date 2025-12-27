@@ -222,7 +222,7 @@ if [ -f "$VALID_COMMITS_LOG" ]; then
   for commit in $LAST_COMMITS; do
     short=$(echo "$commit" | cut -c1-7)
     if ! grep -q "$short" "$VALID_COMMITS_LOG" 2>/dev/null; then
-      ((UNVERIFIED++))
+      UNVERIFIED=$((UNVERIFIED + 1))
     fi
   done
 
