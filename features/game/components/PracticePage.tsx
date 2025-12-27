@@ -35,6 +35,7 @@ import {
   NumberPad,
   ScoreBoard,
 } from '@/features/game';
+import { AuthGate } from '@/features/auth';
 
 gsap.registerPlugin(useGSAP);
 
@@ -43,6 +44,7 @@ export function PracticePage() {
   const { success, error: toastError } = useToastContext();
   const { announcePolite, announceAssertive } = useAnnouncer();
   const [explosionVisible, setExplosionVisible] = useState(false);
+  const [isGuestMode, setIsGuestMode] = useState(false);
 
   // Précharger les composants lourds après le premier rendu
   useEffect(() => {
@@ -121,7 +123,8 @@ export function PracticePage() {
     { scope: containerRef }
   );
 
-  return (
+  // Contenu de la page (utilisé par AuthGate)
+  const pageContent = (
     <div
       ref={containerRef}
       className="min-h-screen flex items-center justify-center overflow-hidden relative bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-400 dark:from-slate-900 dark:via-purple-900 dark:to-indigo-900"
@@ -376,6 +379,21 @@ export function PracticePage() {
         </AnimatePresence>
       </div>
     </div>
+  );
+
+  // Si mode invité activé, afficher directement le contenu
+  if (isGuestMode) {
+    return pageContent;
+  }
+
+  // Sinon, protéger avec AuthGate
+  return (
+    <AuthGate
+      message="Connecte-toi pour sauvegarder tes scores ! 🦄"
+      onGuestMode={() => setIsGuestMode(true)}
+    >
+      {pageContent}
+    </AuthGate>
   );
 }
 

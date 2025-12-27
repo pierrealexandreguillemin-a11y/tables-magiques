@@ -35,6 +35,7 @@ import { NumberPad } from './NumberPad';
 import { ScoreBoard } from './ScoreBoard';
 import { GlobalTimer } from './GlobalTimer';
 import { QuestionTimer } from './QuestionTimer';
+import { AuthGate } from '@/features/auth';
 
 gsap.registerPlugin(useGSAP);
 
@@ -53,6 +54,7 @@ export function ChallengePage() {
     isCorrect: null,
     explosion: false,
   });
+  const [isGuestMode, setIsGuestMode] = useState(false);
 
   // Précharger les composants lourds après le premier rendu
   useEffect(() => {
@@ -147,7 +149,8 @@ export function ChallengePage() {
     { scope: containerRef }
   );
 
-  return (
+  // Contenu de la page (utilisé par AuthGate)
+  const pageContent = (
     <div
       ref={containerRef}
       className="min-h-screen flex items-center justify-center overflow-hidden relative bg-gradient-to-br from-pink-400 via-red-400 to-blue-400 dark:from-slate-900 dark:via-red-900 dark:to-indigo-900"
@@ -405,5 +408,20 @@ export function ChallengePage() {
         </AnimatePresence>
       </div>
     </div>
+  );
+
+  // Si mode invité activé, afficher directement le contenu
+  if (isGuestMode) {
+    return pageContent;
+  }
+
+  // Sinon, protéger avec AuthGate
+  return (
+    <AuthGate
+      message="Connecte-toi pour sauvegarder tes scores de challenge ! 🔥"
+      onGuestMode={() => setIsGuestMode(true)}
+    >
+      {pageContent}
+    </AuthGate>
   );
 }

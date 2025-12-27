@@ -9,7 +9,7 @@ import { SESSION_COOKIE_NAME } from '@/types/auth';
 /**
  * Routes protegees necessitant authentification
  */
-const PROTECTED_ROUTES = ['/practice', '/challenge', '/profile', '/badges'];
+const PROTECTED_ROUTES = ['/profile', '/badges'];
 
 /**
  * Routes API auth (toujours accessibles)

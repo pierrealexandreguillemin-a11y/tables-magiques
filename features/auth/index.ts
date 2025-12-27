@@ -4,8 +4,13 @@
  */
 
 // Components
-export { AuthModal, UserButton } from './components';
-export type { AuthModalProps, UserButtonProps } from './components';
+export { AuthModal, UserButton, AuthGateModal, AuthGate } from './components';
+export type {
+  AuthModalProps,
+  UserButtonProps,
+  AuthGateModalProps,
+  AuthGateProps,
+} from './components';
 
 // React Query Hooks
 export { useAuth, authKeys } from './hooks/useAuth';
