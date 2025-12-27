@@ -481,3 +481,212 @@ export interface KawaiiMascotProps {
   /** Classes additionnelles */
   className?: string;
 }
+
+// ============================================================================
+// SKELETON LOADER - Types
+// ============================================================================
+
+/**
+ * Variante du skeleton
+ */
+export type SkeletonVariant = 'text' | 'circle' | 'rect' | 'badge' | 'card';
+
+/**
+ * Props du composant Skeleton
+ */
+export interface SkeletonProps {
+  /** Variante de forme */
+  variant?: SkeletonVariant;
+  /** Largeur (px ou %) */
+  width?: string | number;
+  /** Hauteur (px ou %) */
+  height?: string | number;
+  /** Arrondi des coins */
+  rounded?: 'none' | 'sm' | 'md' | 'lg' | 'full';
+  /** Animation shimmer */
+  animate?: boolean;
+  /** Classes additionnelles */
+  className?: string;
+  /** Nombre de lignes (pour variant text) */
+  lines?: number;
+}
+
+// ============================================================================
+// TEXT REVEAL - Types
+// ============================================================================
+
+/**
+ * Variante d'animation TextReveal
+ */
+export type TextRevealVariant = 'fade' | 'slide' | 'typewriter' | 'blur';
+
+/**
+ * Props du composant TextReveal
+ */
+export interface TextRevealProps {
+  /** Texte a reveler */
+  children: string;
+  /** Variante d'animation */
+  variant?: TextRevealVariant;
+  /** Delai avant animation (s) */
+  delay?: number;
+  /** Duree de l'animation (s) */
+  duration?: number;
+  /** Tag HTML */
+  as?: 'h1' | 'h2' | 'h3' | 'p' | 'span';
+  /** Classes additionnelles */
+  className?: string;
+  /** Callback fin animation */
+  onComplete?: () => void;
+}
+
+// ============================================================================
+// SCROLL REVEAL - Types
+// ============================================================================
+
+/**
+ * Variante d'animation ScrollReveal
+ */
+export type ScrollRevealVariant =
+  | 'fade-up'
+  | 'fade-down'
+  | 'scale'
+  | 'slide-left'
+  | 'slide-right';
+
+/**
+ * Props du composant ScrollReveal
+ */
+export interface ScrollRevealProps {
+  /** Contenu a reveler */
+  children: React.ReactNode;
+  /** Variante d'animation */
+  variant?: ScrollRevealVariant;
+  /** Delai avant animation (s) */
+  delay?: number;
+  /** Duree de l'animation (s) */
+  duration?: number;
+  /** Seuil de visibilite (0-1) */
+  threshold?: number;
+  /** Declencher une seule fois */
+  triggerOnce?: boolean;
+  /** Classes additionnelles */
+  className?: string;
+}
+
+// ============================================================================
+// ANIMATED CHECKBOX - Types
+// ============================================================================
+
+/**
+ * Variante d'AnimatedCheckbox
+ */
+export type AnimatedCheckboxVariant = 'checkbox' | 'switch';
+
+/**
+ * Taille d'AnimatedCheckbox
+ */
+export type AnimatedCheckboxSize = 'sm' | 'md' | 'lg';
+
+/**
+ * Props du composant AnimatedCheckbox
+ */
+export interface AnimatedCheckboxProps {
+  /** Etat coche */
+  checked: boolean;
+  /** Callback changement */
+  onChange: (checked: boolean) => void;
+  /** Variante visuelle */
+  variant?: AnimatedCheckboxVariant;
+  /** Taille */
+  size?: AnimatedCheckboxSize;
+  /** Desactive */
+  disabled?: boolean;
+  /** En cours de chargement */
+  loading?: boolean;
+  /** Label accessible */
+  label?: string;
+  /** Description secondaire */
+  description?: string;
+  /** Classes additionnelles */
+  className?: string;
+}
+
+// ============================================================================
+// RIPPLE EFFECT - Types
+// ============================================================================
+
+/**
+ * Position d'un ripple
+ */
+export interface RipplePosition {
+  x: number;
+  y: number;
+  id: string;
+}
+
+/**
+ * Props du composant RippleEffect
+ */
+export interface RippleEffectProps {
+  /** Contenu a wrapper */
+  children: React.ReactNode;
+  /** Couleur du ripple */
+  color?: string;
+  /** Duree animation (ms) */
+  duration?: number;
+  /** Desactiver effet */
+  disabled?: boolean;
+  /** Classes additionnelles */
+  className?: string;
+}
+
+/**
+ * Hook result pour useRipple
+ */
+export interface UseRippleResult {
+  /** Liste des ripples actifs */
+  ripples: RipplePosition[];
+  /** Ajouter un ripple au click */
+  addRipple: (event: React.MouseEvent<HTMLElement>) => void;
+  /** Nettoyer les ripples */
+  clearRipples: () => void;
+}
+
+// ============================================================================
+// BADGE ICON - Types
+// ============================================================================
+
+/**
+ * IDs de badges disponibles
+ */
+export type BadgeId =
+  | 'first'
+  | 'streak5'
+  | 'streak10'
+  | 'perfect5'
+  | 'streak20'
+  | 'perfect10'
+  | 'streak30'
+  | 'streak50'
+  | 'speed5'
+  | 'speed10'
+  | 'speed15'
+  | 'speed20'
+  | 'perfectChallenge';
+
+/**
+ * Props du composant BadgeIcon
+ */
+export interface BadgeIconProps {
+  /** Badge ID */
+  badgeId: BadgeId;
+  /** Taille en pixels */
+  size?: number;
+  /** Badge non gagne (grayscale) */
+  locked?: boolean;
+  /** Classes additionnelles */
+  className?: string;
+  /** Animer le Lottie (si applicable) */
+  animate?: boolean;
+}

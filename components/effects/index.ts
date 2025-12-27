@@ -60,3 +60,22 @@ export { StaggerList } from './StaggerList';
 export { MagneticButton } from './MagneticButton';
 export { PulseGlow } from './PulseGlow';
 export { ParticlesBackground } from './ParticlesBackground';
+
+// Phase 9 - Enrichissement P2
+export { BadgeIcon } from './BadgeIcon';
+export type { BadgeId, BadgeIconProps } from './BadgeIcon';
+
+export {
+  Skeleton,
+  BadgeSkeleton,
+  BadgeGridSkeleton,
+  ProfileSkeleton,
+} from './Skeleton';
+
+export { RippleEffect } from './RippleEffect';
+
+export { AnimatedCheckbox } from './AnimatedCheckbox';
+
+export { TextReveal, WordReveal } from './TextReveal';
+
+export { ScrollReveal, ScrollRevealList } from './ScrollReveal';

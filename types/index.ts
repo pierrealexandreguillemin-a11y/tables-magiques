@@ -11,3 +11,5 @@ export * from './effects';
 export * from './auth';
 export * from './profile';
 export * from './sound';
+export * from './settings';
+export * from './onboarding';
