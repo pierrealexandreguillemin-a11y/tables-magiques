@@ -10,6 +10,7 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useRipple } from '@/hooks/useRipple';
 import { cn } from '@/lib/utils';
 import { TIMING, type ThemeVariant } from '@/types/effects';
 
@@ -90,22 +91,28 @@ export function MagicButton({
     Array<{ left: string; top: string }>
   >([]);
   const { shouldAnimate } = useReducedMotion();
+  const { ripples, addRipple } = useRipple(600);
   const animate = shouldAnimate && !disableAnimation;
 
   const isDisabled = disabled || loading;
 
-  const handleClick = useCallback(() => {
-    if (isDisabled) return;
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (isDisabled) return;
 
-    if (animate) {
-      // Generate positions BEFORE render (event handler = not render)
-      setSparklePositions(generateSparklePositions(SPARKLE_COUNT));
-      setShowSparkles(true);
-      setTimeout(() => setShowSparkles(false), TIMING.celebration);
-    }
+      if (animate) {
+        // Ripple effect
+        addRipple(event);
+        // Generate sparkle positions BEFORE render (event handler = not render)
+        setSparklePositions(generateSparklePositions(SPARKLE_COUNT));
+        setShowSparkles(true);
+        setTimeout(() => setShowSparkles(false), TIMING.celebration);
+      }
 
-    onClick?.();
-  }, [isDisabled, animate, onClick]);
+      onClick?.();
+    },
+    [isDisabled, animate, onClick, addRipple]
+  );
 
   return (
     <motion.button
@@ -134,6 +141,21 @@ export function MagicButton({
       whileTap={animate && !isDisabled ? { scale: 0.95 } : undefined}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
     >
+      {/* Ripple effects */}
+      {animate &&
+        ripples.map((ripple) => (
+          <span
+            key={ripple.id}
+            className="absolute pointer-events-none rounded-full animate-ripple"
+            style={{
+              left: ripple.x,
+              top: ripple.y,
+              backgroundColor: 'rgba(255, 255, 255, 0.4)',
+              transform: 'translate(-50%, -50%)',
+            }}
+          />
+        ))}
+
       {/* Sparkle particles */}
       <AnimatePresence>
         {showSparkles && animate && sparklePositions.length > 0 && (
