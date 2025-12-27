@@ -26,7 +26,7 @@ import {
   importSettingsFromJson,
   isSettingsCategory,
   getInitialSettings,
-} from '../api/settingsStorage';
+} from '../storage/settingsStorage';
 
 // =============================================================================
 // TYPES

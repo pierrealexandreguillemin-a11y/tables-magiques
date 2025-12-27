@@ -8,7 +8,7 @@
  * import { OnboardingTour, useFirstVisit, useOnboarding } from '@/features/onboarding';
  */
 
-// API
+// Storage (localStorage persistence)
 export {
   isFirstVisit,
   markAsVisited,
@@ -19,7 +19,7 @@ export {
   resetOnboardingState,
   getInitialFirstVisit,
   getInitialTourCompleted,
-} from './api/onboardingStorage';
+} from './storage/onboardingStorage';
 
 // Hooks
 export { useFirstVisit } from './hooks/useFirstVisit';

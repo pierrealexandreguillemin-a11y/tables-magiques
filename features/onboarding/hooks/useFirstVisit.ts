@@ -16,7 +16,7 @@ import {
   markAsVisited as apiMarkAsVisited,
   markTourCompleted as apiMarkTourCompleted,
   resetOnboardingState,
-} from '../api/onboardingStorage';
+} from '../storage/onboardingStorage';
 
 // =============================================================================
 // HOOK

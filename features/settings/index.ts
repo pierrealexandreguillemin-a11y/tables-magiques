@@ -3,7 +3,7 @@
  * ISO/IEC 25010 - Encapsulation feature
  */
 
-// API
+// Storage (localStorage persistence)
 export {
   loadSettings,
   saveSettings,
@@ -15,7 +15,7 @@ export {
   migrateSettings,
   isStoredSettings,
   isSettingsCategory,
-} from './api/settingsStorage';
+} from './storage/settingsStorage';
 
 // Hooks
 export { useSettings } from './hooks/useSettings';
