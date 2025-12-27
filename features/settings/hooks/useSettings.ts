@@ -1,9 +1,16 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+/**
+ * useSettings Hook - Tables Magiques
+ * ISO/IEC 25010 - Hook logique métier
+ *
+ * Responsabilité unique: état React des settings
+ * Délègue la persistance à api/settingsStorage.ts
+ */
+
+import { useState, useCallback, useMemo } from 'react';
 import type {
   UserSettings,
-  StoredSettings,
   AccessibilitySettings,
   AudioSettings,
   DisplaySettings,
@@ -11,11 +18,15 @@ import type {
   NotificationSettings,
   PrivacySettings,
 } from '@/types/settings';
+import { DEFAULT_SETTINGS } from '@/types/settings';
 import {
-  DEFAULT_SETTINGS,
-  SETTINGS_STORAGE_KEY,
-  SETTINGS_SCHEMA_VERSION,
-} from '@/types/settings';
+  loadSettings,
+  saveSettings,
+  exportSettingsToJson,
+  importSettingsFromJson,
+  isSettingsCategory,
+  getInitialSettings,
+} from '../api/settingsStorage';
 
 // =============================================================================
 // TYPES
@@ -29,7 +40,7 @@ type SettingsPath =
   | `notifications.${keyof NotificationSettings}`
   | `privacy.${keyof PrivacySettings}`;
 
-interface UseSettingsResult {
+export interface UseSettingsResult {
   /** Current settings */
   settings: UserSettings;
   /** Loading state */
@@ -60,109 +71,6 @@ interface UseSettingsResult {
 // =============================================================================
 
 /**
- * Merge settings with defaults (shallow per category)
- */
-function mergeWithDefaults(partial: Partial<UserSettings>): UserSettings {
-  return {
-    accessibility: {
-      ...DEFAULT_SETTINGS.accessibility,
-      ...partial.accessibility,
-    },
-    audio: { ...DEFAULT_SETTINGS.audio, ...partial.audio },
-    display: { ...DEFAULT_SETTINGS.display, ...partial.display },
-    game: { ...DEFAULT_SETTINGS.game, ...partial.game },
-    notifications: {
-      ...DEFAULT_SETTINGS.notifications,
-      ...partial.notifications,
-    },
-    privacy: { ...DEFAULT_SETTINGS.privacy, ...partial.privacy },
-  };
-}
-
-/**
- * Migrate settings from old schema version
- */
-function migrateSettings(stored: StoredSettings): UserSettings {
-  // Migration v0 -> v1: Add missing fields
-  if (stored.version < 1) {
-    return mergeWithDefaults(stored.settings);
-  }
-
-  // Future migrations go here
-  return stored.settings;
-}
-
-/**
- * Type guard for StoredSettings
- */
-function isStoredSettings(value: unknown): value is StoredSettings {
-  if (typeof value !== 'object' || value === null) return false;
-  return (
-    'version' in value &&
-    typeof value.version === 'number' &&
-    'settings' in value &&
-    typeof value.settings === 'object' &&
-    value.settings !== null &&
-    'updatedAt' in value &&
-    typeof value.updatedAt === 'string'
-  );
-}
-
-/**
- * Load settings from localStorage
- */
-function loadFromStorage(): StoredSettings | null {
-  if (typeof window === 'undefined') return null;
-
-  try {
-    const raw = localStorage.getItem(SETTINGS_STORAGE_KEY);
-    if (!raw) return null;
-
-    const parsed: unknown = JSON.parse(raw);
-    if (!isStoredSettings(parsed)) {
-      console.warn('[useSettings] Invalid stored settings format');
-      return null;
-    }
-    return parsed;
-  } catch {
-    console.warn('[useSettings] Failed to load settings from localStorage');
-    return null;
-  }
-}
-
-/**
- * Save settings to localStorage
- */
-function saveToStorage(settings: UserSettings): void {
-  if (typeof window === 'undefined') return;
-
-  try {
-    const stored: StoredSettings = {
-      version: SETTINGS_SCHEMA_VERSION,
-      settings,
-      updatedAt: new Date().toISOString(),
-    };
-    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(stored));
-  } catch (err) {
-    console.error('[useSettings] Failed to save settings:', err);
-  }
-}
-
-/**
- * Type guard for valid category
- */
-function isSettingsCategory(key: string): key is keyof UserSettings {
-  return [
-    'accessibility',
-    'audio',
-    'display',
-    'game',
-    'notifications',
-    'privacy',
-  ].includes(key);
-}
-
-/**
  * Update nested setting by path (type-safe)
  */
 function updateSettingByPath<T>(
@@ -187,47 +95,33 @@ function updateSettingByPath<T>(
   };
 }
 
+/**
+ * Get initial last updated date
+ */
+function getInitialLastUpdated(): Date | null {
+  if (typeof window === 'undefined') return null;
+  const stored = loadSettings();
+  return stored ? new Date(stored.updatedAt) : null;
+}
+
 // =============================================================================
 // HOOK
 // =============================================================================
 
 export function useSettings(): UseSettingsResult {
-  const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-
-  // Load settings on mount
-  useEffect(() => {
-    try {
-      const stored = loadFromStorage();
-
-      if (stored) {
-        // Migrate if needed
-        const migrated =
-          stored.version < SETTINGS_SCHEMA_VERSION
-            ? migrateSettings(stored)
-            : stored.settings;
-
-        // Merge with defaults to ensure all fields exist
-        const merged = mergeWithDefaults(migrated);
-        setSettings(merged);
-        setLastUpdated(new Date(stored.updatedAt));
-      }
-    } catch (err) {
-      setError(
-        err instanceof Error ? err : new Error('Failed to load settings')
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  // Lazy initialization from storage
+  const [settings, setSettings] = useState<UserSettings>(getInitialSettings);
+  const [isLoading] = useState(false); // Sync init, no async loading
+  const [error] = useState<Error | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(
+    getInitialLastUpdated
+  );
 
   // Update single setting by path
   const updateSetting = useCallback(<T>(path: SettingsPath, value: T) => {
     setSettings((prev) => {
       const updated = updateSettingByPath(prev, path, value);
-      saveToStorage(updated);
+      saveSettings(updated);
       setLastUpdated(new Date());
       return updated;
     });
@@ -244,7 +138,7 @@ export function useSettings(): UseSettingsResult {
           ...prev,
           [category]: { ...prev[category], ...values },
         };
-        saveToStorage(updated);
+        saveSettings(updated);
         setLastUpdated(new Date());
         return updated;
       });
@@ -255,7 +149,7 @@ export function useSettings(): UseSettingsResult {
   // Reset all settings to defaults
   const resetSettings = useCallback(() => {
     setSettings(DEFAULT_SETTINGS);
-    saveToStorage(DEFAULT_SETTINGS);
+    saveSettings(DEFAULT_SETTINGS);
     setLastUpdated(new Date());
   }, []);
 
@@ -266,7 +160,7 @@ export function useSettings(): UseSettingsResult {
         ...prev,
         [category]: DEFAULT_SETTINGS[category],
       };
-      saveToStorage(updated);
+      saveSettings(updated);
       setLastUpdated(new Date());
       return updated;
     });
@@ -274,41 +168,21 @@ export function useSettings(): UseSettingsResult {
 
   // Export settings to JSON format
   const exportSettings = useCallback((): string => {
-    const exported: StoredSettings = {
-      version: SETTINGS_SCHEMA_VERSION,
-      settings,
-      updatedAt: new Date().toISOString(),
-    };
-    return JSON.stringify(exported, null, 2);
+    return exportSettingsToJson(settings);
   }, [settings]);
 
   // Import settings from JSON
   const importSettings = useCallback((json: string): boolean => {
-    try {
-      const parsed: unknown = JSON.parse(json);
-
-      // Validate structure with type guard
-      if (!isStoredSettings(parsed)) {
-        throw new Error('Invalid settings format');
-      }
-
-      // Migrate if needed
-      const migrated =
-        parsed.version < SETTINGS_SCHEMA_VERSION
-          ? migrateSettings(parsed)
-          : parsed.settings;
-
-      // Merge with defaults
-      const merged = mergeWithDefaults(migrated);
-      setSettings(merged);
-      saveToStorage(merged);
-      setLastUpdated(new Date());
-
-      return true;
-    } catch (err) {
-      console.error('[useSettings] Import failed:', err);
+    const imported = importSettingsFromJson(json);
+    if (!imported) {
+      console.error('[useSettings] Import failed: invalid format');
       return false;
     }
+
+    setSettings(imported);
+    saveSettings(imported);
+    setLastUpdated(new Date());
+    return true;
   }, []);
 
   return useMemo(

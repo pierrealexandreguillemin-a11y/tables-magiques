@@ -3,6 +3,20 @@
  * ISO/IEC 25010 - Encapsulation feature
  */
 
+// API
+export {
+  loadSettings,
+  saveSettings,
+  clearSettings,
+  exportSettingsToJson,
+  importSettingsFromJson,
+  getInitialSettings,
+  mergeWithDefaults,
+  migrateSettings,
+  isStoredSettings,
+  isSettingsCategory,
+} from './api/settingsStorage';
+
 // Hooks
 export { useSettings } from './hooks/useSettings';
 
