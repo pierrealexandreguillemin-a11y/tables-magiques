@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Badge Icons - Comparaison Emoji vs SVG</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Lexend', system-ui, sans-serif;
+      background: linear-gradient(135deg, #ffb6d9 0%, #dda0dd 50%, #87ceeb 100%);
+      min-height: 100vh;
+      padding: 2rem;
+      margin: 0;
+    }
+    h1 { color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); text-align: center; }
+    h2 { color: #4a4a4a; margin-top: 2rem; border-bottom: 2px solid rgba(255,255,255,0.5); padding-bottom: 0.5rem; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    th, td {
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+    th {
+      background: linear-gradient(135deg, #ff69b4, #ba55d3);
+      color: white;
+      font-weight: 600;
+    }
+    tr:hover { background: #fff5f8; }
+
+    .emoji { font-size: 2.5rem; }
+    .icon-cell svg {
+      width: 40px;
+      height: 40px;
+      color: #ff69b4;
+    }
+    .status-ok { color: #22c55e; font-weight: bold; }
+    .status-close { color: #f59e0b; font-weight: bold; }
+    .status-missing { color: #ef4444; font-weight: bold; }
+
+    .badge-id { font-family: monospace; background: #f3f4f6; padding: 0.25rem 0.5rem; border-radius: 4px; }
+    .badge-name { font-weight: 500; color: #374151; }
+
+    .legend {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+    .legend span {
+      background: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Badge Icons - Comparaison</h1>
+
+  <div class="legend">
+    <span class="status-ok">✅ Lucide disponible</span>
+    <span class="status-close">⚠️ Proche (alternative)</span>
+    <span class="status-missing">❌ Custom requis</span>
+  </div>
+
+  <h2>Practice Badges (8)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Badge ID</th>
+        <th>Nom</th>
+        <th>Emoji actuel</th>
+        <th>Lucide SVG</th>
+        <th>Icon Name</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge-id">first</span></td>
+        <td class="badge-name">Premiere Etoile</td>
+        <td class="emoji">⭐</td>
+        <td class="icon-cell">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </td>
+        <td>Star</td>
+        <td class="status-ok">✅</td>
+      </tr>
+      <tr>
+        <td><span class="badge-id">streak5</span></td>
+        <td class="badge-name">Licorne Magique</td>
+        <td class="emoji">🦄</td>
+        <td class="icon-cell">—</td>
+        <td>—</td>
+        <td class="status-missing">❌ Custom</td>
+      </tr>
+      <tr>
+        <td><span class="badge-id">streak10</span></td>
+        <td class="badge-name">Princesse des Maths</td>
+        <td class="emoji">👑</td>
+        <td class="icon-cell">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/>
+            <path d="M5 21h14"/>
+          </svg>
+        </td>
+        <td>Crown</td>
+        <td class="status-ok">✅</td>
+      </tr>
+      <tr>
+        <td><span class="badge-id">perfect5</span></td>
+        <td class="badge-name">Arc-en-ciel Parfait</td>
+        <td class="emoji">🌈</td>
+        <td class="icon-cell">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 17a10 10 0 0 0-20 0"/>
+            <path d="M6 17a6 6 0 0 1 12 0"/>
+            <path d="M10 17a2 2 0 0 1 4 0"/>
+          </svg>
+        </td>
+        <td>Rainbow</td>
+        <td class="status-ok">✅</td>
+      </tr>
+      <tr>
+        <td><span class="badge-id">streak20</span></td>
+        <td class="badge-name">Etoile Brillante</td>
+        <td class="emoji">✨</td>
+        <td class="icon-cell">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+            <path d="M20 3v4"/><path d="M22 5h-4"/>
+            <path d="M4 17v2"/><path d="M5 18H3"/>
+          </svg>
+        </td>
+        <td>Sparkles</td>
+        <td class="status-ok">✅</td>
+      </tr>
+      <tr>
+        <td><span class="badge-id">perfect10</span></td>
+        <td class="badge-name">Fee des Calculs</td>
+        <td class="emoji">🧚</td>
+        <td class="icon-cell">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 4V2"/><path d="M15 16v-2"/><path d="M8 9h2"/><path d="M20 9h2"/>
+            <path d="M17.8 11.8 19 13"/><path d="M15 9h.01"/><path d="M17.8 6.2 19 5"/>
+            <path d="m3 21 9-9"/><path d="M12.2 6.2 11 5"/>
+          </svg>
+        </td>
+        <td>Wand2</td>
+        <td class="status-close">⚠️ Proche</td>
+      </tr>
+      <tr>
+        <td><span class="badge-id">streak30</span></td>
+        <td class="badge-name">Reine Magique</td>
+        <td class="emoji">👸</td>
+        <td class="icon-cell">—</td>
+        <td>—</td>
+        <td class="status-missing">❌ Custom</td>
+      </tr>
+      <tr>
+        <td><span class="badge-id">streak50</span></td>
+        <td class="badge-name">Super Championne</td>
+        <td class="emoji">🏆</td>
+        <td class="icon-cell">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+            <path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+          </svg>
+        </td>
+        <td>Trophy</td>
+        <td class="status-ok">✅</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Challenge Badges (5)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Badge ID</th>
+        <th>Nom</th>
+        <th>Emoji actuel</th>
+        <th>Lucide SVG</th>
+        <th>Icon Name</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge-id">speed5</span></td>
+        <td class="badge-name">Eclair Rapide</td>
+        <td class="emoji">⚡</td>
+        <td class="icon-cell">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>
+          </svg>
+        </td>
+        <td>Zap</td>
+        <td class="status-ok">✅</td>
+      </tr>
+      <tr>
+        <td><span class="badge-id">speed10</span></td>
+        <td class="badge-name">Ninja des Maths</td>
+        <td class="emoji">🥷</td>
+        <td class="icon-cell">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/>
+            <line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/>
+            <line x1="19" x2="21" y1="21" y2="19"/>
+          </svg>
+        </td>
+        <td>Sword</td>
+        <td class="status-close">⚠️ Proche</td>
+      </tr>
+      <tr>
+        <td><span class="badge-id">speed15</span></td>
+        <td class="badge-name">Fusee Magique</td>
+        <td class="emoji">🚀</td>
+        <td class="icon-cell">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+            <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+            <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+            <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+          </svg>
+        </td>
+        <td>Rocket</td>
+        <td class="status-ok">✅</td>
+      </tr>
+      <tr>
+        <td><span class="badge-id">speed20</span></td>
+        <td class="badge-name">Reine de la Vitesse</td>
+        <td class="emoji">⚡👑</td>
+        <td class="icon-cell">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/>
+            <path d="M5 21h14"/>
+          </svg>
+          +
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>
+          </svg>
+        </td>
+        <td>Crown + Zap</td>
+        <td class="status-ok">✅ Combo</td>
+      </tr>
+      <tr>
+        <td><span class="badge-id">perfectChallenge</span></td>
+        <td class="badge-name">Perfection Chrono</td>
+        <td class="emoji">💎</td>
+        <td class="icon-cell">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 3h12l4 6-10 13L2 9Z"/>
+            <path d="M11 3 8 9l4 13 4-13-3-6"/>
+            <path d="M2 9h20"/>
+          </svg>
+        </td>
+        <td>Gem</td>
+        <td class="status-ok">✅</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Résumé</h2>
+  <div style="background: white; border-radius: 16px; padding: 2rem; margin-top: 1rem;">
+    <p><strong>Lucide disponibles :</strong> 10/13 (77%)</p>
+    <p><strong>Alternatives proches :</strong> 2 (Wand2 pour 🧚, Sword pour 🥷)</p>
+    <p><strong>Custom requis :</strong> 2 (🦄 Unicorn, 👸 Princess)</p>
+    <p style="margin-top: 1rem; padding: 1rem; background: #fef3c7; border-radius: 8px;">
+      <strong>⚠️ Recherche en cours :</strong> Assets 3D/high-res pour Unicorn et Princess
+    </p>
+  </div>
+
+</body>
+</html>
