@@ -3,10 +3,15 @@
  * ISO/IEC 29119 - TDD grille de badges
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { BadgeCollection } from '@/features/badges/components/BadgeCollection';
 import { PRACTICE_BADGES, CHALLENGE_BADGES } from '@/types/badge';
+
+// Mock useReducedMotion pour desactiver les animations (ScrollRevealList)
+vi.mock('@/hooks/useReducedMotion', () => ({
+  useReducedMotion: () => ({ shouldAnimate: false }),
+}));
 
 const mockEarnedBadges = [
   { id: 'first', mode: 'practice' as const, earnedAt: '2024-01-15T10:00:00Z' },

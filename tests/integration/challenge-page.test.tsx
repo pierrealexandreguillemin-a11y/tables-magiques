@@ -143,6 +143,11 @@ vi.mock('@/hooks/useAnnouncer', () => ({
   }),
 }));
 
+// Mock useReducedMotion pour TextReveal
+vi.mock('@/hooks/useReducedMotion', () => ({
+  useReducedMotion: () => ({ shouldAnimate: false }),
+}));
+
 import ChallengePage from '@/app/challenge/page';
 
 describe('Challenge Page', () => {
