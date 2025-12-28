@@ -22,34 +22,38 @@ import type { Toast, ToastType } from '@/types/effects';
 // STYLES PAR TYPE
 // =============================================================================
 
+/**
+ * Toast styles by type
+ * Dark mode: Higher opacity (40%) for better contrast
+ */
 const TOAST_STYLES: Record<
   ToastType,
   { bg: string; border: string; text: string }
 > = {
   success: {
-    bg: 'bg-green-500/20 dark:bg-green-500/30',
-    border: 'border-green-400/50',
-    text: 'text-green-700 dark:text-green-300',
+    bg: 'bg-green-500/20 dark:bg-green-900/80',
+    border: 'border-green-400/50 dark:border-green-400/60',
+    text: 'text-green-700 dark:text-green-200',
   },
   star: {
-    bg: 'bg-yellow-500/20 dark:bg-yellow-500/30',
-    border: 'border-yellow-400/50',
-    text: 'text-yellow-700 dark:text-yellow-300',
+    bg: 'bg-yellow-500/20 dark:bg-yellow-900/80',
+    border: 'border-yellow-400/50 dark:border-yellow-400/60',
+    text: 'text-yellow-700 dark:text-yellow-200',
   },
   crown: {
-    bg: 'bg-purple-500/20 dark:bg-purple-500/30',
-    border: 'border-purple-400/50',
-    text: 'text-purple-700 dark:text-purple-300',
+    bg: 'bg-purple-500/20 dark:bg-purple-900/80',
+    border: 'border-purple-400/50 dark:border-purple-400/60',
+    text: 'text-purple-700 dark:text-purple-200',
   },
   error: {
-    bg: 'bg-pink-500/20 dark:bg-pink-500/30',
-    border: 'border-pink-400/50',
-    text: 'text-pink-700 dark:text-pink-300',
+    bg: 'bg-pink-500/20 dark:bg-pink-900/80',
+    border: 'border-pink-400/50 dark:border-pink-400/60',
+    text: 'text-pink-700 dark:text-pink-200',
   },
   info: {
-    bg: 'bg-blue-500/20 dark:bg-blue-500/30',
-    border: 'border-blue-400/50',
-    text: 'text-blue-700 dark:text-blue-300',
+    bg: 'bg-blue-500/20 dark:bg-blue-900/80',
+    border: 'border-blue-400/50 dark:border-blue-400/60',
+    text: 'text-blue-700 dark:text-blue-200',
   },
 };
 

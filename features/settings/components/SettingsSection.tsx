@@ -42,9 +42,9 @@ export function SettingsSection({
     <motion.section
       data-testid={testId}
       className={cn(
-        'rounded-2xl bg-white/80 dark:bg-slate-800/80',
+        'rounded-2xl bg-white/80 dark:bg-slate-800/90',
         'backdrop-blur-sm shadow-lg shadow-pink-500/5',
-        'border border-pink-200/30 dark:border-pink-500/20',
+        'border border-pink-200/30 dark:border-pink-400/30',
         'overflow-hidden',
         className
       )}

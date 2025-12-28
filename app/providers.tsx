@@ -13,6 +13,7 @@ import { LazyMotion, domAnimation } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { ToastProvider } from '@/components/effects';
 import { initErrorReporter } from '@/lib/errorReporter';
+import { useAnimationSpeed } from '@/hooks/useAnimationSpeed';
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -23,6 +24,9 @@ export function Providers({ children }: ProvidersProps) {
   useEffect(() => {
     initErrorReporter();
   }, []);
+
+  // Apply animation speed from settings
+  useAnimationSpeed();
 
   const [queryClient] = useState(
     () =>

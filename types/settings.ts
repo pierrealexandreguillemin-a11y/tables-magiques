@@ -24,6 +24,8 @@ export interface AccessibilitySettings {
   textScale: number;
   /** Optimise pour lecteur d'ecran */
   screenReaderOptimized: boolean;
+  /** Vitesse des animations (0.5 = lent, 1.0 = normal, 2.0 = rapide) */
+  animationSpeed: number;
 }
 
 /**
@@ -34,6 +36,7 @@ export const DEFAULT_ACCESSIBILITY: AccessibilitySettings = {
   highContrast: false,
   textScale: 1.0,
   screenReaderOptimized: false,
+  animationSpeed: 1.0, // Normal speed
 };
 
 // =============================================================================

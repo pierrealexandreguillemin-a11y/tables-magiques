@@ -115,6 +115,7 @@ export function loadSettings(): StoredSettings | null {
 
 /**
  * Save settings to localStorage
+ * Emits animationSpeedChange event when animation speed is updated
  */
 export function saveSettings(settings: UserSettings): void {
   if (typeof window === 'undefined') return;
@@ -126,6 +127,13 @@ export function saveSettings(settings: UserSettings): void {
       updatedAt: new Date().toISOString(),
     };
     localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(stored));
+
+    // Emit animation speed change event for same-window listeners
+    window.dispatchEvent(
+      new CustomEvent('animationSpeedChange', {
+        detail: { speed: settings.accessibility.animationSpeed },
+      })
+    );
   } catch (err) {
     console.error('[settingsStorage] Failed to save settings:', err);
   }

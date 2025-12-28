@@ -107,7 +107,7 @@ export function DirectionTabs({
       {/* Tab buttons container */}
       <div
         ref={containerRef}
-        className="relative flex gap-1 p-1 bg-white/10 dark:bg-gray-800/50 rounded-xl backdrop-blur-sm"
+        className="relative flex gap-1 p-1 bg-white/20 dark:bg-gray-800/80 rounded-xl backdrop-blur-sm"
         role="tablist"
         aria-label="Navigation onglets"
       >

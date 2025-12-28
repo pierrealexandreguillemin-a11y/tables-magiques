@@ -49,6 +49,24 @@ export function AccessibilitySection({ settings, updateSetting }: Props) {
         formatValue={(v) => `${Math.round(v * 100)}%`}
         testId="slider-text-scale"
       />
+      <SettingsSlider
+        label="Vitesse des animations"
+        description="Ajuste la vitesse des animations (lent a rapide)"
+        value={settings.accessibility.animationSpeed}
+        onChange={(v) => updateSetting('accessibility.animationSpeed', v)}
+        min={0.5}
+        max={2.0}
+        step={0.25}
+        formatValue={(v) => {
+          if (v <= 0.5) return 'Tres lent';
+          if (v <= 0.75) return 'Lent';
+          if (v <= 1.0) return 'Normal';
+          if (v <= 1.5) return 'Rapide';
+          return 'Tres rapide';
+        }}
+        disabled={settings.accessibility.reducedMotion}
+        testId="slider-animation-speed"
+      />
     </SettingsSection>
   );
 }

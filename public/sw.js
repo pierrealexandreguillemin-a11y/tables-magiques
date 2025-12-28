@@ -123,9 +123,66 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Message handler pour skip waiting
+// Message handler pour skip waiting et notifications
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
+  if (!event.data) return;
+
+  switch (event.data.type) {
+    case 'SKIP_WAITING':
+      self.skipWaiting();
+      break;
+
+    case 'SCHEDULE_REMINDER':
+      // Store reminder settings for later use
+      // Note: Real scheduling would require a push server
+      // This is a simplified local reminder approach
+      console.log('[SW] Reminder scheduled:', event.data.payload);
+      break;
+
+    case 'CANCEL_REMINDERS':
+      console.log('[SW] Reminders cancelled');
+      break;
   }
+});
+
+// Push notification handler
+self.addEventListener('push', (event) => {
+  const data = event.data ? event.data.json() : {};
+  const title = data.title || 'Tables Magiques';
+  const options = {
+    body: data.body || "C'est l'heure de s'entrainer !",
+    icon: '/icons/icon-192.png',
+    badge: '/icons/icon-72.png',
+    vibrate: [100, 50, 100],
+    tag: data.tag || 'tables-magiques-reminder',
+    data: {
+      url: data.url || '/',
+    },
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+// Notification click handler
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  const url = event.notification.data?.url || '/';
+
+  event.waitUntil(
+    clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then((windowClients) => {
+        // Focus existing window if available
+        for (const client of windowClients) {
+          if (client.url.includes(location.origin) && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        // Open new window
+        if (clients.openWindow) {
+          return clients.openWindow(url);
+        }
+      })
+  );
 });

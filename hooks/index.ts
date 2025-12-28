@@ -21,3 +21,7 @@ export { useSound } from './useSound';
 export type { UseSoundReturn } from './useSound';
 export { useViewTransition } from './useViewTransition';
 export type { UseViewTransitionReturn } from './useViewTransition';
+export { useAnimationSpeed } from './useAnimationSpeed';
+export type { UseAnimationSpeedReturn } from './useAnimationSpeed';
+export { useNotifications } from './useNotifications';
+export type { UseNotificationsReturn } from './useNotifications';

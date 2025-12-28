@@ -37,17 +37,17 @@ export interface MagicCardProps {
 }
 
 /**
- * Styles par variante - GLASSMORPHISM FORT
- * Fond blanc/colore semi-transparent avec bordure visible
+ * Glassmorphism styles by variant
+ * Dark mode: Higher opacity (80%) for better contrast (WCAG AA)
  */
 const VARIANT_STYLES: Record<ThemeVariant, string> = {
   princess:
-    'bg-white/70 border-pink-300/80 dark:bg-pink-950/60 dark:border-pink-400/50',
+    'bg-white/70 border-pink-300/80 dark:bg-pink-900/80 dark:border-pink-400/60',
   unicorn:
-    'bg-white/70 border-purple-300/80 dark:bg-purple-950/60 dark:border-purple-400/50',
-  star: 'bg-white/70 border-yellow-300/80 dark:bg-yellow-950/60 dark:border-yellow-400/50',
+    'bg-white/70 border-purple-300/80 dark:bg-purple-900/80 dark:border-purple-400/60',
+  star: 'bg-white/70 border-yellow-300/80 dark:bg-yellow-900/80 dark:border-yellow-400/60',
   rainbow:
-    'bg-gradient-to-br from-white/80 via-pink-50/70 to-purple-50/70 border-pink-300/60 dark:from-pink-950/60 dark:via-purple-950/60 dark:to-indigo-950/60',
+    'bg-gradient-to-br from-white/80 via-pink-50/70 to-purple-50/70 border-pink-300/60 dark:from-pink-900/80 dark:via-purple-900/80 dark:to-indigo-900/80 dark:border-pink-400/60',
 };
 
 /**
