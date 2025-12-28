@@ -12,7 +12,6 @@ import { useGSAP } from '@gsap/react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { InstallButton } from '@/components/pwa/InstallButton';
 import {
   GentleShake,
@@ -139,10 +138,9 @@ export function PracticePage() {
       {/* Explosion de célébration (lazy loaded, streak 5+) */}
       <LazySuccessExplosion show={explosionVisible} type="confetti" size="lg" />
 
-      {/* Header fixe - Theme Toggle + Install Button */}
+      {/* Header fixe - Install Button uniquement (ThemeToggle masque les scores) */}
       <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
         <InstallButton />
-        <ThemeToggle />
       </div>
 
       <div className="w-full max-w-4xl mx-auto px-4 py-8 relative z-10">

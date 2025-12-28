@@ -61,6 +61,16 @@ export function useChallenge(
     return () => clearInterval(interval);
   }, [state.phase]);
 
+  // Effacer la réponse quand la question change (timeout auto-skip)
+  useEffect(() => {
+    if (state.phase === 'playing' && state.currentQuestion) {
+      // Déférer setState pour éviter cascade (règle set-state-in-effect)
+      const timer = setTimeout(() => setUserAnswer(''), 0);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [state.currentQuestion, state.phase]);
+
   // Actions
   const start = useCallback(() => {
     const newState = startChallenge(createChallengeState(config));

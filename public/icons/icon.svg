@@ -6,28 +6,59 @@
       <stop offset="100%" style="stop-color:#9370db"/>
     </linearGradient>
     <linearGradient id="horn" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#ffd700"/>
+      <stop offset="0%" style="stop-color:#fff9c4"/>
+      <stop offset="50%" style="stop-color:#ffd700"/>
       <stop offset="100%" style="stop-color:#ffaa00"/>
     </linearGradient>
+    <linearGradient id="mane" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff69b4"/>
+      <stop offset="33%" style="stop-color:#ba55d3"/>
+      <stop offset="66%" style="stop-color:#87ceeb"/>
+      <stop offset="100%" style="stop-color:#98fb98"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
   </defs>
   <!-- Background -->
   <rect width="512" height="512" rx="100" fill="url(#bg)"/>
-  <!-- Unicorn body (simplified) -->
-  <ellipse cx="256" cy="300" rx="120" ry="80" fill="white"/>
-  <!-- Unicorn head -->
-  <ellipse cx="256" cy="200" rx="70" ry="60" fill="white"/>
-  <!-- Horn -->
-  <polygon points="256,60 230,160 282,160" fill="url(#horn)"/>
-  <!-- Eye -->
-  <circle cx="235" cy="190" r="12" fill="#333"/>
-  <circle cx="232" cy="187" r="4" fill="white"/>
+  <!-- Unicorn Head -->
+  <ellipse cx="256" cy="280" rx="130" ry="110" fill="white"/>
+  <!-- Ear left -->
+  <path d="M150 200 Q130 150 160 180 Q155 160 175 195" fill="white"/>
+  <path d="M158 185 Q145 165 165 180" fill="#ffb6c1"/>
+  <!-- Ear right -->
+  <path d="M362 200 Q382 150 352 180 Q357 160 337 195" fill="white"/>
+  <path d="M354 185 Q367 165 347 180" fill="#ffb6c1"/>
+  <!-- Horn with spiral -->
+  <path d="M256 80 L236 175 L276 175 Z" fill="url(#horn)" filter="url(#glow)"/>
+  <path d="M248 160 Q256 140 264 160 M244 140 Q256 115 268 140 M240 120 Q256 90 272 120" stroke="#ffaa00" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Mane (rainbow waves) -->
+  <path d="M140 230 Q100 200 120 280 Q90 250 110 330 Q80 300 100 380" stroke="url(#mane)" stroke-width="25" fill="none" stroke-linecap="round"/>
+  <path d="M372 230 Q412 200 392 280 Q422 250 402 330 Q432 300 412 380" stroke="url(#mane)" stroke-width="25" fill="none" stroke-linecap="round"/>
+  <!-- Forelock (rainbow tuft) -->
+  <path d="M210 180 Q180 130 220 160 Q190 120 230 150 Q200 100 240 140" stroke="url(#mane)" stroke-width="18" fill="none" stroke-linecap="round"/>
+  <!-- Eye left -->
+  <ellipse cx="200" cy="280" rx="25" ry="30" fill="#333"/>
+  <ellipse cx="195" cy="272" rx="10" ry="12" fill="white"/>
+  <circle cx="192" cy="268" r="4" fill="white"/>
+  <!-- Eye right -->
+  <ellipse cx="312" cy="280" rx="25" ry="30" fill="#333"/>
+  <ellipse cx="307" cy="272" rx="10" ry="12" fill="white"/>
+  <circle cx="304" cy="268" r="4" fill="white"/>
+  <!-- Blush -->
+  <ellipse cx="155" cy="320" rx="20" ry="12" fill="#ffb6c1" opacity="0.6"/>
+  <ellipse cx="357" cy="320" rx="20" ry="12" fill="#ffb6c1" opacity="0.6"/>
+  <!-- Nose -->
+  <ellipse cx="256" cy="340" rx="12" ry="8" fill="#ffb6c1"/>
   <!-- Smile -->
-  <path d="M230 220 Q256 245 282 220" stroke="#ff69b4" stroke-width="4" fill="none" stroke-linecap="round"/>
-  <!-- Mane -->
-  <path d="M190 150 Q170 180 185 210 Q165 190 180 160 Q160 175 175 140" fill="#ba55d3"/>
-  <!-- Stars -->
-  <text x="100" y="120" font-size="40">✨</text>
-  <text x="380" y="150" font-size="35">✨</text>
-  <text x="420" y="400" font-size="30">✨</text>
-  <text x="70" y="420" font-size="35">✨</text>
+  <path d="M220 365 Q256 400 292 365" stroke="#ff69b4" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <!-- Sparkles -->
+  <g fill="#ffd700" filter="url(#glow)">
+    <polygon points="80,100 85,115 100,115 88,125 92,140 80,130 68,140 72,125 60,115 75,115"/>
+    <polygon points="432,90 436,102 448,102 438,110 441,122 432,114 423,122 426,110 416,102 428,102"/>
+    <polygon points="70,400 74,412 86,412 76,420 79,432 70,424 61,432 64,420 54,412 66,412"/>
+    <polygon points="442,380 446,392 458,392 448,400 451,412 442,404 433,412 436,400 426,392 438,392"/>
+  </g>
 </svg>
