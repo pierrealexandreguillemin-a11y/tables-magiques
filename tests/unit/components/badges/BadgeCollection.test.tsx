@@ -29,12 +29,12 @@ const mockEarnedBadges = [
 
 describe('BadgeCollection', () => {
   describe('Affichage general', () => {
-    it('affiche titre badges practice', () => {
+    it('affiche titre badges entraînement', () => {
       render(
         <BadgeCollection earnedBadges={mockEarnedBadges} mode="practice" />
       );
 
-      expect(screen.getByText(/practice/i)).toBeInTheDocument();
+      expect(screen.getByText(/entraînement/i)).toBeInTheDocument();
     });
 
     it('affiche titre badges challenge', () => {

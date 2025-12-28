@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     // 3. Reponse avec suppression du cookie
     const successResponse: LogoutResponse = {
       success: true,
-      message: 'Deconnexion reussie',
+      message: 'Déconnexion réussie',
     };
     const response = NextResponse.json(successResponse, { status: 200 });
 
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     console.error('Logout error:', error);
     const errorResponse: LogoutResponse = {
       success: false,
-      message: 'Erreur lors de la deconnexion',
+      message: 'Erreur lors de la déconnexion',
     };
     return NextResponse.json(errorResponse, { status: 500 });
   }

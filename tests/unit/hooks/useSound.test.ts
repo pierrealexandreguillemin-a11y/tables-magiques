@@ -60,10 +60,10 @@ describe('useSound', () => {
       expect(result.current.volume).toBe(DEFAULT_SOUND_STATE.volume);
     });
 
-    it('son désactivé par défaut (respectueux)', () => {
+    it('son activé par défaut (meilleure UX enfants)', () => {
       const { result } = renderHook(() => useSound());
 
-      expect(result.current.enabled).toBe(false);
+      expect(result.current.enabled).toBe(true);
     });
 
     it('volume à 50% par défaut', () => {
@@ -98,14 +98,14 @@ describe('useSound', () => {
   });
 
   describe('Toggle son', () => {
-    it('toggle active le son', () => {
+    it('toggle désactive le son (défaut=activé)', () => {
       const { result } = renderHook(() => useSound());
 
       act(() => {
         result.current.toggle();
       });
 
-      expect(result.current.enabled).toBe(true);
+      expect(result.current.enabled).toBe(false);
     });
 
     it('toggle désactive le son', () => {
@@ -133,7 +133,7 @@ describe('useSound', () => {
       const stored = JSON.parse(
         localStorage.getItem(SOUND_STORAGE_KEY) || '{}'
       );
-      expect(stored.enabled).toBe(true);
+      expect(stored.enabled).toBe(false); // défaut=true, toggle=false
     });
   });
 
@@ -193,6 +193,11 @@ describe('useSound', () => {
     });
 
     it('play ne joue pas quand désactivé', async () => {
+      localStorage.setItem(
+        SOUND_STORAGE_KEY,
+        JSON.stringify({ enabled: false, volume: 0.5 })
+      );
+
       const { result } = renderHook(() => useSound());
 
       await act(async () => {

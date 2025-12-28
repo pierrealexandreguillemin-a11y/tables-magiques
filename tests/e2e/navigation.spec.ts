@@ -13,11 +13,11 @@ test.describe('Navigation Clavier', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('Tab navigue vers Mode Pratique', async ({ page }) => {
+  test('Tab navigue vers Mode Entraînement', async ({ page }) => {
     // Focus initial
     await page.keyboard.press('Tab');
 
-    // Continuer à tab jusqu'au bouton Mode Pratique
+    // Continuer à tab jusqu'au bouton Mode Entraînement
     let found = false;
     for (let i = 0; i < 20; i++) {
       const focusedText = await page.evaluate(() => {
@@ -25,7 +25,7 @@ test.describe('Navigation Clavier', () => {
         return el?.textContent || '';
       });
 
-      if (focusedText.includes('Mode Pratique')) {
+      if (focusedText.includes('Mode Entraînement')) {
         found = true;
         break;
       }
@@ -57,7 +57,9 @@ test.describe('Navigation Clavier', () => {
   });
 
   test('Enter active le bouton focusé', async ({ page }) => {
-    const practiceBtn = page.getByRole('button', { name: /mode pratique/i });
+    const practiceBtn = page.getByRole('button', {
+      name: /mode entraînement/i,
+    });
 
     await practiceBtn.focus();
     await page.keyboard.press('Enter');
@@ -83,8 +85,10 @@ test.describe('Navigation Souris', () => {
     await page.goto('/');
   });
 
-  test('clic sur Mode Pratique', async ({ page }) => {
-    const practiceBtn = page.getByRole('button', { name: /mode pratique/i });
+  test('clic sur Mode Entraînement', async ({ page }) => {
+    const practiceBtn = page.getByRole('button', {
+      name: /mode entraînement/i,
+    });
 
     await practiceBtn.click();
 
@@ -158,9 +162,9 @@ test.describe('Navigation Touch (Mobile)', () => {
     await page.goto('/');
   });
 
-  test('tap sur Mode Pratique', async ({ page }) => {
+  test('tap sur Mode Entraînement', async ({ page }) => {
     // Utiliser le lien parent au lieu du bouton pour le tap mobile
-    const practiceLink = page.getByRole('link', { name: /mode pratique/i });
+    const practiceLink = page.getByRole('link', { name: /mode entraînement/i });
     await expect(practiceLink).toBeVisible({ timeout: 5000 });
 
     await practiceLink.tap();

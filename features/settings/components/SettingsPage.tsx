@@ -394,7 +394,7 @@ export function SettingsPage() {
             >
               <SettingsToggle
                 label="Rappels quotidiens"
-                description="Recevoir un rappel pour s'entrainer"
+                description="Recevoir un rappel pour s'entraîner"
                 checked={settings.notifications.dailyReminders}
                 onChange={(v) =>
                   updateSetting('notifications.dailyReminders', v)

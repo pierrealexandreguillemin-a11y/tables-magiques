@@ -24,8 +24,10 @@ test.describe('Page Accueil', () => {
     await expect(unicorn).toBeVisible();
   });
 
-  test('affiche le bouton Mode Pratique', async ({ page }) => {
-    const practiceBtn = page.getByRole('button', { name: /mode pratique/i });
+  test('affiche le bouton Mode Entraînement', async ({ page }) => {
+    const practiceBtn = page.getByRole('button', {
+      name: /mode entraînement/i,
+    });
     await expect(practiceBtn).toBeVisible();
   });
 
@@ -59,7 +61,9 @@ test.describe('Animations Page Accueil', () => {
   });
 
   test('les boutons apparaissent avec délai', async ({ page }) => {
-    const practiceBtn = page.getByRole('button', { name: /mode pratique/i });
+    const practiceBtn = page.getByRole('button', {
+      name: /mode entraînement/i,
+    });
 
     // Les boutons apparaissent après 1.2s selon le code
     await expect(practiceBtn).toBeVisible({ timeout: 3000 });

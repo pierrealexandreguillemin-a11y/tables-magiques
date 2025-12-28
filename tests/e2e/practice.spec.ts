@@ -15,10 +15,10 @@ test.describe('Mode Practice - Page Selection', () => {
       await page.waitForLoadState('networkidle');
     });
 
-    test('affiche titre Mode Pratique', async ({ page }) => {
+    test('affiche titre Mode Entraînement', async ({ page }) => {
       // TextReveal fragmente le texte, chercher le h1 directement
       await expect(page.locator('h1')).toBeVisible();
-      await expect(page.getByText(/pratique/i).first()).toBeVisible();
+      await expect(page.getByText(/entraînement/i).first()).toBeVisible();
     });
 
     test('affiche boutons de selection tables', async ({ page }) => {

@@ -16,7 +16,7 @@ test.describe('Authentification E2E', () => {
 
   test.describe('Page accueil', () => {
     test('affiche les boutons de jeu', async ({ page }) => {
-      await expect(page.getByText('Mode Pratique')).toBeVisible();
+      await expect(page.getByText('Mode Entraînement')).toBeVisible();
       await expect(page.getByText('Mode Challenge')).toBeVisible();
     });
 

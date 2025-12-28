@@ -172,7 +172,7 @@ test.describe('Accessibilité WCAG 2.1 AA', () => {
     const bodyText = await page.textContent('body');
 
     expect(bodyText).toContain('Tables Magiques');
-    expect(bodyText).toContain('Mode Pratique');
+    expect(bodyText).toContain('Mode Entraînement');
   });
 });
 

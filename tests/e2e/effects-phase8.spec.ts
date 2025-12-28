@@ -16,7 +16,7 @@ test.describe('Phase 8 - Toast Notifications', () => {
 
   test('affiche un toast de succès après bonne réponse', async ({ page }) => {
     // Naviguer vers le mode pratique
-    await page.getByRole('button', { name: /pratique/i }).click();
+    await page.getByRole('button', { name: /entraînement/i }).click();
     await page.waitForLoadState('networkidle');
 
     // Sélectionner table de 2 (facile)
@@ -62,7 +62,7 @@ test.describe('Phase 8 - Toast Notifications', () => {
 
   test('toast a aria-live polite', async ({ page }) => {
     // Déclencher un toast via l'interface
-    await page.getByRole('button', { name: /pratique/i }).click();
+    await page.getByRole('button', { name: /entraînement/i }).click();
     await page.waitForTimeout(1000);
 
     // Vérifier la structure ARIA des toasts potentiels
@@ -111,7 +111,7 @@ test.describe('Phase 8 - GentleShake (Feedback Erreur)', () => {
     await page.goto('/');
 
     // Naviguer vers mode pratique
-    await page.getByRole('button', { name: /pratique/i }).click();
+    await page.getByRole('button', { name: /entraînement/i }).click();
     await page.waitForLoadState('networkidle');
 
     // Sélectionner une table
@@ -145,7 +145,7 @@ test.describe('Phase 8 - GentleShake (Feedback Erreur)', () => {
   test('message encourageant après erreur (non punitif)', async ({ page }) => {
     await page.goto('/');
 
-    await page.getByRole('button', { name: /pratique/i }).click();
+    await page.getByRole('button', { name: /entraînement/i }).click();
     await page.waitForTimeout(1000);
 
     // Messages attendus (non punitifs)
@@ -218,7 +218,7 @@ test.describe('Phase 8 - Screen Reader Announcements', () => {
     await page.waitForLoadState('networkidle');
 
     // Déclencher une action qui créerait une annonce
-    await page.getByRole('button', { name: /pratique/i }).click();
+    await page.getByRole('button', { name: /entraînement/i }).click();
     await page.waitForTimeout(1000);
 
     // Chercher les régions aria-live

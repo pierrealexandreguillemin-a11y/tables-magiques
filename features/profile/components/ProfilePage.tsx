@@ -124,7 +124,7 @@ export function ProfilePage() {
           />
           <StatsCard
             icon="✅"
-            label="Reponses correctes"
+            label="Réponses correctes"
             value={stats?.totalCorrect ?? 0}
             sublabel={`sur ${stats?.totalQuestions ?? 0}`}
             color="green"
@@ -154,7 +154,7 @@ export function ProfilePage() {
             <div className="flex items-center gap-3 mb-4">
               <span className="text-3xl">📚</span>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                Mode Pratique
+                Mode Entraînement
               </h3>
             </div>
             <div className="space-y-2 text-gray-600 dark:text-gray-400">
@@ -165,7 +165,7 @@ export function ProfilePage() {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Precision</span>
+                <span>Précision</span>
                 <span className="font-medium text-gray-900 dark:text-white">
                   {modeStats?.practice.averageAccuracy ?? 0}%
                 </span>
@@ -194,7 +194,7 @@ export function ProfilePage() {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Precision</span>
+                <span>Précision</span>
                 <span className="font-medium text-gray-900 dark:text-white">
                   {modeStats?.challenge.averageAccuracy ?? 0}%
                 </span>

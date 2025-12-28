@@ -42,7 +42,7 @@ export function BadgeCollection({ earnedBadges, mode }: BadgeCollectionProps) {
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-purple-800">
-              Badges Practice
+              Badges Entraînement
             </h2>
             <span className="text-sm text-purple-600 bg-purple-100 px-3 py-1 rounded-full">
               {practiceEarnedCount} / {practiceBadges.length}

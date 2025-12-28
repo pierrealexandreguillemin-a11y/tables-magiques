@@ -3,7 +3,7 @@
  * ISO/IEC 25010 - PWA avec support offline
  */
 
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `tables-magiques-${CACHE_VERSION}`;
 
 // Assets statiques a mettre en cache
@@ -11,6 +11,7 @@ const STATIC_ASSETS = [
   '/',
   '/offline',
   '/manifest.json',
+  // Icons
   '/icons/icon-72.png',
   '/icons/icon-96.png',
   '/icons/icon-128.png',
@@ -20,6 +21,14 @@ const STATIC_ASSETS = [
   '/icons/icon-384.png',
   '/icons/icon-512.png',
   '/icons/apple-touch-icon.png',
+  '/icons/favicon-16.png',
+  '/icons/favicon-32.png',
+  // Sounds (Kenney Interface Sounds - CC0)
+  '/sounds/magic-ding.ogg',
+  '/sounds/soft-oops.ogg',
+  '/sounds/level-up.ogg',
+  '/sounds/click.ogg',
+  '/sounds/badge-unlock.ogg',
 ];
 
 // Installation - Cache des assets statiques

@@ -59,8 +59,8 @@ const TYPE_COLORS: Record<AnswerType, string> = {
  * Labels accessibilite
  */
 const ARIA_LABELS: Record<AnswerType, string> = {
-  correct: 'Bonne reponse',
-  incorrect: 'Mauvaise reponse',
+  correct: 'Bonne réponse',
+  incorrect: 'Mauvaise réponse',
 };
 
 /**

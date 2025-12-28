@@ -103,9 +103,9 @@ export const MAIN_TOUR_STEPS: TourStep[] = [
   {
     id: 'practice',
     target: '[data-tour="practice-button"]',
-    title: 'Mode Pratique',
+    title: 'Mode Entraînement',
     content:
-      'Choisis une table et entraine-toi a ton rythme. Pas de chrono, pas de stress !',
+      'Choisis une table et entraîne-toi à ton rythme. Pas de chrono, pas de stress !',
     placement: 'bottom',
   },
   {
@@ -113,7 +113,7 @@ export const MAIN_TOUR_STEPS: TourStep[] = [
     target: '[data-tour="challenge-button"]',
     title: 'Mode Challenge',
     content:
-      'Pret pour le defi ? Reponds le plus vite possible et bats ton record !',
+      'Prêt pour le défi ? Réponds le plus vite possible et bats ton record !',
     placement: 'bottom',
   },
   {

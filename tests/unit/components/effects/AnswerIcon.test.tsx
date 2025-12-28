@@ -78,7 +78,7 @@ describe('AnswerIcon', () => {
       render(<AnswerIcon type="correct" />);
 
       const icon = screen.getByTestId('answer-icon');
-      expect(icon).toHaveAttribute('aria-label', 'Bonne reponse');
+      expect(icon).toHaveAttribute('aria-label', 'Bonne réponse');
     });
   });
 
@@ -101,7 +101,7 @@ describe('AnswerIcon', () => {
       render(<AnswerIcon type="incorrect" />);
 
       const icon = screen.getByTestId('answer-icon');
-      expect(icon).toHaveAttribute('aria-label', 'Mauvaise reponse');
+      expect(icon).toHaveAttribute('aria-label', 'Mauvaise réponse');
     });
   });
 

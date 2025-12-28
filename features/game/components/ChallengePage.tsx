@@ -217,12 +217,12 @@ export function ChallengePage() {
               </h1>
 
               <div className="bg-white/20 backdrop-blur-md rounded-3xl p-8 mb-8 max-w-md mx-auto">
-                <h2 className="text-2xl font-bold text-white mb-4">Regles</h2>
+                <h2 className="text-2xl font-bold text-white mb-4">Règles</h2>
                 <ul className="text-white/90 text-left space-y-2">
-                  <li>3 minutes pour repondre a un maximum de questions</li>
+                  <li>3 minutes pour répondre à un maximum de questions</li>
                   <li>5 secondes par question</li>
-                  <li>+10 points par bonne reponse</li>
-                  <li>Bonus streak si 3+ reponses consecutives</li>
+                  <li>+10 points par bonne réponse</li>
+                  <li>Bonus streak si 3+ réponses consécutives</li>
                   <li>Bonus temps pour les secondes restantes</li>
                 </ul>
               </div>
@@ -302,7 +302,7 @@ export function ChallengePage() {
                 >
                   <PulseGlow color="#fbbf24" intensity="strong" speed="fast">
                     <span className="text-yellow-300">
-                      Serie de {state.streak} !
+                      Série de {state.streak} !
                     </span>
                   </PulseGlow>
                 </motion.div>
@@ -352,13 +352,13 @@ export function ChallengePage() {
                     <div className="text-3xl font-bold text-white">
                       {result.correctAnswers}
                     </div>
-                    <div>Bonnes reponses</div>
+                    <div>Bonnes réponses</div>
                   </div>
                   <div>
                     <div className="text-3xl font-bold text-white">
                       {Math.round(result.accuracy * 100)}%
                     </div>
-                    <div>Precision</div>
+                    <div>Précision</div>
                   </div>
                 </div>
 
@@ -371,7 +371,7 @@ export function ChallengePage() {
                     )}
                     {result.streakBonus > 0 && (
                       <div className="text-orange-300">
-                        +{result.streakBonus} bonus serie
+                        +{result.streakBonus} bonus série
                       </div>
                     )}
                   </div>

@@ -73,7 +73,7 @@ export const SOUND_STORAGE_KEY = 'tm_sound_settings';
  * Paramètres par défaut
  */
 export const DEFAULT_SOUND_STATE: SoundState = {
-  enabled: false, // Son OFF par défaut (respectueux)
+  enabled: true, // Son ON par défaut
   volume: 0.5, // 50% volume
   reducedMotion: false,
 };

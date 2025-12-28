@@ -57,7 +57,7 @@ test.describe('Onboarding Tour', () => {
       await page.getByLabel('Etape suivante').click();
 
       // Should show second step
-      await expect(page.getByText('Mode Pratique')).toBeVisible();
+      await expect(page.getByText('Mode Entraînement')).toBeVisible();
     });
 
     test('navigates back with prev button', async ({ page }) => {
@@ -69,7 +69,7 @@ test.describe('Onboarding Tour', () => {
 
       // Go to step 2
       await page.getByLabel('Etape suivante').click();
-      await expect(page.getByText('Mode Pratique')).toBeVisible();
+      await expect(page.getByText('Mode Entraînement')).toBeVisible();
 
       // Go back to step 1
       await page.getByLabel('Etape precedente').click();
@@ -174,7 +174,7 @@ test.describe('Onboarding Tour', () => {
 
       // Press ArrowRight to go next
       await page.keyboard.press('ArrowRight');
-      await expect(page.getByText('Mode Pratique')).toBeVisible();
+      await expect(page.getByText('Mode Entraînement')).toBeVisible();
 
       // Press ArrowLeft to go back
       await page.keyboard.press('ArrowLeft');
