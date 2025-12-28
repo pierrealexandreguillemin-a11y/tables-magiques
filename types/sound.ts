@@ -33,31 +33,32 @@ export interface SoundState {
 }
 
 /**
- * Catalogue des sons
+ * Catalogue des sons - Kenney Interface Sounds (CC0)
+ * https://kenney.nl/assets/interface-sounds
  */
 export const SOUND_CATALOG: Record<SoundType, SoundConfig> = {
   correct: {
-    src: '/sounds/magic-ding.mp3',
+    src: '/sounds/magic-ding.ogg',
     volume: 0.5,
     duration: 500,
   },
   incorrect: {
-    src: '/sounds/soft-oops.mp3',
+    src: '/sounds/soft-oops.ogg',
     volume: 0.4,
     duration: 400,
   },
   levelUp: {
-    src: '/sounds/level-up.mp3',
+    src: '/sounds/level-up.ogg',
     volume: 0.6,
     duration: 1000,
   },
   click: {
-    src: '/sounds/click.mp3',
+    src: '/sounds/click.ogg',
     volume: 0.3,
     duration: 100,
   },
   badge: {
-    src: '/sounds/badge-unlock.mp3',
+    src: '/sounds/badge-unlock.ogg',
     volume: 0.6,
     duration: 800,
   },
