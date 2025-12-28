@@ -81,3 +81,17 @@ export { AnimatedCheckbox } from './AnimatedCheckbox';
 export { TextReveal, WordReveal } from './TextReveal';
 
 export { ScrollReveal, ScrollRevealList } from './ScrollReveal';
+
+// Phase 10 - P1 Completion
+export { DirectionTabs, DirectionTabPanel } from './DirectionTabs';
+export type {
+  DirectionTabsProps,
+  DirectionTabPanelProps,
+  Tab,
+} from './DirectionTabs';
+
+export { GradientBorder, GradientBorderCard } from './GradientBorder';
+export type {
+  GradientBorderProps,
+  GradientBorderCardProps,
+} from './GradientBorder';
