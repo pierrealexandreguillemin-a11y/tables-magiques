@@ -14,37 +14,33 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { MorphingOverlay, type MorphingVariant } from './MorphingOverlay';
 
 /**
- * Variants pour l'animation de la page
+ * Variants pour l'animation de la page - Style Codrops
+ * La page monte pendant que le morphing SVG se declenche
  */
 const pageVariants = {
   initial: {
     opacity: 0,
-    y: 30,
-    scale: 0.98,
-    filter: 'blur(4px)',
+    y: 100,
+    scale: 0.95,
   },
   animate: {
     opacity: 1,
     y: 0,
     scale: 1,
-    filter: 'blur(0px)',
   },
   exit: {
     opacity: 0,
-    y: -30,
-    scale: 0.98,
-    filter: 'blur(4px)',
+    y: -100,
+    scale: 0.95,
   },
 };
 
 /**
- * Transition spring pour la page
+ * Transition pour la page - synchronisee avec le morphing
  */
 const pageTransition = {
-  type: 'spring' as const,
-  stiffness: 260,
-  damping: 25,
-  delay: 0.3, // Delai pour laisser le morphing commencer
+  duration: 0.8,
+  ease: [0.76, 0, 0.24, 1] as [number, number, number, number], // ease-in-out-expo
 };
 
 /**
@@ -55,6 +51,7 @@ const ROUTE_VARIANTS: Record<string, MorphingVariant> = {
   '/practice': 'unicorn',
   '/challenge': 'star',
   '/profile': 'princess',
+  '/settings': 'unicorn',
 };
 
 interface PageTransitionProps {
@@ -88,19 +85,35 @@ export function PageTransition({
   const { shouldAnimate } = useReducedMotion();
   // Etat pour le morphing - commence a false pour eviter hydration mismatch
   const [isTransitioning, setIsTransitioning] = useState(false);
+  // Ref pour tracker la route precedente
+  const previousPathnameRef = useRef<string | null>(null);
   // Ref pour tracker si on est monte cote client
   const hasMountedRef = useRef(false);
 
-  // Declencher le morphing au premier rendu cote client uniquement
+  // Declencher le morphing au premier rendu ET a chaque changement de route
   useEffect(() => {
-    if (!hasMountedRef.current && enableMorphing) {
+    if (!enableMorphing || !shouldAnimate) return undefined;
+
+    // Premier rendu cote client
+    if (!hasMountedRef.current) {
       hasMountedRef.current = true;
-      // Defer setState to next tick to avoid cascading renders
       const timer = setTimeout(() => setIsTransitioning(true), 0);
       return () => clearTimeout(timer);
     }
+
+    // Changement de route
+    if (
+      previousPathnameRef.current !== null &&
+      previousPathnameRef.current !== pathname
+    ) {
+      const timer = setTimeout(() => setIsTransitioning(true), 0);
+      previousPathnameRef.current = pathname;
+      return () => clearTimeout(timer);
+    }
+
+    previousPathnameRef.current = pathname;
     return undefined;
-  }, [enableMorphing]);
+  }, [pathname, enableMorphing, shouldAnimate]);
 
   // Determiner la variante basee sur la route ou la prop
   const morphingVariant = variant ?? ROUTE_VARIANTS[pathname] ?? 'unicorn';
