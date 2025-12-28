@@ -46,51 +46,71 @@ interface CloudConfig {
 
 /**
  * Configuration des nuages (Framer Motion - elements larges)
+ * Opacite augmentee pour meilleure visibilite
  */
 const CLOUDS: CloudConfig[] = [
   {
     id: 'pink',
-    color: 'radial-gradient(circle, #FFB6D9 0%, #FFE5F0 100%)',
-    size: 600,
-    position: { top: '10%', left: '-5%' },
-    opacity: 0.4,
-    blur: 100,
+    color:
+      'radial-gradient(circle, rgba(255,182,217,0.8) 0%, rgba(255,105,180,0.4) 100%)',
+    size: 700,
+    position: { top: '5%', left: '-10%' },
+    opacity: 0.6,
+    blur: 80,
     animation: {
-      x: [0, 80, -60, 0],
-      y: [0, -60, 40, 0],
-      scale: [1, 1.15, 0.95, 1],
+      x: [0, 100, -80, 0],
+      y: [0, -80, 60, 0],
+      scale: [1, 1.2, 0.9, 1],
     },
-    duration: 25,
+    duration: 20,
   },
   {
     id: 'purple',
-    color: 'radial-gradient(circle, #DDA0DD 0%, #F0E5FF 100%)',
-    size: 500,
-    position: { top: '50%', right: '0%' },
-    opacity: 0.35,
-    blur: 90,
+    color:
+      'radial-gradient(circle, rgba(168,85,247,0.7) 0%, rgba(139,92,246,0.3) 100%)',
+    size: 600,
+    position: { top: '40%', right: '-5%' },
+    opacity: 0.55,
+    blur: 70,
     animation: {
-      x: [0, -100, 70, 0],
-      y: [0, 80, -50, 0],
-      scale: [1, 0.85, 1.1, 1],
+      x: [0, -120, 90, 0],
+      y: [0, 100, -70, 0],
+      scale: [1, 0.85, 1.15, 1],
     },
-    duration: 30,
-    delay: 8,
+    duration: 25,
+    delay: 5,
   },
   {
     id: 'blue',
-    color: 'radial-gradient(circle, #87CEEB 0%, #E0F4FF 100%)',
-    size: 450,
-    position: { bottom: '10%', left: '30%' },
-    opacity: 0.3,
-    blur: 80,
+    color:
+      'radial-gradient(circle, rgba(59,130,246,0.6) 0%, rgba(99,102,241,0.3) 100%)',
+    size: 550,
+    position: { bottom: '5%', left: '20%' },
+    opacity: 0.5,
+    blur: 60,
     animation: {
-      x: [0, 50, -40, 0],
-      y: [0, -30, 50, 0],
-      scale: [1, 1.1, 0.9, 1],
+      x: [0, 70, -50, 0],
+      y: [0, -50, 70, 0],
+      scale: [1, 1.15, 0.85, 1],
     },
-    duration: 35,
-    delay: 15,
+    duration: 30,
+    delay: 10,
+  },
+  {
+    id: 'gold',
+    color:
+      'radial-gradient(circle, rgba(251,191,36,0.5) 0%, rgba(245,158,11,0.2) 100%)',
+    size: 400,
+    position: { top: '60%', left: '60%' },
+    opacity: 0.4,
+    blur: 50,
+    animation: {
+      x: [0, -60, 40, 0],
+      y: [0, 40, -60, 0],
+      scale: [1, 1.1, 0.95, 1],
+    },
+    duration: 22,
+    delay: 12,
   },
 ];
 
@@ -108,40 +128,53 @@ function createStarParticlesConfig(
     pauseOnOutsideViewport: true,
     particles: {
       number: {
-        value: starCount,
+        value: starCount * 2, // Plus d'etoiles
         density: {
           enable: true,
         },
       },
       color: {
-        value: ['#fef08a', '#fde047', '#facc15', '#ffffff'],
+        // Couleurs vives pour visibilite dark mode
+        value: [
+          '#fef08a',
+          '#fde047',
+          '#facc15',
+          '#ffffff',
+          '#f472b6',
+          '#c084fc',
+        ],
       },
       shape: {
-        type: 'circle',
+        type: 'star', // Forme etoile
+        options: {
+          star: {
+            sides: 5,
+          },
+        },
       },
       opacity: {
-        value: { min: 0.3, max: 1 },
+        value: { min: 0.5, max: 1 }, // Plus opaque
         animation: animate
           ? {
               enable: true,
-              speed: 0.5,
+              speed: 1,
               sync: false,
             }
           : { enable: false },
       },
       size: {
-        value: { min: 2, max: 6 },
+        value: { min: 3, max: 8 }, // Plus gros
         animation: animate
           ? {
               enable: true,
-              speed: 2,
+              speed: 3,
               sync: false,
             }
           : { enable: false },
       },
       move: {
         enable: animate,
-        speed: 0.3,
+        speed: 0.5, // Plus rapide
         direction: 'none',
         random: true,
         straight: false,
@@ -152,9 +185,15 @@ function createStarParticlesConfig(
       twinkle: {
         particles: {
           enable: animate,
-          frequency: 0.05,
+          frequency: 0.08, // Scintillement plus frequent
           opacity: 1,
         },
+      },
+      // Effet glow
+      shadow: {
+        enable: true,
+        color: '#fbbf24',
+        blur: 10,
       },
     },
     detectRetina: true,
@@ -212,7 +251,10 @@ export function FairyBackground({
       aria-hidden="true"
       className={cn(
         'fixed inset-0 -z-10 overflow-hidden',
-        'bg-gradient-to-b from-purple-50 to-pink-50',
+        // Light mode: fond pastel feerie
+        'bg-gradient-to-br from-pink-100 via-purple-100 to-indigo-100',
+        // Dark mode: fond sombre magique
+        'dark:from-slate-900 dark:via-purple-950 dark:to-indigo-950',
         'particle-layer scroll-optimized',
         className
       )}

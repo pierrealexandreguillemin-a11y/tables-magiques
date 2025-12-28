@@ -64,21 +64,25 @@ describe('MagicCard', () => {
       render(<MagicCard>Test</MagicCard>);
 
       const card = screen.getByTestId('magic-card');
-      expect(card).toHaveClass('bg-pink-50/40');
+      // Glassmorphism fort: fond blanc semi-transparent + bordure coloree
+      expect(card).toHaveClass('bg-white/70');
+      expect(card).toHaveClass('border-pink-300/80');
     });
 
     it('applique le style unicorn', () => {
       render(<MagicCard variant="unicorn">Test</MagicCard>);
 
       const card = screen.getByTestId('magic-card');
-      expect(card).toHaveClass('bg-purple-50/40');
+      expect(card).toHaveClass('bg-white/70');
+      expect(card).toHaveClass('border-purple-300/80');
     });
 
     it('applique le style star', () => {
       render(<MagicCard variant="star">Test</MagicCard>);
 
       const card = screen.getByTestId('magic-card');
-      expect(card).toHaveClass('bg-yellow-50/40');
+      expect(card).toHaveClass('bg-white/70');
+      expect(card).toHaveClass('border-yellow-300/80');
     });
 
     it('applique le style rainbow', () => {
@@ -94,14 +98,15 @@ describe('MagicCard', () => {
       render(<MagicCard>Test</MagicCard>);
 
       const card = screen.getByTestId('magic-card');
-      expect(card).toHaveClass('shadow-xl');
+      // Shadow custom avec rgba pour glow colore
+      expect(card.className).toContain('shadow-[');
     });
 
     it('peut desactiver le glow', () => {
       render(<MagicCard glow={false}>Test</MagicCard>);
 
       const card = screen.getByTestId('magic-card');
-      expect(card).not.toHaveClass('shadow-pink-300/30');
+      expect(card.className).not.toContain('shadow-[');
     });
   });
 

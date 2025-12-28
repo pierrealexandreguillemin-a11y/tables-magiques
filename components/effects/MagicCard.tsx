@@ -37,24 +37,30 @@ export interface MagicCardProps {
 }
 
 /**
- * Styles par variante (sans shadow - gere separement)
+ * Styles par variante - GLASSMORPHISM FORT
+ * Fond blanc/colore semi-transparent avec bordure visible
  */
 const VARIANT_STYLES: Record<ThemeVariant, string> = {
-  princess: 'bg-pink-50/40 border-pink-200/50',
-  unicorn: 'bg-purple-50/40 border-purple-200/50',
-  star: 'bg-yellow-50/40 border-yellow-200/50',
+  princess:
+    'bg-white/70 border-pink-300/80 dark:bg-pink-950/60 dark:border-pink-400/50',
+  unicorn:
+    'bg-white/70 border-purple-300/80 dark:bg-purple-950/60 dark:border-purple-400/50',
+  star: 'bg-white/70 border-yellow-300/80 dark:bg-yellow-950/60 dark:border-yellow-400/50',
   rainbow:
-    'bg-gradient-to-br from-pink-50/40 via-purple-50/40 to-blue-50/40 border-pink-200/30',
+    'bg-gradient-to-br from-white/80 via-pink-50/70 to-purple-50/70 border-pink-300/60 dark:from-pink-950/60 dark:via-purple-950/60 dark:to-indigo-950/60',
 };
 
 /**
- * Glow par variante
+ * Glow par variante - OMBRE FORTE ET COLOREE
  */
 const GLOW_STYLES: Record<ThemeVariant, string> = {
-  princess: 'shadow-pink-300/30',
-  unicorn: 'shadow-purple-300/30',
-  star: 'shadow-yellow-300/30',
-  rainbow: 'shadow-pink-300/20',
+  princess:
+    'shadow-[0_8px_32px_rgba(244,114,182,0.4)] dark:shadow-[0_8px_32px_rgba(244,114,182,0.3)]',
+  unicorn:
+    'shadow-[0_8px_32px_rgba(168,85,247,0.4)] dark:shadow-[0_8px_32px_rgba(168,85,247,0.3)]',
+  star: 'shadow-[0_8px_32px_rgba(250,204,21,0.4)] dark:shadow-[0_8px_32px_rgba(250,204,21,0.3)]',
+  rainbow:
+    'shadow-[0_8px_32px_rgba(219,39,119,0.3)] dark:shadow-[0_8px_32px_rgba(219,39,119,0.25)]',
 };
 
 /**

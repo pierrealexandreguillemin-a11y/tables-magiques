@@ -25,10 +25,34 @@ vi.mock('framer-motion', () => ({
     path: ({
       className,
       d: pathD,
+      fill,
       'data-testid': testId,
       ...props
     }: React.ComponentProps<'path'> & { 'data-testid'?: string }) => (
-      <path className={className} d={pathD} data-testid={testId} {...props} />
+      <path
+        className={className}
+        d={pathD}
+        fill={fill}
+        data-testid={testId}
+        {...props}
+      />
+    ),
+    circle: ({
+      className,
+      cx,
+      cy,
+      r,
+      fill,
+      ...props
+    }: React.ComponentProps<'circle'>) => (
+      <circle
+        className={className}
+        cx={cx}
+        cy={cy}
+        r={r}
+        fill={fill}
+        {...props}
+      />
     ),
   },
 }));
@@ -127,21 +151,22 @@ describe('CrownProgress', () => {
       render(<CrownProgress progress={50} />);
 
       const fill = screen.getByTestId('crown-fill');
-      expect(fill).toHaveClass('fill-pink-400');
+      // Utilise gradient SVG pour haute qualite visuelle
+      expect(fill).toHaveAttribute('fill', 'url(#crown-gradient-princess)');
     });
 
     it('applique style unicorn', () => {
       render(<CrownProgress progress={50} variant="unicorn" />);
 
       const fill = screen.getByTestId('crown-fill');
-      expect(fill).toHaveClass('fill-purple-400');
+      expect(fill).toHaveAttribute('fill', 'url(#crown-gradient-unicorn)');
     });
 
     it('applique style star', () => {
       render(<CrownProgress progress={50} variant="star" />);
 
       const fill = screen.getByTestId('crown-fill');
-      expect(fill).toHaveClass('fill-yellow-400');
+      expect(fill).toHaveAttribute('fill', 'url(#crown-gradient-star)');
     });
   });
 

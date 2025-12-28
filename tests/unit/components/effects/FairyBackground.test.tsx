@@ -83,11 +83,11 @@ describe('FairyBackground', () => {
   });
 
   describe('nuages', () => {
-    it('rend 3 nuages colores', () => {
+    it('rend 4 nuages colores (pink, purple, blue, gold)', () => {
       render(<FairyBackground />);
 
       const clouds = screen.getAllByTestId(/^cloud-/);
-      expect(clouds).toHaveLength(3);
+      expect(clouds).toHaveLength(4);
     });
 
     it('rend le nuage rose (princess)', () => {
@@ -122,22 +122,24 @@ describe('FairyBackground', () => {
       expect(particles).toBeInTheDocument();
     });
 
-    it('configure le nombre de particules par defaut (20)', async () => {
+    it('configure le nombre de particules par defaut (starCount * 2 = 40)', async () => {
       render(<FairyBackground />);
 
       const particles = await waitFor(() =>
         screen.getByTestId('particles-container')
       );
-      expect(particles).toHaveAttribute('data-particle-count', '20');
+      // Default starCount=20, multiplied by 2 for better visibility
+      expect(particles).toHaveAttribute('data-particle-count', '40');
     });
 
-    it('respecte le starCount personnalise', async () => {
+    it('respecte le starCount personnalise (* 2)', async () => {
       render(<FairyBackground starCount={50} />);
 
       const particles = await waitFor(() =>
         screen.getByTestId('particles-container')
       );
-      expect(particles).toHaveAttribute('data-particle-count', '50');
+      // starCount=50 * 2 = 100
+      expect(particles).toHaveAttribute('data-particle-count', '100');
     });
   });
 
@@ -180,7 +182,8 @@ describe('FairyBackground', () => {
       const particles = await waitFor(() =>
         screen.getByTestId('particles-container')
       );
-      expect(particles).toHaveAttribute('data-particle-count', '10');
+      // starCount=10 * 2 = 20
+      expect(particles).toHaveAttribute('data-particle-count', '20');
     });
   });
 });

@@ -22,6 +22,10 @@ import {
   useToastContext,
   NumberReveal,
   PulseGlow,
+  MagicCard,
+  MagicButton,
+  CrownProgress,
+  StaggerList,
 } from '@/components/effects';
 import {
   LazyFairyBackground,
@@ -127,12 +131,9 @@ export function PracticePage() {
   const pageContent = (
     <div
       ref={containerRef}
-      className="min-h-screen flex items-center justify-center overflow-hidden relative bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-400 dark:from-slate-900 dark:via-purple-900 dark:to-indigo-900"
-      style={{
-        backgroundSize: '400% 400%',
-      }}
+      className="min-h-screen flex items-center justify-center overflow-hidden relative"
     >
-      {/* Fond avec particules féériques (lazy loaded) */}
+      {/* Fond avec particules féériques (lazy loaded) - VISIBLE car pas de bg opaque */}
       <LazyFairyBackground />
 
       {/* Explosion de célébration (lazy loaded, streak 5+) */}
@@ -180,7 +181,7 @@ export function PracticePage() {
               <h1 className="text-4xl sm:text-5xl font-bold mb-8">
                 <GradientText variant="unicorn" animate as="span">
                   <TextReveal variant="slide" delay={0.2}>
-                    Mode Pratique
+                    Mode Entraînement
                   </TextReveal>
                 </GradientText>
               </h1>
@@ -188,36 +189,36 @@ export function PracticePage() {
                 Choisis une table de multiplication
               </p>
 
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-4 max-w-2xl mx-auto mb-8">
-                {Array.from({ length: 10 }, (_, i) => i + 1).map((table) => (
-                  <motion.div
-                    key={table}
-                    whileHover={{ scale: 1.08 }}
-                    whileTap={{ scale: 0.95 }}
+              <StaggerList
+                items={Array.from({ length: 10 }, (_, i) => i + 1)}
+                keyExtractor={(table) => `table-${table}`}
+                className="grid grid-cols-3 sm:grid-cols-4 gap-4 max-w-2xl mx-auto mb-8"
+                staggerDelay={0.05}
+                renderItem={(table) => (
+                  <MagicCard
+                    variant="unicorn"
+                    glow
+                    onClick={() => startGame(table)}
+                    padding="p-0"
+                    className="h-20 flex items-center justify-center text-2xl font-bold text-purple-700 hover:text-purple-900 transition-colors"
+                    aria-label={`Table de ${table}`}
                   >
-                    <Button
-                      onClick={() => startGame(table)}
-                      className="w-full h-20 text-2xl font-bold bg-white/20 hover:bg-white/30 text-white border-2 border-white/30 rounded-2xl backdrop-blur-sm"
-                      aria-label={`Table de ${table}`}
-                    >
-                      Table {table}
-                    </Button>
-                  </motion.div>
-                ))}
-              </div>
+                    <span className="flex flex-col items-center">
+                      <span className="text-3xl">✨</span>
+                      <span>Table {table}</span>
+                    </span>
+                  </MagicCard>
+                )}
+              />
 
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <MagicButton
+                onClick={() => startGame(null)}
+                variant="rainbow"
+                className="px-12 py-6 text-xl"
+                aria-label="Toutes les tables"
               >
-                <Button
-                  onClick={() => startGame(null)}
-                  className="px-12 py-6 text-xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white rounded-full shadow-xl"
-                  aria-label="Toutes les tables"
-                >
-                  Toutes les tables
-                </Button>
-              </motion.div>
+                🌈 Toutes les tables
+              </MagicButton>
             </motion.div>
           )}
 
@@ -240,18 +241,33 @@ export function PracticePage() {
                 Changer de table
               </Button>
 
-              {/* Progression */}
-              <div className="mb-8">
-                <div className="text-white/60 text-sm mb-2">
-                  Question {state.currentIndex + 1} / {state.questions.length}
+              {/* Progression avec CrownProgress */}
+              <div className="mb-8 flex items-center justify-center gap-6">
+                <CrownProgress
+                  progress={progress}
+                  variant="star"
+                  size="lg"
+                  showText={false}
+                />
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-white dark:text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] dark:drop-shadow-none">
+                    Question {state.currentIndex + 1} / {state.questions.length}
+                  </div>
+                  <div className="w-48 h-3 bg-white/20 rounded-full overflow-hidden mt-2">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progress}%` }}
+                      transition={{ type: 'spring', stiffness: 100 }}
+                    />
+                  </div>
                 </div>
-                <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full bg-white"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
-                  />
-                </div>
+                <CrownProgress
+                  progress={progress}
+                  variant="star"
+                  size="lg"
+                  showText={false}
+                />
               </div>
 
               {/* Question Display Component avec GentleShake pour erreur */}
@@ -304,7 +320,7 @@ export function PracticePage() {
                 >
                   <PulseGlow color="#fbbf24" intensity="strong" speed="fast">
                     <span className="text-yellow-300">
-                      Serie de {state.streak} !
+                      Série de {state.streak} !
                     </span>
                   </PulseGlow>
                 </motion.div>
@@ -333,46 +349,45 @@ export function PracticePage() {
                 {result.isPerfect ? 'Parfait !' : 'Bien joue !'}
               </h2>
 
-              <div className="bg-white/20 backdrop-blur-md rounded-3xl p-8 mb-8 max-w-md mx-auto">
-                <div className="text-6xl font-bold text-white mb-4">
+              <MagicCard
+                variant="rainbow"
+                glow
+                padding="p-8"
+                className="mb-8 max-w-md mx-auto text-center"
+              >
+                <div className="text-6xl font-bold text-purple-700 mb-4">
                   <NumberReveal value={result.score} duration={1.5} /> /{' '}
                   {result.total}
                 </div>
-                <div className="text-2xl text-white/80">
-                  {Math.round(result.accuracy * 100)}% de reussite
+                <div className="text-2xl text-purple-600">
+                  {Math.round(result.accuracy * 100)}% de réussite
                 </div>
 
                 {result.bonus > 0 && (
-                  <div className="mt-4 text-yellow-300 text-xl">
-                    +{result.bonus} points bonus !
-                  </div>
+                  <PulseGlow color="#fbbf24" intensity="strong" speed="normal">
+                    <div className="mt-4 text-yellow-600 text-xl font-bold">
+                      ⭐ +{result.bonus} points bonus !
+                    </div>
+                  </PulseGlow>
                 )}
-              </div>
+              </MagicCard>
 
               <div className="flex gap-4 justify-center">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                <MagicButton
+                  onClick={handleBack}
+                  variant="unicorn"
+                  className="px-8 py-4 text-lg"
                 >
-                  <Button
-                    onClick={handleBack}
-                    className="px-8 py-4 text-lg font-bold bg-white/20 hover:bg-white/30 text-white rounded-full"
-                  >
-                    Changer de table
-                  </Button>
-                </motion.div>
+                  🔄 Changer de table
+                </MagicButton>
 
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                <MagicButton
+                  onClick={() => startGame(state.selectedTable)}
+                  variant="star"
+                  className="px-8 py-4 text-lg"
                 >
-                  <Button
-                    onClick={() => startGame(state.selectedTable)}
-                    className="px-8 py-4 text-lg font-bold bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white rounded-full"
-                  >
-                    Rejouer
-                  </Button>
-                </motion.div>
+                  ✨ Rejouer
+                </MagicButton>
               </div>
             </motion.div>
           )}
