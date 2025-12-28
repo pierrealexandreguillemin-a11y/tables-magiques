@@ -7,7 +7,7 @@
 
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -86,10 +86,21 @@ export function PageTransition({
 }: PageTransitionProps) {
   const pathname = usePathname();
   const { shouldAnimate } = useReducedMotion();
-  // Declencher le morphing au premier rendu si animations actives
-  const [isTransitioning, setIsTransitioning] = useState(
-    () => enableMorphing && typeof window !== 'undefined'
-  );
+  // Etat pour le morphing - commence a false pour eviter hydration mismatch
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  // Ref pour tracker si on est monte cote client
+  const hasMountedRef = useRef(false);
+
+  // Declencher le morphing au premier rendu cote client uniquement
+  useEffect(() => {
+    if (!hasMountedRef.current && enableMorphing) {
+      hasMountedRef.current = true;
+      // Defer setState to next tick to avoid cascading renders
+      const timer = setTimeout(() => setIsTransitioning(true), 0);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [enableMorphing]);
 
   // Determiner la variante basee sur la route ou la prop
   const morphingVariant = variant ?? ROUTE_VARIANTS[pathname] ?? 'unicorn';

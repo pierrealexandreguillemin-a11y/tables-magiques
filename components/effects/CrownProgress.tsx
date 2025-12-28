@@ -211,10 +211,10 @@ export function CrownProgress({
       </defs>
 
       {/* Background crown - couleur doree de base */}
-      <motion.path
+      <path
         data-testid="crown-background"
         d={CROWN_PATH}
-        style={{ fill: BG_FILL_COLORS[variant] }}
+        fill={BG_FILL_COLORS[variant]}
         stroke="#fbbf24"
         strokeWidth="1.5"
       />
@@ -236,7 +236,7 @@ export function CrownProgress({
       />
 
       {/* Stroke contour for definition */}
-      <motion.path
+      <path
         d={CROWN_PATH}
         fill="none"
         stroke="#fbbf24"
