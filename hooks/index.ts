@@ -19,3 +19,5 @@ export {
 } from './useAnimationVisibility';
 export { useSound } from './useSound';
 export type { UseSoundReturn } from './useSound';
+export { useViewTransition } from './useViewTransition';
+export type { UseViewTransitionReturn } from './useViewTransition';
