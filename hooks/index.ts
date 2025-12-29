@@ -25,3 +25,5 @@ export { useAnimationSpeed } from './useAnimationSpeed';
 export type { UseAnimationSpeedReturn } from './useAnimationSpeed';
 export { useNotifications } from './useNotifications';
 export type { UseNotificationsReturn } from './useNotifications';
+export { useHaptic, HAPTIC_PATTERNS } from './useHaptic';
+export type { HapticPattern, UseHapticReturn } from './useHaptic';

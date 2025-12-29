@@ -11,6 +11,7 @@ import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useRipple } from '@/hooks/useRipple';
+import { useHaptic } from '@/hooks/useHaptic';
 import { cn } from '@/lib/utils';
 import { TIMING, type ThemeVariant } from '@/types/effects';
 
@@ -92,6 +93,7 @@ export function MagicButton({
   >([]);
   const { shouldAnimate } = useReducedMotion();
   const { ripples, addRipple } = useRipple(600);
+  const { trigger: haptic } = useHaptic();
   const animate = shouldAnimate && !disableAnimation;
 
   const isDisabled = disabled || loading;
@@ -99,6 +101,9 @@ export function MagicButton({
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
       if (isDisabled) return;
+
+      // Haptic feedback on tap
+      haptic('medium');
 
       if (animate) {
         // Ripple effect
@@ -111,7 +116,7 @@ export function MagicButton({
 
       onClick?.();
     },
-    [isDisabled, animate, onClick, addRipple]
+    [isDisabled, animate, onClick, addRipple, haptic]
   );
 
   return (
