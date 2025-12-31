@@ -1,8 +1,8 @@
 # E2E Test Coverage
 
-> **Dernière mise à jour**: 2025-12-28 23:04
-> **Total fichiers E2E**: 10
-> **Total tests E2E**: 161
+> **Dernière mise à jour**: 2025-12-30 23:09
+> **Total fichiers E2E**: 11
+> **Total tests E2E**: 168
 
 ## Fichiers de test
 
@@ -13,6 +13,7 @@
 - `home.spec.ts`: 17 tests
 - `navigation.spec.ts`: 18 tests
 - `onboarding.spec.ts`: 13 tests
+- `performance.spec.ts`: 7 tests
 - `practice.spec.ts`: 13 tests
 - `profile.spec.ts`: 16 tests
 - `settings.spec.ts`: 20 tests

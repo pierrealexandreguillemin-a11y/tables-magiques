@@ -3,7 +3,7 @@
  * ISO/IEC 25010 - PWA avec support offline
  */
 
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_NAME = `tables-magiques-${CACHE_VERSION}`;
 
 // Assets statiques a mettre en cache
