@@ -7,20 +7,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import {
-  GradientText,
-  KawaiiMascot,
-  PulseGlow,
-  StaggerList,
-  MagneticButton,
-} from '@/components/effects';
-
-const DEPLOY_STATS = [
-  { id: 0, emoji: '⚡', label: 'Deploy', value: 'Vercel' },
-  { id: 1, emoji: '🗄️', label: 'Database', value: 'Upstash' },
-  { id: 2, emoji: '✨', label: 'Animations', value: 'GSAP' },
-  { id: 3, emoji: '🎨', label: 'UI', value: 'shadcn' },
-] as const;
+import { GradientText, KawaiiMascot } from '@/components/effects';
 
 interface Props {
   titleRef: React.RefObject<HTMLHeadingElement | null>;
@@ -70,68 +57,39 @@ export function HomeContent({ titleRef, unicornRef, onUnicornClick }: Props) {
       </motion.p>
 
       <motion.div
-        className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
+        className="flex flex-col sm:flex-row gap-6 justify-center items-center"
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.2, duration: 0.6, type: 'spring' }}
       >
         <Link href="/practice" data-tour="practice-button">
-          <PulseGlow color="#a855f7" intensity="subtle">
-            <MagneticButton className="text-xl px-8 py-6 bg-white text-purple-600 hover:bg-white/90 rounded-full font-bold shadow-2xl">
-              🎮 Mode Entraînement
-            </MagneticButton>
-          </PulseGlow>
+          <motion.button
+            className="text-xl px-10 py-5 bg-white text-purple-600 rounded-2xl font-bold shadow-lg border-4 border-purple-300"
+            whileHover={{ scale: 1.05, y: -3 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            🎮 Mode Entraînement
+          </motion.button>
         </Link>
         <Link href="/challenge" data-tour="challenge-button">
-          <PulseGlow color="#f97316" intensity="subtle">
-            <MagneticButton className="text-xl px-8 py-6 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full font-bold shadow-2xl">
-              🔥 Mode Challenge
-            </MagneticButton>
-          </PulseGlow>
+          <motion.button
+            className="text-xl px-10 py-5 bg-orange-500 text-white rounded-2xl font-bold shadow-lg border-4 border-orange-300"
+            whileHover={{ scale: 1.05, y: -3 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            🔥 Mode Challenge
+          </motion.button>
         </Link>
       </motion.div>
 
-      <StaggerList
-        items={[...DEPLOY_STATS]}
-        keyExtractor={(item) => `stat-${item.id}`}
-        className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto"
-        staggerDelay={0.15}
-        direction="up"
-        renderItem={(stat) => (
-          <motion.div
-            className="bg-white/15 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-white/25 cursor-pointer"
-            whileHover={{
-              scale: 1.08,
-              backgroundColor: 'rgba(255,255,255,0.25)',
-              y: -5,
-            }}
-          >
-            <div className="text-3xl sm:text-4xl mb-2">{stat.emoji}</div>
-            <div className="text-xs sm:text-sm text-white/70">{stat.label}</div>
-            <div className="text-sm sm:text-lg font-bold text-white">
-              {stat.value}
-            </div>
-          </motion.div>
-        )}
-      />
-
       <motion.div
-        className="mt-8 flex justify-center"
+        className="mt-12 flex justify-center"
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 2, type: 'spring', stiffness: 200 }}
+        transition={{ delay: 1.8, type: 'spring', stiffness: 200 }}
       >
         <KawaiiMascot character="planet" mood="blissful" size={100} />
       </motion.div>
-
-      <motion.p
-        className="mt-4 text-white/80 text-lg"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.5 }}
-      >
-        PWA Moderne - Prête pour tablette !
-      </motion.p>
     </div>
   );
 }
