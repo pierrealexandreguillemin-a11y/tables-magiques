@@ -36,18 +36,18 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/icons/favicon-16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/icons/favicon-32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+      { url: '/icons-v6/favicon-16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/icons-v6/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icons-v6/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons-v6/icon-512.png', sizes: '512x512', type: 'image/png' },
     ],
     apple: [
-      { url: '/icons/apple-touch-icon.png', sizes: '180x180' },
-      { url: '/icons/icon-167.png', sizes: '167x167' },
-      { url: '/icons/icon-152.png', sizes: '152x152' },
-      { url: '/icons/icon-120.png', sizes: '120x120' },
-      { url: '/icons/icon-76.png', sizes: '76x76' },
-      { url: '/icons/icon-60.png', sizes: '60x60' },
+      { url: '/icons-v6/apple-touch-icon.png', sizes: '180x180' },
+      { url: '/icons-v6/icon-167.png', sizes: '167x167' },
+      { url: '/icons-v6/icon-152.png', sizes: '152x152' },
+      { url: '/icons-v6/icon-120.png', sizes: '120x120' },
+      { url: '/icons-v6/icon-76.png', sizes: '76x76' },
+      { url: '/icons-v6/icon-60.png', sizes: '60x60' },
     ],
   },
 };

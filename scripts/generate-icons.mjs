@@ -17,7 +17,7 @@ import https from 'https';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
-const ICONS_DIR = join(ROOT, 'public', 'icons');
+const ICONS_DIR = join(ROOT, 'public', 'icons-v6');
 const SOURCE_PNG = join(ICONS_DIR, 'icon-source.png');
 const SOURCE_SVG = join(ICONS_DIR, 'icon.svg');
 

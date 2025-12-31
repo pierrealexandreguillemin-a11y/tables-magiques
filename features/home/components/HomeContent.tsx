@@ -7,7 +7,13 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { GradientText, KawaiiMascot } from '@/components/effects';
+import {
+  GradientText,
+  KawaiiMascot,
+  GradientBorder,
+  PulseGlow,
+  MagneticButton,
+} from '@/components/effects';
 
 interface Props {
   titleRef: React.RefObject<HTMLHeadingElement | null>;
@@ -62,23 +68,26 @@ export function HomeContent({ titleRef, unicornRef, onUnicornClick }: Props) {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.2, duration: 0.6, type: 'spring' }}
       >
+        {/* Mode Entrainement - Glassmorphism + Gradient Border + Pulse */}
         <Link href="/practice" data-tour="practice-button">
-          <motion.button
-            className="text-xl px-10 py-5 bg-white text-purple-600 rounded-2xl font-bold shadow-lg border-4 border-purple-300"
-            whileHover={{ scale: 1.05, y: -3 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            🎮 Mode Entraînement
-          </motion.button>
+          <PulseGlow color="#a855f7" intensity="medium">
+            <GradientBorder variant="unicorn" animate glow borderWidth={3}>
+              <MagneticButton className="text-xl px-8 py-5 bg-white/90 backdrop-blur-md text-purple-600 font-bold rounded-xl shadow-2xl">
+                🎮 Mode Entraînement
+              </MagneticButton>
+            </GradientBorder>
+          </PulseGlow>
         </Link>
+
+        {/* Mode Challenge - Glassmorphism + Gradient Border + Pulse */}
         <Link href="/challenge" data-tour="challenge-button">
-          <motion.button
-            className="text-xl px-10 py-5 bg-orange-500 text-white rounded-2xl font-bold shadow-lg border-4 border-orange-300"
-            whileHover={{ scale: 1.05, y: -3 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            🔥 Mode Challenge
-          </motion.button>
+          <PulseGlow color="#f97316" intensity="medium">
+            <GradientBorder variant="star" animate glow borderWidth={3}>
+              <MagneticButton className="text-xl px-8 py-5 bg-gradient-to-r from-orange-400 to-red-500 backdrop-blur-md text-white font-bold rounded-xl shadow-2xl">
+                🔥 Mode Challenge
+              </MagneticButton>
+            </GradientBorder>
+          </PulseGlow>
         </Link>
       </motion.div>
 

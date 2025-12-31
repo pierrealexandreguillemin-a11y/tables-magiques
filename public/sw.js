@@ -2,10 +2,10 @@
  * Service Worker - Tables Magiques
  * ISO/IEC 25010 - PWA avec support offline
  *
- * VERSION 5 - Force refresh des icones PWA
+ * VERSION 6 - Nouveau dossier icons-v6 pour forcer refresh Android
  */
 
-const CACHE_VERSION = 'v5';
+const CACHE_VERSION = 'v6';
 const CACHE_NAME = `tables-magiques-${CACHE_VERSION}`;
 const ICON_CACHE_NAME = `tables-magiques-icons-${CACHE_VERSION}`;
 
@@ -22,36 +22,35 @@ const STATIC_ASSETS = [
   '/sounds/badge-unlock.ogg',
 ];
 
-// Icones PWA - cache separe avec Network First
+// Icones PWA - NOUVEAU DOSSIER v6 pour forcer refresh Android
 const ICON_ASSETS = [
-  '/icons/icon-72.png',
-  '/icons/icon-96.png',
-  '/icons/icon-128.png',
-  '/icons/icon-144.png',
-  '/icons/icon-152.png',
-  '/icons/icon-192.png',
-  '/icons/icon-384.png',
-  '/icons/icon-512.png',
-  '/icons/apple-touch-icon.png',
-  '/icons/favicon-16.png',
-  '/icons/favicon-32.png',
-  '/icons/icon-source.png',
+  '/icons-v6/icon-72.png',
+  '/icons-v6/icon-96.png',
+  '/icons-v6/icon-128.png',
+  '/icons-v6/icon-144.png',
+  '/icons-v6/icon-152.png',
+  '/icons-v6/icon-192.png',
+  '/icons-v6/icon-384.png',
+  '/icons-v6/icon-512.png',
+  '/icons-v6/apple-touch-icon.png',
+  '/icons-v6/favicon-16.png',
+  '/icons-v6/favicon-32.png',
   '/favicon.ico',
 ];
 
 // Installation - Cache des assets statiques + icones fraiches
 self.addEventListener('install', (event) => {
-  console.log('[SW v5] Installing...');
+  console.log('[SW v6] Installing...');
   event.waitUntil(
     Promise.all([
       // Cache assets statiques
       caches.open(CACHE_NAME).then((cache) => {
-        console.log('[SW v5] Caching static assets');
+        console.log('[SW v6] Caching static assets');
         return cache.addAll(STATIC_ASSETS);
       }),
       // Cache icones avec fetch force (bypass cache navigateur)
       caches.open(ICON_CACHE_NAME).then(async (cache) => {
-        console.log('[SW v5] Fetching fresh icons from network...');
+        console.log('[SW v6] Fetching fresh icons from network...');
         const iconPromises = ICON_ASSETS.map(async (iconUrl) => {
           try {
             // Force fetch depuis le reseau (bypass cache)
@@ -61,10 +60,10 @@ self.addEventListener('install', (event) => {
             });
             if (response.ok) {
               await cache.put(iconUrl, response);
-              console.log(`[SW v5] Cached fresh: ${iconUrl}`);
+              console.log(`[SW v6] Cached fresh: ${iconUrl}`);
             }
           } catch (error) {
-            console.warn(`[SW v5] Failed to fetch ${iconUrl}:`, error);
+            console.warn(`[SW v6] Failed to fetch ${iconUrl}:`, error);
           }
         });
         return Promise.all(iconPromises);
@@ -77,7 +76,7 @@ self.addEventListener('install', (event) => {
 
 // Activation - SUPPRESSION TOTALE de tous les anciens caches
 self.addEventListener('activate', (event) => {
-  console.log('[SW v5] Activating...');
+  console.log('[SW v6] Activating...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -87,7 +86,7 @@ self.addEventListener('activate', (event) => {
             return name !== CACHE_NAME && name !== ICON_CACHE_NAME;
           })
           .map((name) => {
-            console.log('[SW v5] Deleting cache:', name);
+            console.log('[SW v6] Deleting cache:', name);
             return caches.delete(name);
           })
       );
@@ -118,7 +117,10 @@ self.addEventListener('fetch', (event) => {
   if (url.pathname.startsWith('/api/')) return;
 
   // ICONES - Network First (toujours essayer de recuperer la version fraiche)
-  if (url.pathname.startsWith('/icons/') || url.pathname === '/favicon.ico') {
+  if (
+    url.pathname.startsWith('/icons-v6/') ||
+    url.pathname === '/favicon.ico'
+  ) {
     event.respondWith(
       fetch(request, { cache: 'reload' })
         .then((response) => {
@@ -212,7 +214,7 @@ self.addEventListener('message', (event) => {
     case 'FORCE_REFRESH_ICONS':
       // Force le rechargement des icones
       caches.open(ICON_CACHE_NAME).then(async (cache) => {
-        console.log('[SW v5] Force refreshing icons...');
+        console.log('[SW v6] Force refreshing icons...');
         for (const iconUrl of ICON_ASSETS) {
           try {
             const response = await fetch(iconUrl, {
@@ -223,7 +225,7 @@ self.addEventListener('message', (event) => {
               await cache.put(iconUrl, response);
             }
           } catch (error) {
-            console.warn(`[SW v5] Failed to refresh ${iconUrl}`);
+            console.warn(`[SW v6] Failed to refresh ${iconUrl}`);
           }
         }
         event.source?.postMessage({ type: 'ICONS_REFRESHED' });
@@ -234,18 +236,18 @@ self.addEventListener('message', (event) => {
       // Supprime tous les caches (pour debug/force refresh)
       caches.keys().then((names) => {
         Promise.all(names.map((name) => caches.delete(name))).then(() => {
-          console.log('[SW v5] All caches cleared');
+          console.log('[SW v6] All caches cleared');
           event.source?.postMessage({ type: 'CACHES_CLEARED' });
         });
       });
       break;
 
     case 'SCHEDULE_REMINDER':
-      console.log('[SW v5] Reminder scheduled:', event.data.payload);
+      console.log('[SW v6] Reminder scheduled:', event.data.payload);
       break;
 
     case 'CANCEL_REMINDERS':
-      console.log('[SW v5] Reminders cancelled');
+      console.log('[SW v6] Reminders cancelled');
       break;
   }
 });
@@ -256,8 +258,8 @@ self.addEventListener('push', (event) => {
   const title = data.title || 'Tables Magiques';
   const options = {
     body: data.body || "C'est l'heure de s'entrainer !",
-    icon: '/icons/icon-192.png',
-    badge: '/icons/icon-72.png',
+    icon: '/icons-v6/icon-192.png',
+    badge: '/icons-v6/icon-72.png',
     vibrate: [100, 50, 100],
     tag: data.tag || 'tables-magiques-reminder',
     data: {
