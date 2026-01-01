@@ -8,7 +8,7 @@
  * avec support reduced motion et cleanup automatique.
  */
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { useGsapEffects } from '@/hooks/useGsapEffects';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
@@ -70,38 +70,46 @@ export function GsapCelebration({
 
   const animate = shouldAnimate && !disableAnimation;
 
-  // Fonction pour lancer la celebration
-  const triggerCelebration = useCallback(() => {
-    if (!containerRef.current || !animate || type === 'none') {
-      onComplete?.();
+  // Declencher quand trigger passe a true avec cleanup propre
+  useEffect(() => {
+    if (!trigger || !containerRef.current || !animate || type === 'none') {
+      if (trigger && type === 'none') {
+        onComplete?.();
+      }
       return;
     }
 
     const container = containerRef.current;
+    let effectCleanup: (() => void) | undefined;
+    let completeTimeout: ReturnType<typeof setTimeout> | undefined;
 
     switch (type) {
       case 'confetti':
         confettiExplosion(container, { count: particleCount });
-        // Callback apres duree estimee
-        setTimeout(() => onComplete?.(), 1500);
+        completeTimeout = setTimeout(() => onComplete?.(), 1500);
         break;
 
       case 'fireworks':
-        fireworksDisplay(container);
-        // Callback apres duree estimee
-        setTimeout(() => onComplete?.(), 2000);
+        effectCleanup = fireworksDisplay(container);
+        completeTimeout = setTimeout(() => onComplete?.(), 2000);
         break;
 
       case 'cascade':
-        celebrationCascade(container);
-        // Callback apres duree estimee
-        setTimeout(() => onComplete?.(), 4000);
+        effectCleanup = celebrationCascade(container);
+        completeTimeout = setTimeout(() => onComplete?.(), 4000);
         break;
 
       default:
         onComplete?.();
     }
+
+    // Cleanup: annuler les timeouts et les effets en cours
+    return () => {
+      if (completeTimeout) clearTimeout(completeTimeout);
+      if (effectCleanup) effectCleanup();
+    };
   }, [
+    trigger,
     type,
     animate,
     particleCount,
@@ -110,13 +118,6 @@ export function GsapCelebration({
     celebrationCascade,
     onComplete,
   ]);
-
-  // Declencher quand trigger passe a true
-  useEffect(() => {
-    if (trigger) {
-      triggerCelebration();
-    }
-  }, [trigger, triggerCelebration]);
 
   return (
     <div

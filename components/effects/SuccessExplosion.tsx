@@ -40,20 +40,29 @@ export function SuccessExplosion({
   const dimensions = sizeMap[size];
 
   useEffect(() => {
-    if (show && containerRef.current && shouldAnimate) {
-      switch (type) {
-        case 'fireworks':
-          fireworksDisplay(containerRef.current);
-          break;
-        case 'celebration':
-          celebrationCascade(containerRef.current);
-          break;
-        default:
-          confettiExplosion(containerRef.current, {
-            count: size === 'lg' ? 100 : 50,
-          });
-      }
+    if (!show || !containerRef.current || !shouldAnimate) {
+      return;
     }
+
+    let effectCleanup: (() => void) | undefined;
+
+    switch (type) {
+      case 'fireworks':
+        effectCleanup = fireworksDisplay(containerRef.current);
+        break;
+      case 'celebration':
+        effectCleanup = celebrationCascade(containerRef.current);
+        break;
+      default:
+        confettiExplosion(containerRef.current, {
+          count: size === 'lg' ? 100 : 50,
+        });
+    }
+
+    // Cleanup des effets avec timeouts internes
+    return () => {
+      if (effectCleanup) effectCleanup();
+    };
   }, [
     show,
     type,
