@@ -50,11 +50,11 @@ export function useGsapEffects(): UseGsapEffectsResult {
     [shouldAnimate]
   );
 
-  // Feux d'artifice
+  // Feux d'artifice (retourne cleanup function)
   const fireworksDisplay = useCallback(
-    (container: HTMLElement) => {
-      if (!shouldAnimate) return;
-      gsapEffects.fireworksDisplay(container);
+    (container: HTMLElement): GsapCleanupFunction => {
+      if (!shouldAnimate) return () => {};
+      return gsapEffects.fireworksDisplay(container);
     },
     [shouldAnimate]
   );
@@ -123,11 +123,11 @@ export function useGsapEffects(): UseGsapEffectsResult {
     [shouldAnimate]
   );
 
-  // Cascade de celebration
+  // Cascade de celebration (retourne cleanup function)
   const celebrationCascade = useCallback(
-    (container: HTMLElement) => {
-      if (!shouldAnimate) return;
-      gsapEffects.celebrationCascade(container);
+    (container: HTMLElement): GsapCleanupFunction => {
+      if (!shouldAnimate) return () => {};
+      return gsapEffects.celebrationCascade(container);
     },
     [shouldAnimate]
   );
