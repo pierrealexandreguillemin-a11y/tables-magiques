@@ -1,35 +1,20 @@
 /**
- * PageTransition - Wrapper pour transitions de page avec morphing SVG
+ * PageTransition - Wrapper pour transitions de page avec balayage colore
  * ISO/IEC 25010 - Animations fluides entre routes
  *
- * Utilise le mode 'full' du MorphingOverlay: l'overlay couvre l'ecran,
- * le contenu change au midpoint, puis l'overlay se retire.
+ * L'overlay balaie l'ecran du bas vers le haut pour couvrir,
+ * le contenu change au midpoint, puis l'overlay continue vers le haut pour reveler.
  */
 
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { MorphingOverlay, type MorphingVariant } from './MorphingOverlay';
 
 /**
- * Variants pour l'animation de la page (fade simple)
- */
-const pageVariants = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1 },
-  exit: { opacity: 0 },
-};
-
-const pageTransition = {
-  duration: 0.2,
-  ease: 'easeOut' as const,
-};
-
-/**
- * Map des routes vers les variantes de couleur morphing
+ * Map des routes vers les variantes de couleur
  */
 const ROUTE_VARIANTS: Record<string, MorphingVariant> = {
   '/': 'rainbow',
@@ -48,8 +33,7 @@ interface PageTransitionProps {
 /**
  * PageTransition Component
  *
- * L'overlay fait une animation complete: cover -> pause -> reveal
- * Le contenu change au milieu quand l'ecran est couvert.
+ * Balayage colore qui masque le changement de page.
  */
 export function PageTransition({
   children,
@@ -59,93 +43,92 @@ export function PageTransition({
   const pathname = usePathname();
   const { shouldAnimate } = useReducedMotion();
 
-  // Etat de la transition
+  // State
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [displayedChildren, setDisplayedChildren] = useState(children);
-  const [displayedPathname, setDisplayedPathname] = useState(pathname);
+  const [transitionVariant, setTransitionVariant] =
+    useState<MorphingVariant>('unicorn');
 
-  // Refs
+  // Refs pour stocker les valeurs pending
   const previousPathnameRef = useRef<string>(pathname);
-  const isFirstRenderRef = useRef(true);
   const pendingChildrenRef = useRef(children);
-  const pendingPathnameRef = useRef(pathname);
+  const isFirstRenderRef = useRef(true);
 
-  // Garder les pending refs a jour (dans un effet pour respecter les regles React)
+  // Mettre a jour les pending refs
   useEffect(() => {
     pendingChildrenRef.current = children;
-    pendingPathnameRef.current = pathname;
-  }, [children, pathname]);
+  }, [children]);
 
-  // Detecter changement de route
+  // Detecter changement de route et declencher transition
   useEffect(() => {
+    // Skip first render
     if (isFirstRenderRef.current) {
       isFirstRenderRef.current = false;
-      previousPathnameRef.current = pathname;
       return;
     }
 
+    // Route changed?
     if (previousPathnameRef.current !== pathname && !isTransitioning) {
+      previousPathnameRef.current = pathname;
+
+      // Store the variant for the TARGET route (the new page)
+      const targetVariant = variant ?? ROUTE_VARIANTS[pathname] ?? 'unicorn';
+
       if (enableMorphing && shouldAnimate) {
-        const timer = setTimeout(() => setIsTransitioning(true), 0);
-        previousPathnameRef.current = pathname;
+        // Use setTimeout to avoid synchronous setState in effect
+        const timer = setTimeout(() => {
+          setTransitionVariant(targetVariant);
+          setIsTransitioning(true);
+        }, 0);
         return () => clearTimeout(timer);
       } else {
-        // Sans animation
+        // No animation - just swap content
         const timer = setTimeout(() => {
           setDisplayedChildren(children);
-          setDisplayedPathname(pathname);
         }, 0);
-        previousPathnameRef.current = pathname;
         return () => clearTimeout(timer);
       }
     }
     return undefined;
-  }, [pathname, isTransitioning, enableMorphing, shouldAnimate, children]);
+  }, [
+    pathname,
+    children,
+    isTransitioning,
+    enableMorphing,
+    shouldAnimate,
+    variant,
+  ]);
 
-  // Callback au midpoint: changer le contenu
+  // Midpoint: swap content when screen is covered
   const handleMidpoint = useCallback(() => {
     setDisplayedChildren(pendingChildrenRef.current);
-    setDisplayedPathname(pendingPathnameRef.current);
   }, []);
 
-  // Callback a la fin: terminer la transition
+  // Complete: end transition
   const handleComplete = useCallback(() => {
     setIsTransitioning(false);
   }, []);
 
-  const morphingVariant = variant ?? ROUTE_VARIANTS[pathname] ?? 'unicorn';
-
+  // Render without animation if reduced motion
   if (!shouldAnimate) {
     return <>{children}</>;
   }
 
   return (
     <>
-      {/* Overlay: animation complete cover->reveal */}
-      {enableMorphing && isTransitioning && (
+      {/* Overlay balayage colore */}
+      {enableMorphing && (
         <MorphingOverlay
-          isAnimating={true}
-          variant={morphingVariant}
+          isAnimating={isTransitioning}
+          variant={transitionVariant}
           direction="full"
           onMidpoint={handleMidpoint}
           onAnimationComplete={handleComplete}
         />
       )}
 
-      {/* Contenu de la page */}
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={displayedPathname}
-          initial="initial"
-          animate="animate"
-          exit="exit"
-          variants={pageVariants}
-          transition={pageTransition}
-          className="min-h-screen"
-        >
-          {displayedChildren}
-        </motion.div>
-      </AnimatePresence>
+      {/* Contenu (affiche l'ancienne page jusqu'au midpoint) */}
+      <div className="min-h-screen">{displayedChildren}</div>
     </>
   );
 }

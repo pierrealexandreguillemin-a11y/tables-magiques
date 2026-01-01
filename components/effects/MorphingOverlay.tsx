@@ -1,8 +1,6 @@
 /**
- * MorphingOverlay - Overlay SVG morphing pour transitions de page
- * ISO/IEC 25010 - Animation fluide style Codrops
- *
- * Ref: https://tympanus.net/Development/MorphingPageTransition/
+ * MorphingOverlay - Overlay balayage colore pour transitions de page
+ * ISO/IEC 25010 - Animation fluide
  */
 
 'use client';
@@ -13,47 +11,53 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 
 /**
- * Paths SVG pour l'effet morphing
- * Les paths doivent avoir le meme nombre de points pour un morphing fluide
- */
-const SVG_PATHS = {
-  // Path initial: ligne plate en bas
-  start: 'M 0 100 V 100 Q 50 100 100 100 V 100 H 0',
-  // Path intermediaire: vague montante
-  wave: 'M 0 100 V 50 Q 50 0 100 50 V 100 H 0',
-  // Path final: couvre tout l'ecran
-  full: 'M 0 100 V 0 Q 50 0 100 0 V 100 H 0',
-  // Path sortie: vague descendante inverse
-  waveReverse: 'M 0 0 V 50 Q 50 100 100 50 V 0 H 0',
-  // Path final sortie: ligne plate en haut
-  end: 'M 0 0 V 0 Q 50 0 100 0 V 0 H 0',
-};
-
-/**
- * Sequence complete: cover puis reveal en une animation
- */
-const FULL_SEQUENCE = [
-  SVG_PATHS.start,
-  SVG_PATHS.wave,
-  SVG_PATHS.full,
-  SVG_PATHS.full, // Pause au milieu
-  SVG_PATHS.waveReverse,
-  SVG_PATHS.end,
-];
-
-/**
  * Variantes de couleur disponibles
  */
 export type MorphingVariant = 'princess' | 'unicorn' | 'star' | 'rainbow';
 
 /**
- * Themes de couleur pour l'overlay (couleurs directes pour SVG)
+ * Themes de couleur pour l'overlay
  */
 const OVERLAY_COLORS: Record<MorphingVariant, string> = {
   princess: '#f472b6', // pink-400
   unicorn: '#a855f7', // purple-500
   star: '#facc15', // yellow-400
-  rainbow: 'url(#morphing-gradient)',
+  rainbow:
+    'linear-gradient(135deg, #f472b6 0%, #a855f7 33%, #6366f1 66%, #3b82f6 100%)',
+};
+
+/**
+ * Animation configs par direction
+ */
+const ANIMATIONS: Record<
+  'enter' | 'exit' | 'full',
+  {
+    initial: { y: string };
+    animate: { y: string | string[] };
+    exit: { y?: string; opacity?: number };
+    duration: number;
+    times?: number[];
+  }
+> = {
+  enter: {
+    initial: { y: '100%' },
+    animate: { y: '0%' },
+    exit: { y: '-100%' },
+    duration: 0.6,
+  },
+  exit: {
+    initial: { y: '0%' },
+    animate: { y: '-100%' },
+    exit: { y: '-100%' },
+    duration: 0.6,
+  },
+  full: {
+    initial: { y: '100%' },
+    animate: { y: ['0%', '0%', '-100%'] },
+    exit: { opacity: 0 },
+    duration: 1.2,
+    times: [0, 0.45, 1],
+  },
 };
 
 export interface MorphingOverlayProps {
@@ -74,22 +78,13 @@ export interface MorphingOverlayProps {
 /**
  * MorphingOverlay Component
  *
- * Cree un effet de vague/blob SVG qui se morphe pendant
- * les transitions de page. L'effet est inspire de Codrops.
- *
- * @example
- * ```tsx
- * <MorphingOverlay
- *   isAnimating={isNavigating}
- *   variant="unicorn"
- *   onAnimationComplete={() => setIsNavigating(false)}
- * />
- * ```
+ * Utilise un div plein ecran avec animation CSS transform
+ * pour un effet de balayage fluide et fiable sur tous les navigateurs.
  */
 export function MorphingOverlay({
   isAnimating,
   variant = 'unicorn',
-  direction = 'enter',
+  direction = 'full',
   onMidpoint,
   onAnimationComplete,
   className,
@@ -97,104 +92,89 @@ export function MorphingOverlay({
   const { shouldAnimate } = useReducedMotion();
   const midpointCalledRef = useRef(false);
 
-  // Reset midpoint flag quand l'animation demarre
+  // Timer-based midpoint and completion
   useEffect(() => {
-    if (isAnimating) {
+    if (!isAnimating || !shouldAnimate) {
       midpointCalledRef.current = false;
+      return;
     }
-  }, [isAnimating]);
 
-  // Si reduced motion, pas d'overlay
+    const timers: ReturnType<typeof setTimeout>[] = [];
+
+    if (direction === 'full') {
+      // Midpoint at ~45% of animation
+      timers.push(
+        setTimeout(() => {
+          if (!midpointCalledRef.current && onMidpoint) {
+            midpointCalledRef.current = true;
+            onMidpoint();
+          }
+        }, 540)
+      );
+
+      // Complete at end
+      timers.push(
+        setTimeout(() => {
+          if (onAnimationComplete) {
+            onAnimationComplete();
+          }
+        }, 1200)
+      );
+    } else {
+      timers.push(
+        setTimeout(() => {
+          if (onAnimationComplete) {
+            onAnimationComplete();
+          }
+        }, 600)
+      );
+    }
+
+    return () => {
+      timers.forEach((t) => clearTimeout(t));
+    };
+  }, [isAnimating, direction, onMidpoint, onAnimationComplete, shouldAnimate]);
+
+  // Skip if reduced motion - call callbacks immediately
+  useEffect(() => {
+    if (!shouldAnimate && isAnimating) {
+      if (onMidpoint) {
+        setTimeout(onMidpoint, 0);
+      }
+      if (onAnimationComplete) {
+        setTimeout(onAnimationComplete, 10);
+      }
+    }
+  }, [shouldAnimate, isAnimating, onMidpoint, onAnimationComplete]);
+
   if (!shouldAnimate) {
     return null;
   }
 
-  // Sequences de paths selon la direction
-  const enterSequence = [SVG_PATHS.start, SVG_PATHS.wave, SVG_PATHS.full];
-  const exitSequence = [SVG_PATHS.full, SVG_PATHS.waveReverse, SVG_PATHS.end];
-
-  // Choisir la sequence et config selon direction
-  let pathSequence: string[];
-  let duration: number;
-  let times: number[];
-
-  if (direction === 'full') {
-    pathSequence = FULL_SEQUENCE;
-    duration = 1.4;
-    times = [0, 0.2, 0.4, 0.5, 0.7, 1]; // Pause au milieu (0.4-0.5)
-  } else if (direction === 'enter') {
-    pathSequence = enterSequence;
-    duration = 0.6;
-    times = [0, 0.4, 1];
-  } else {
-    pathSequence = exitSequence;
-    duration = 0.8;
-    times = [0, 0.4, 1];
-  }
-
-  // Handler pour le update de l'animation (pour detecter le midpoint)
-  const handleUpdate = (latest: { d?: string }) => {
-    if (
-      direction === 'full' &&
-      onMidpoint &&
-      !midpointCalledRef.current &&
-      latest.d === SVG_PATHS.full
-    ) {
-      midpointCalledRef.current = true;
-      onMidpoint();
-    }
-  };
+  const config = ANIMATIONS[direction];
+  const color = OVERLAY_COLORS[variant];
 
   return (
     <AnimatePresence>
       {isAnimating && (
         <motion.div
+          key="morphing-overlay"
           className={cn(
             'fixed inset-0 z-[9999] pointer-events-none',
             className
           )}
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <svg
-            className="absolute w-full h-full"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            {/* Gradient definition pour variante rainbow */}
-            <defs>
-              <linearGradient
-                id="morphing-gradient"
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="100%"
-              >
-                <stop offset="0%" stopColor="#f472b6" />
-                <stop offset="33%" stopColor="#a855f7" />
-                <stop offset="66%" stopColor="#6366f1" />
-                <stop offset="100%" stopColor="#3b82f6" />
-              </linearGradient>
-            </defs>
-
-            <motion.path
-              fill={OVERLAY_COLORS[variant]}
-              initial={{ d: pathSequence[0] }}
-              animate={{
-                d: pathSequence,
-              }}
-              transition={{
-                duration,
-                ease: [0.76, 0, 0.24, 1],
-                times,
-              }}
-              onUpdate={handleUpdate}
-              onAnimationComplete={onAnimationComplete}
-            />
-          </svg>
-        </motion.div>
+          style={{
+            background: color,
+          }}
+          initial={config.initial}
+          animate={config.animate}
+          exit={config.exit}
+          transition={{
+            duration: config.duration,
+            ease: [0.76, 0, 0.24, 1],
+            times: config.times,
+          }}
+        />
       )}
     </AnimatePresence>
   );
