@@ -2,8 +2,8 @@
  * PageTransition - Wrapper pour transitions de page avec morphing SVG
  * ISO/IEC 25010 - Animations fluides entre routes
  *
- * Le morphing COUVRE l'ecran instantanement, puis SE RETIRE pour reveler
- * le nouveau contenu. Cela masque le changement de page.
+ * Utilise le mode 'full' du MorphingOverlay: l'overlay couvre l'ecran,
+ * le contenu change au midpoint, puis l'overlay se retire.
  */
 
 'use client';
@@ -15,26 +15,16 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { MorphingOverlay, type MorphingVariant } from './MorphingOverlay';
 
 /**
- * Variants pour l'animation de la page
- * Le contenu apparait apres que l'overlay se soit retire
+ * Variants pour l'animation de la page (fade simple)
  */
 const pageVariants = {
-  initial: {
-    opacity: 0,
-  },
-  animate: {
-    opacity: 1,
-  },
-  exit: {
-    opacity: 0,
-  },
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
 };
 
-/**
- * Transition rapide pour le contenu - l'overlay gere la vraie transition
- */
 const pageTransition = {
-  duration: 0.3,
+  duration: 0.2,
   ease: 'easeOut' as const,
 };
 
@@ -51,17 +41,15 @@ const ROUTE_VARIANTS: Record<string, MorphingVariant> = {
 
 interface PageTransitionProps {
   children: React.ReactNode;
-  /** Activer l'overlay morphing SVG (defaut: true) */
   enableMorphing?: boolean;
-  /** Variante forcee (sinon basee sur la route) */
   variant?: MorphingVariant;
 }
 
 /**
  * PageTransition Component
  *
- * L'overlay COUVRE instantanement l'ecran au changement de route,
- * puis SE RETIRE pour reveler le nouveau contenu.
+ * L'overlay fait une animation complete: cover -> pause -> reveal
+ * Le contenu change au milieu quand l'ecran est couvert.
  */
 export function PageTransition({
   children,
@@ -70,34 +58,39 @@ export function PageTransition({
 }: PageTransitionProps) {
   const pathname = usePathname();
   const { shouldAnimate } = useReducedMotion();
-  // Phase: 'idle' | 'covering' | 'revealing'
-  const [phase, setPhase] = useState<'idle' | 'covering' | 'revealing'>('idle');
-  // Stocker le contenu actuel pendant la transition
+
+  // Etat de la transition
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [displayedChildren, setDisplayedChildren] = useState(children);
   const [displayedPathname, setDisplayedPathname] = useState(pathname);
-  // Ref pour tracker la route precedente
-  const previousPathnameRef = useRef<string>(pathname);
-  // Ref pour tracker si c'est le premier rendu
-  const isFirstRenderRef = useRef(true);
 
-  // Detecter changement de route et declencher la sequence
+  // Refs
+  const previousPathnameRef = useRef<string>(pathname);
+  const isFirstRenderRef = useRef(true);
+  const pendingChildrenRef = useRef(children);
+  const pendingPathnameRef = useRef(pathname);
+
+  // Garder les pending refs a jour (dans un effet pour respecter les regles React)
   useEffect(() => {
-    // Premier rendu: pas de transition, juste afficher
+    pendingChildrenRef.current = children;
+    pendingPathnameRef.current = pathname;
+  }, [children, pathname]);
+
+  // Detecter changement de route
+  useEffect(() => {
     if (isFirstRenderRef.current) {
       isFirstRenderRef.current = false;
       previousPathnameRef.current = pathname;
       return;
     }
 
-    // Si la route a change et qu'on n'est pas deja en transition
-    if (previousPathnameRef.current !== pathname && phase === 'idle') {
+    if (previousPathnameRef.current !== pathname && !isTransitioning) {
       if (enableMorphing && shouldAnimate) {
-        // Demarrer la phase "covering" - differe pour eviter cascade
-        const timer = setTimeout(() => setPhase('covering'), 0);
+        const timer = setTimeout(() => setIsTransitioning(true), 0);
         previousPathnameRef.current = pathname;
         return () => clearTimeout(timer);
       } else {
-        // Sans animation, mise a jour directe (differe)
+        // Sans animation
         const timer = setTimeout(() => {
           setDisplayedChildren(children);
           setDisplayedPathname(pathname);
@@ -107,46 +100,39 @@ export function PageTransition({
       }
     }
     return undefined;
-  }, [pathname, phase, enableMorphing, shouldAnimate, children]);
+  }, [pathname, isTransitioning, enableMorphing, shouldAnimate, children]);
 
-  // Quand on passe en phase 'covering', attendre que l'overlay couvre,
-  // puis mettre a jour le contenu et passer en 'revealing'
-  const handleCoverComplete = useCallback(() => {
-    // L'ecran est couvert, on peut changer le contenu
-    setDisplayedChildren(children);
-    setDisplayedPathname(pathname);
-    // Passer en phase revealing - l'overlay se retire
-    setPhase('revealing');
-  }, [children, pathname]);
-
-  // Quand la phase 'revealing' est terminee
-  const handleRevealComplete = useCallback(() => {
-    setPhase('idle');
+  // Callback au midpoint: changer le contenu
+  const handleMidpoint = useCallback(() => {
+    setDisplayedChildren(pendingChildrenRef.current);
+    setDisplayedPathname(pendingPathnameRef.current);
   }, []);
 
-  // Determiner la variante basee sur la route destination
+  // Callback a la fin: terminer la transition
+  const handleComplete = useCallback(() => {
+    setIsTransitioning(false);
+  }, []);
+
   const morphingVariant = variant ?? ROUTE_VARIANTS[pathname] ?? 'unicorn';
 
-  // Sans animation, rendu direct
   if (!shouldAnimate) {
     return <>{children}</>;
   }
 
   return (
     <>
-      {/* Overlay SVG morphing */}
-      {enableMorphing && (
+      {/* Overlay: animation complete cover->reveal */}
+      {enableMorphing && isTransitioning && (
         <MorphingOverlay
-          isAnimating={phase === 'covering' || phase === 'revealing'}
+          isAnimating={true}
           variant={morphingVariant}
-          direction={phase === 'covering' ? 'enter' : 'exit'}
-          onAnimationComplete={
-            phase === 'covering' ? handleCoverComplete : handleRevealComplete
-          }
+          direction="full"
+          onMidpoint={handleMidpoint}
+          onAnimationComplete={handleComplete}
         />
       )}
 
-      {/* Contenu de la page - affiche le contenu "displayed" */}
+      {/* Contenu de la page */}
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={displayedPathname}

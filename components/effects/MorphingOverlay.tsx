@@ -7,6 +7,7 @@
 
 'use client';
 
+import { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
@@ -29,6 +30,18 @@ const SVG_PATHS = {
 };
 
 /**
+ * Sequence complete: cover puis reveal en une animation
+ */
+const FULL_SEQUENCE = [
+  SVG_PATHS.start,
+  SVG_PATHS.wave,
+  SVG_PATHS.full,
+  SVG_PATHS.full, // Pause au milieu
+  SVG_PATHS.waveReverse,
+  SVG_PATHS.end,
+];
+
+/**
  * Variantes de couleur disponibles
  */
 export type MorphingVariant = 'princess' | 'unicorn' | 'star' | 'rainbow';
@@ -48,8 +61,10 @@ export interface MorphingOverlayProps {
   isAnimating: boolean;
   /** Variante de couleur */
   variant?: MorphingVariant;
-  /** Direction de l'animation */
-  direction?: 'enter' | 'exit';
+  /** Direction de l'animation: enter, exit, ou full (cover+reveal) */
+  direction?: 'enter' | 'exit' | 'full';
+  /** Callback quand l'ecran est completement couvert (pour direction='full') */
+  onMidpoint?: () => void;
   /** Callback quand l'animation est terminee */
   onAnimationComplete?: () => void;
   /** Classe CSS additionnelle */
@@ -75,10 +90,19 @@ export function MorphingOverlay({
   isAnimating,
   variant = 'unicorn',
   direction = 'enter',
+  onMidpoint,
   onAnimationComplete,
   className,
 }: MorphingOverlayProps) {
   const { shouldAnimate } = useReducedMotion();
+  const midpointCalledRef = useRef(false);
+
+  // Reset midpoint flag quand l'animation demarre
+  useEffect(() => {
+    if (isAnimating) {
+      midpointCalledRef.current = false;
+    }
+  }, [isAnimating]);
 
   // Si reduced motion, pas d'overlay
   if (!shouldAnimate) {
@@ -86,14 +110,40 @@ export function MorphingOverlay({
   }
 
   // Sequences de paths selon la direction
-  // Enter: monte du bas pour couvrir l'ecran
   const enterSequence = [SVG_PATHS.start, SVG_PATHS.wave, SVG_PATHS.full];
-  // Exit: descend pour reveler le contenu
   const exitSequence = [SVG_PATHS.full, SVG_PATHS.waveReverse, SVG_PATHS.end];
 
-  const pathSequence = direction === 'enter' ? enterSequence : exitSequence;
-  // Duree plus courte pour une transition plus snappy
-  const duration = direction === 'enter' ? 0.6 : 0.8;
+  // Choisir la sequence et config selon direction
+  let pathSequence: string[];
+  let duration: number;
+  let times: number[];
+
+  if (direction === 'full') {
+    pathSequence = FULL_SEQUENCE;
+    duration = 1.4;
+    times = [0, 0.2, 0.4, 0.5, 0.7, 1]; // Pause au milieu (0.4-0.5)
+  } else if (direction === 'enter') {
+    pathSequence = enterSequence;
+    duration = 0.6;
+    times = [0, 0.4, 1];
+  } else {
+    pathSequence = exitSequence;
+    duration = 0.8;
+    times = [0, 0.4, 1];
+  }
+
+  // Handler pour le update de l'animation (pour detecter le midpoint)
+  const handleUpdate = (latest: { d?: string }) => {
+    if (
+      direction === 'full' &&
+      onMidpoint &&
+      !midpointCalledRef.current &&
+      latest.d === SVG_PATHS.full
+    ) {
+      midpointCalledRef.current = true;
+      onMidpoint();
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -137,9 +187,10 @@ export function MorphingOverlay({
               }}
               transition={{
                 duration,
-                ease: [0.76, 0, 0.24, 1], // ease-in-out-expo
-                times: [0, 0.4, 1],
+                ease: [0.76, 0, 0.24, 1],
+                times,
               }}
+              onUpdate={handleUpdate}
               onAnimationComplete={onAnimationComplete}
             />
           </svg>
