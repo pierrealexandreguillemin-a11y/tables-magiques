@@ -8,7 +8,7 @@
  * La page devient un simple orchestrateur UI.
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import {
   generateRandomQuestion,
   generateAllQuestionsForTable,
@@ -55,6 +55,16 @@ const INITIAL_STATE: PracticeState = {
  */
 export function usePractice(): UsePracticeReturn {
   const [state, setState] = useState<PracticeState>(INITIAL_STATE);
+  const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Cleanup du timeout au démontage
+  useEffect(() => {
+    return () => {
+      if (feedbackTimeoutRef.current) {
+        clearTimeout(feedbackTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Actions
   const startGame = useCallback((table: number | null) => {
@@ -108,7 +118,12 @@ export function usePractice(): UsePracticeReturn {
       };
     });
 
-    setTimeout(() => {
+    // Annuler le timeout précédent s'il existe
+    if (feedbackTimeoutRef.current) {
+      clearTimeout(feedbackTimeoutRef.current);
+    }
+
+    feedbackTimeoutRef.current = setTimeout(() => {
       setState((prev) => {
         const nextIndex = prev.currentIndex + 1;
 
@@ -128,6 +143,11 @@ export function usePractice(): UsePracticeReturn {
   }, []);
 
   const handleBack = useCallback(() => {
+    // Nettoyer le timeout en cours si on revient à la sélection
+    if (feedbackTimeoutRef.current) {
+      clearTimeout(feedbackTimeoutRef.current);
+      feedbackTimeoutRef.current = null;
+    }
     setState(INITIAL_STATE);
   }, []);
 
