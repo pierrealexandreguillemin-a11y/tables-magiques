@@ -2,7 +2,8 @@
  * PageTransition - Wrapper pour transitions de page avec morphing SVG
  * ISO/IEC 25010 - Animations fluides entre routes
  *
- * Ref: https://tympanus.net/Development/MorphingPageTransition/
+ * Le morphing COUVRE l'ecran instantanement, puis SE RETIRE pour reveler
+ * le nouveau contenu. Cela masque le changement de page.
  */
 
 'use client';
@@ -14,33 +15,27 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { MorphingOverlay, type MorphingVariant } from './MorphingOverlay';
 
 /**
- * Variants pour l'animation de la page - Style Codrops
- * La page monte pendant que le morphing SVG se declenche
+ * Variants pour l'animation de la page
+ * Le contenu apparait apres que l'overlay se soit retire
  */
 const pageVariants = {
   initial: {
     opacity: 0,
-    y: 100,
-    scale: 0.95,
   },
   animate: {
     opacity: 1,
-    y: 0,
-    scale: 1,
   },
   exit: {
     opacity: 0,
-    y: -100,
-    scale: 0.95,
   },
 };
 
 /**
- * Transition pour la page - synchronisee avec le morphing
+ * Transition rapide pour le contenu - l'overlay gere la vraie transition
  */
 const pageTransition = {
-  duration: 0.8,
-  ease: [0.76, 0, 0.24, 1] as [number, number, number, number], // ease-in-out-expo
+  duration: 0.3,
+  ease: 'easeOut' as const,
 };
 
 /**
@@ -65,16 +60,8 @@ interface PageTransitionProps {
 /**
  * PageTransition Component
  *
- * Wrapper qui ajoute des transitions fluides entre les pages
- * avec un effet de morphing SVG style Codrops.
- *
- * @example
- * ```tsx
- * // Dans template.tsx
- * export default function Template({ children }) {
- *   return <PageTransition>{children}</PageTransition>;
- * }
- * ```
+ * L'overlay COUVRE instantanement l'ecran au changement de route,
+ * puis SE RETIRE pour reveler le nouveau contenu.
  */
 export function PageTransition({
   children,
@@ -83,45 +70,62 @@ export function PageTransition({
 }: PageTransitionProps) {
   const pathname = usePathname();
   const { shouldAnimate } = useReducedMotion();
-  // Etat pour le morphing - commence a false pour eviter hydration mismatch
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  // Phase: 'idle' | 'covering' | 'revealing'
+  const [phase, setPhase] = useState<'idle' | 'covering' | 'revealing'>('idle');
+  // Stocker le contenu actuel pendant la transition
+  const [displayedChildren, setDisplayedChildren] = useState(children);
+  const [displayedPathname, setDisplayedPathname] = useState(pathname);
   // Ref pour tracker la route precedente
-  const previousPathnameRef = useRef<string | null>(null);
-  // Ref pour tracker si on est monte cote client
-  const hasMountedRef = useRef(false);
+  const previousPathnameRef = useRef<string>(pathname);
+  // Ref pour tracker si c'est le premier rendu
+  const isFirstRenderRef = useRef(true);
 
-  // Declencher le morphing au premier rendu ET a chaque changement de route
+  // Detecter changement de route et declencher la sequence
   useEffect(() => {
-    if (!enableMorphing || !shouldAnimate) return undefined;
-
-    // Premier rendu cote client
-    if (!hasMountedRef.current) {
-      hasMountedRef.current = true;
-      const timer = setTimeout(() => setIsTransitioning(true), 0);
-      return () => clearTimeout(timer);
-    }
-
-    // Changement de route
-    if (
-      previousPathnameRef.current !== null &&
-      previousPathnameRef.current !== pathname
-    ) {
-      const timer = setTimeout(() => setIsTransitioning(true), 0);
+    // Premier rendu: pas de transition, juste afficher
+    if (isFirstRenderRef.current) {
+      isFirstRenderRef.current = false;
       previousPathnameRef.current = pathname;
-      return () => clearTimeout(timer);
+      return;
     }
 
-    previousPathnameRef.current = pathname;
+    // Si la route a change et qu'on n'est pas deja en transition
+    if (previousPathnameRef.current !== pathname && phase === 'idle') {
+      if (enableMorphing && shouldAnimate) {
+        // Demarrer la phase "covering" - differe pour eviter cascade
+        const timer = setTimeout(() => setPhase('covering'), 0);
+        previousPathnameRef.current = pathname;
+        return () => clearTimeout(timer);
+      } else {
+        // Sans animation, mise a jour directe (differe)
+        const timer = setTimeout(() => {
+          setDisplayedChildren(children);
+          setDisplayedPathname(pathname);
+        }, 0);
+        previousPathnameRef.current = pathname;
+        return () => clearTimeout(timer);
+      }
+    }
     return undefined;
-  }, [pathname, enableMorphing, shouldAnimate]);
+  }, [pathname, phase, enableMorphing, shouldAnimate, children]);
 
-  // Determiner la variante basee sur la route ou la prop
-  const morphingVariant = variant ?? ROUTE_VARIANTS[pathname] ?? 'unicorn';
+  // Quand on passe en phase 'covering', attendre que l'overlay couvre,
+  // puis mettre a jour le contenu et passer en 'revealing'
+  const handleCoverComplete = useCallback(() => {
+    // L'ecran est couvert, on peut changer le contenu
+    setDisplayedChildren(children);
+    setDisplayedPathname(pathname);
+    // Passer en phase revealing - l'overlay se retire
+    setPhase('revealing');
+  }, [children, pathname]);
 
-  // Callback quand le morphing est termine
-  const handleMorphingComplete = useCallback(() => {
-    setIsTransitioning(false);
+  // Quand la phase 'revealing' est terminee
+  const handleRevealComplete = useCallback(() => {
+    setPhase('idle');
   }, []);
+
+  // Determiner la variante basee sur la route destination
+  const morphingVariant = variant ?? ROUTE_VARIANTS[pathname] ?? 'unicorn';
 
   // Sans animation, rendu direct
   if (!shouldAnimate) {
@@ -133,17 +137,19 @@ export function PageTransition({
       {/* Overlay SVG morphing */}
       {enableMorphing && (
         <MorphingOverlay
-          isAnimating={isTransitioning}
+          isAnimating={phase === 'covering' || phase === 'revealing'}
           variant={morphingVariant}
-          direction="enter"
-          onAnimationComplete={handleMorphingComplete}
+          direction={phase === 'covering' ? 'enter' : 'exit'}
+          onAnimationComplete={
+            phase === 'covering' ? handleCoverComplete : handleRevealComplete
+          }
         />
       )}
 
-      {/* Contenu de la page avec AnimatePresence */}
+      {/* Contenu de la page - affiche le contenu "displayed" */}
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
-          key={pathname}
+          key={displayedPathname}
           initial="initial"
           animate="animate"
           exit="exit"
@@ -151,7 +157,7 @@ export function PageTransition({
           transition={pageTransition}
           className="min-h-screen"
         >
-          {children}
+          {displayedChildren}
         </motion.div>
       </AnimatePresence>
     </>

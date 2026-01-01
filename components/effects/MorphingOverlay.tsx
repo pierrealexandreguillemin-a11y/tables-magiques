@@ -86,10 +86,14 @@ export function MorphingOverlay({
   }
 
   // Sequences de paths selon la direction
+  // Enter: monte du bas pour couvrir l'ecran
   const enterSequence = [SVG_PATHS.start, SVG_PATHS.wave, SVG_PATHS.full];
+  // Exit: descend pour reveler le contenu
   const exitSequence = [SVG_PATHS.full, SVG_PATHS.waveReverse, SVG_PATHS.end];
 
   const pathSequence = direction === 'enter' ? enterSequence : exitSequence;
+  // Duree plus courte pour une transition plus snappy
+  const duration = direction === 'enter' ? 0.6 : 0.8;
 
   return (
     <AnimatePresence>
@@ -132,9 +136,9 @@ export function MorphingOverlay({
                 d: pathSequence,
               }}
               transition={{
-                duration: 1.2,
+                duration,
                 ease: [0.76, 0, 0.24, 1], // ease-in-out-expo
-                times: [0, 0.5, 1],
+                times: [0, 0.4, 1],
               }}
               onAnimationComplete={onAnimationComplete}
             />
