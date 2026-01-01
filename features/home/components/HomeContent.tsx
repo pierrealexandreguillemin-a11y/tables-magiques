@@ -68,22 +68,45 @@ export function HomeContent({ titleRef, unicornRef, onUnicornClick }: Props) {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.2, duration: 0.6, type: 'spring' }}
       >
-        {/* Mode Entrainement - Glassmorphism + Gradient Border + Pulse */}
+        {/* Mode Entrainement - Glassmorphism premium */}
         <Link href="/practice" data-tour="practice-button">
           <PulseGlow color="#a855f7" intensity="medium">
             <GradientBorder variant="unicorn" animate glow borderWidth={3}>
-              <MagneticButton className="text-xl px-8 py-5 bg-white/90 backdrop-blur-md text-purple-600 font-bold rounded-xl shadow-2xl">
+              <MagneticButton
+                className="text-xl px-8 py-5 font-bold rounded-xl shadow-2xl
+                  bg-white/20 backdrop-blur-xl backdrop-saturate-150
+                  border border-white/30
+                  text-white
+                  hover:bg-white/30 hover:border-white/50
+                  transition-all duration-300"
+                style={{
+                  boxShadow:
+                    '0 8px 32px rgba(168, 85, 247, 0.3), inset 0 1px 0 rgba(255,255,255,0.4)',
+                }}
+              >
                 🎮 Mode Entraînement
               </MagneticButton>
             </GradientBorder>
           </PulseGlow>
         </Link>
 
-        {/* Mode Challenge - Glassmorphism + Gradient Border + Pulse */}
+        {/* Mode Challenge - Glassmorphism premium */}
         <Link href="/challenge" data-tour="challenge-button">
           <PulseGlow color="#f97316" intensity="medium">
             <GradientBorder variant="star" animate glow borderWidth={3}>
-              <MagneticButton className="text-xl px-8 py-5 bg-gradient-to-r from-orange-400 to-red-500 backdrop-blur-md text-white font-bold rounded-xl shadow-2xl">
+              <MagneticButton
+                className="text-xl px-8 py-5 font-bold rounded-xl shadow-2xl
+                  bg-gradient-to-r from-orange-500/40 to-red-500/40
+                  backdrop-blur-xl backdrop-saturate-150
+                  border border-white/30
+                  text-white
+                  hover:from-orange-500/60 hover:to-red-500/60 hover:border-white/50
+                  transition-all duration-300"
+                style={{
+                  boxShadow:
+                    '0 8px 32px rgba(249, 115, 22, 0.3), inset 0 1px 0 rgba(255,255,255,0.4)',
+                }}
+              >
                 🔥 Mode Challenge
               </MagneticButton>
             </GradientBorder>

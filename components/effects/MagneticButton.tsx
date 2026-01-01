@@ -14,6 +14,7 @@ interface MagneticButtonProps {
   children: React.ReactNode;
   strength?: number;
   className?: string;
+  style?: React.CSSProperties;
   onClick?: () => void;
   disabled?: boolean;
   type?: 'button' | 'submit' | 'reset';
@@ -23,6 +24,7 @@ export function MagneticButton({
   children,
   strength = 0.3,
   className,
+  style,
   onClick,
   disabled,
   type = 'button',
@@ -65,6 +67,7 @@ export function MagneticButton({
       <button
         ref={buttonRef}
         className={className}
+        style={style}
         onClick={onClick}
         disabled={disabled}
         type={type}
@@ -81,6 +84,7 @@ export function MagneticButton({
         'relative overflow-hidden transition-shadow hover:shadow-lg',
         className
       )}
+      style={style}
       animate={{ x: position.x, y: position.y }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       whileTap={{ scale: 0.95 }}
