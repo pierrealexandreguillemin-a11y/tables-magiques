@@ -62,7 +62,7 @@ export interface UseGsapEffectsResult {
     container: HTMLElement,
     config?: GsapConfettiConfig
   ) => void;
-  fireworksDisplay: (container: HTMLElement) => void;
+  fireworksDisplay: (container: HTMLElement) => GsapCleanupFunction;
   shakeError: (element: HTMLElement) => void;
   badgeUnlock: (element: HTMLElement) => void;
   timerPulse: (element: HTMLElement) => GsapCleanupFunction;
@@ -72,7 +72,7 @@ export interface UseGsapEffectsResult {
     exit: (element: HTMLElement, onComplete: () => void) => void;
   };
   numberWave: (elements: HTMLElement[] | NodeListOf<Element>) => void;
-  celebrationCascade: (container: HTMLElement) => void;
+  celebrationCascade: (container: HTMLElement) => GsapCleanupFunction;
   glowPulse: (
     element: HTMLElement,
     config?: GsapGlowConfig

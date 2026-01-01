@@ -99,15 +99,20 @@ export function confettiExplosion(
 
 /**
  * Feux d'artifice multi-niveaux
+ * Retourne une fonction de cleanup pour annuler les timeouts en attente
  */
 export function fireworksDisplay(
   container: HTMLElement,
   config: FireworksConfig = {}
-): void {
+): () => void {
   const { burstCount = 5, burstDelay = 300 } = config;
+  const timeoutIds: ReturnType<typeof setTimeout>[] = [];
 
   for (let f = 0; f < burstCount; f++) {
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
+      // Vérifier que le container existe toujours dans le DOM
+      if (!container.isConnected) return;
+
       const centerX = Math.random() * 60 + 20;
       const centerY = Math.random() * 40 + 20;
       const particleCount = 30;
@@ -143,17 +148,28 @@ export function fireworksDisplay(
         });
       }
     }, f * burstDelay);
+    timeoutIds.push(timeoutId);
   }
+
+  // Retourner fonction de cleanup
+  return () => {
+    timeoutIds.forEach((id) => clearTimeout(id));
+  };
 }
 
 /**
  * Cascade d'emojis celebration
+ * Retourne une fonction de cleanup pour annuler les timeouts en attente
  */
-export function celebrationCascade(container: HTMLElement): void {
+export function celebrationCascade(container: HTMLElement): () => void {
   const emojis = ['🎉', '🌟', '✨', '💫', '🦄', '👑', '🌈', '💖'];
+  const timeoutIds: ReturnType<typeof setTimeout>[] = [];
 
   for (let i = 0; i < 20; i++) {
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
+      // Vérifier que le container existe toujours dans le DOM
+      if (!container.isConnected) return;
+
       const emoji = document.createElement('div');
       emoji.textContent =
         emojis[Math.floor(Math.random() * emojis.length)] ?? '✨';
@@ -176,7 +192,13 @@ export function celebrationCascade(container: HTMLElement): void {
         onComplete: () => emoji.remove(),
       });
     }, i * 150);
+    timeoutIds.push(timeoutId);
   }
+
+  // Retourner fonction de cleanup
+  return () => {
+    timeoutIds.forEach((id) => clearTimeout(id));
+  };
 }
 
 // =============================================================================
