@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Lexend, JetBrains_Mono } from 'next/font/google';
 import { Providers } from './providers';
+import { ConsoleBanner } from '@/components/effects/console-banner';
 import './globals.css';
 
 /**
@@ -88,6 +89,7 @@ export default function RootLayout({
       <body
         className={`${lexend.variable} ${jetbrainsMono.variable} antialiased`}
       >
+        <ConsoleBanner />
         <Providers>{children}</Providers>
         <script
           dangerouslySetInnerHTML={{
