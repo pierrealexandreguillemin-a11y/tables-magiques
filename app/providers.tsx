@@ -46,7 +46,7 @@ export function Providers({ children }: ProvidersProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LazyMotion features={domAnimation} strict>
+      <LazyMotion features={domAnimation}>
         <ToastProvider>{children}</ToastProvider>
       </LazyMotion>
     </QueryClientProvider>
