@@ -23,7 +23,7 @@
 | `features/home/components/HomePage.tsx`                  | Modify     | Remove `useHomeAnimations`, add `.bg-drift` class, simplify props |
 | `features/home/components/HomeContent.tsx`               | Modify     | Remove `motion` import, CSS classes + `useState` for click bounce |
 | `features/home/hooks/useHomeAnimations.ts`               | **Delete** | All animations moved to CSS                                       |
-| `features/home/hooks/useParticles.ts`                    | Unchanged  | Data generation stays                                             |
+| `features/home/hooks/useParticles.ts`                    | Modified   | Client-only via `useSyncExternalStore` (SSR hydration fix)        |
 
 ---
 
