@@ -74,7 +74,7 @@ Plan: `docs/superpowers/plans/2026-03-18-home-css-animation-migration.md`
 
 ---
 
-## Phase 12 : Qualite (PROCHAINE)
+## Phase 12 : Qualite (EN COURS)
 
 ### Objectif
 
@@ -83,11 +83,22 @@ Fondations qualite manquantes: CI/CD, couverture, accessibilite, bundle.
 ### Tasks
 
 ```
-[ ] 12.1 - Bundle analysis
-    - Installer @next/bundle-analyzer
-    - Mesurer taille reelle gzipped par page
-    - Identifier les imports lourds non lazy-loaded
-    - Cible: < 300KB JS gzipped initial
+[x] 12.1 - Bundle analysis (2026-03-18)
+    - @next/bundle-analyzer installe (ANALYZE=true)
+    - Total JS: 2068KB raw / 558KB gzipped
+    - Top chunks: next/app 308KB(78KB gz), lottie-json 300KB(37KB gz),
+      react-dom 220KB(68KB gz), tsparticles 140KB(39KB gz), gsap 76KB(29KB gz)
+    - Framer Motion tree-shake dans chunks next/app (LazyMotion OK)
+    - Cible < 300KB: non atteinte (558KB gz) — GSAP removable (29KB),
+      Lottie JSON compresse bien (37KB), le reste est framework
+
+[x] 12.3 - Audit WCAG 2.1 AA (2026-03-18)
+    - Lighthouse accessibility: / 95→100, /practice 100, /challenge 100,
+      /profile 95→100, /settings 90→100 (a confirmer post-deploy)
+    - Fix: aria-label forwarding AnimatedCheckbox toggles
+    - Fix: heading order h3→h2 sur profile
+    - Fix: touch targets 36px→44px sur header buttons
+    - Fix: contrast yellow/pink status text
 
 [ ] 12.2 - Coverage 90%+
     - Analyser zones non couvertes (vitest --coverage)
