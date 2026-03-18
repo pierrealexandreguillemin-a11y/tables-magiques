@@ -99,7 +99,12 @@ export function generateAllQuestionsForTable(table: number): Question[] {
  * @returns Nouveau tableau melange
  */
 export function shuffleArray<T>(array: readonly T[]): T[] {
-  // Utiliser sort avec comparateur aleatoire
-  // Plus simple et type-safe que Fisher-Yates manuel
-  return [...array].sort(() => Math.random() - 0.5);
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = shuffled[i];
+    shuffled[i] = shuffled[j]!;
+    shuffled[j] = temp!;
+  }
+  return shuffled;
 }
