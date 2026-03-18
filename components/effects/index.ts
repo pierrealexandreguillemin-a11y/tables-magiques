@@ -44,7 +44,7 @@ export { KawaiiMascot } from './KawaiiMascot';
 // Nouveaux composants Phase 8+
 export { PageTransition } from './PageTransition';
 export { MorphingOverlay } from './MorphingOverlay';
-export type { MorphingOverlayProps, MorphingVariant } from './MorphingOverlay';
+export type { MorphingOverlayProps } from './MorphingOverlay';
 export {
   AnimatedDialog,
   AnimatedDialogContent,

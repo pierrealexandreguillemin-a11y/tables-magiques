@@ -130,11 +130,11 @@ describe('GradientText', () => {
       expect(element).toHaveClass('animate-gradient-x');
     });
 
-    it('a backgroundSize 200% quand animate', () => {
+    it('ne met pas backgroundSize inline (gere par CSS animate-gradient-x)', () => {
       render(<GradientText animate>Test</GradientText>);
 
       const element = screen.getByText('Test');
-      expect(element).toHaveStyle({ backgroundSize: '200% 100%' });
+      expect(element.style.backgroundSize).toBe('');
     });
   });
 
@@ -191,8 +191,7 @@ describe('GradientText', () => {
       render(<GradientText>Test</GradientText>);
 
       const element = screen.getByText('Test');
-      // Tailwind gere le background-clip via la classe
-      // Le style inline WebkitBackgroundClip est en supplement
+      // Tailwind gere le background-clip via la classe bg-clip-text
       expect(element).toHaveClass('bg-clip-text');
     });
   });

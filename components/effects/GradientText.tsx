@@ -72,12 +72,6 @@ export function GradientText({
         'transform-gpu',
         className
       )}
-      style={{
-        // Fallback pour anciens navigateurs
-        WebkitBackgroundClip: 'text',
-        // Animation custom property (si supportee)
-        backgroundSize: shouldAnimateGradient ? '200% 100%' : undefined,
-      }}
     >
       {children}
     </Component>

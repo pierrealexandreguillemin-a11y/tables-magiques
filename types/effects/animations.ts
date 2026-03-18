@@ -39,10 +39,3 @@ export const TIMING = {
 } as const;
 
 export type TimingKey = keyof typeof TIMING;
-
-export const EASING = {
-  bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-  spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
-  smooth: 'cubic-bezier(0.4, 0, 0.2, 1)',
-  elastic: 'cubic-bezier(0.68, -0.6, 0.32, 1.6)',
-} as const satisfies Record<EasingType, string>;
