@@ -19,13 +19,7 @@ export type ParticlePreset =
   | 'bubbles'
   | 'sparkles';
 
-// =============================================================================
-// COULEURS THEME
-// =============================================================================
-
-const FAIRY_COLORS = ['#ff69b4', '#ba55d3', '#ffd700', '#87ceeb', '#dda0dd'];
-const CONFETTI_COLORS = ['#ff69b4', '#ffd700', '#00ff00', '#00ffff', '#ff6b6b'];
-const STAR_COLORS = ['#ffd700', '#ffffff', '#fffacd'];
+import { FAIRY_COLORS, CONFETTI_COLORS, STAR_COLORS } from '../colors';
 
 // =============================================================================
 // CONFIG FAIRY BACKGROUND
@@ -33,12 +27,14 @@ const STAR_COLORS = ['#ffd700', '#ffffff', '#fffacd'];
 
 export const fairyConfig: ISourceOptions = {
   fullScreen: false,
+  pauseOnBlur: true,
+  pauseOnOutsideViewport: true,
   background: {
     color: {
       value: 'transparent',
     },
   },
-  fpsLimit: 60,
+  fpsLimit: 30,
   particles: {
     color: {
       value: FAIRY_COLORS,
@@ -77,11 +73,6 @@ export const fairyConfig: ISourceOptions = {
     },
     size: {
       value: { min: 2, max: 6 },
-      animation: {
-        enable: true,
-        speed: 2,
-        sync: false,
-      },
     },
   },
   detectRetina: true,
@@ -93,6 +84,8 @@ export const fairyConfig: ISourceOptions = {
 
 export const starsConfig: ISourceOptions = {
   fullScreen: false,
+  pauseOnBlur: true,
+  pauseOnOutsideViewport: true,
   background: {
     color: {
       value: 'transparent',
@@ -141,6 +134,8 @@ export const starsConfig: ISourceOptions = {
 
 export const confettiConfig: ISourceOptions = {
   fullScreen: false,
+  pauseOnBlur: true,
+  pauseOnOutsideViewport: true,
   background: {
     color: {
       value: 'transparent',
@@ -219,6 +214,8 @@ export const confettiConfig: ISourceOptions = {
 
 export const snowConfig: ISourceOptions = {
   fullScreen: false,
+  pauseOnBlur: true,
+  pauseOnOutsideViewport: true,
   background: {
     color: {
       value: 'transparent',
@@ -267,6 +264,8 @@ export const snowConfig: ISourceOptions = {
 
 export const bubblesConfig: ISourceOptions = {
   fullScreen: false,
+  pauseOnBlur: true,
+  pauseOnOutsideViewport: true,
   background: {
     color: {
       value: 'transparent',
@@ -316,12 +315,14 @@ export const bubblesConfig: ISourceOptions = {
 
 export const sparklesConfig: ISourceOptions = {
   fullScreen: false,
+  pauseOnBlur: true,
+  pauseOnOutsideViewport: true,
   background: {
     color: {
       value: 'transparent',
     },
   },
-  fpsLimit: 60,
+  fpsLimit: 30,
   particles: {
     color: {
       value: ['#ffd700', '#ffffff', '#ff69b4'],
@@ -353,11 +354,6 @@ export const sparklesConfig: ISourceOptions = {
     },
     size: {
       value: { min: 1, max: 3 },
-      animation: {
-        enable: true,
-        speed: 3,
-        sync: false,
-      },
     },
   },
   detectRetina: true,

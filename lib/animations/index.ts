@@ -132,6 +132,17 @@ export {
 } from './particles/configs';
 
 // =============================================================================
+// COLORS (shared palette)
+// =============================================================================
+
+export {
+  FAIRY_COLORS,
+  CONFETTI_COLORS,
+  FIREWORKS_COLORS,
+  STAR_COLORS,
+} from './colors';
+
+// =============================================================================
 // LAZY LOADING (Performance)
 // =============================================================================
 
@@ -142,6 +153,7 @@ export {
   LazyBadgeUnlockModal,
   LazyFairyBackground,
   LazyGsapCelebration,
+  LazyKawaiiMascot,
   preloadHeavyComponents,
   preloadParticles,
 } from './lazy';

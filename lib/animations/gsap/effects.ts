@@ -39,22 +39,7 @@ export interface GlowConfig {
 // COULEURS THEME ENFANT
 // =============================================================================
 
-const CONFETTI_COLORS = [
-  '#ff69b4', // Hot pink
-  '#ba55d3', // Medium orchid
-  '#ffd700', // Gold
-  '#00ff00', // Lime
-  '#00ffff', // Cyan
-  '#ff6b6b', // Coral
-];
-
-const FIREWORKS_COLORS = [
-  '#ff69b4',
-  '#ffd700',
-  '#00ff00',
-  '#00ffff',
-  '#ba55d3',
-];
+import { CONFETTI_COLORS, FIREWORKS_COLORS } from '../colors';
 
 // =============================================================================
 // EFFETS CELEBRATION

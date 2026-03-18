@@ -109,6 +109,26 @@ export const LazyGsapCelebration = dynamic(
   }
 );
 
+/**
+ * KawaiiMascot - Chargé à la demande
+ * Poids: ~176KB (react-kawaii)
+ */
+export const LazyKawaiiMascot = dynamic(
+  () =>
+    import('@/components/effects/KawaiiMascot').then((mod) => ({
+      default: mod.KawaiiMascot,
+    })),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="animate-pulse bg-white/20 rounded-full"
+        style={{ width: 100, height: 100 }}
+      />
+    ),
+  }
+);
+
 // =============================================================================
 // PRELOAD HELPERS
 // =============================================================================
