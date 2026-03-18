@@ -37,9 +37,9 @@ export function SessionHistory({ sessions, isLoading }: SessionHistoryProps) {
   if (isLoading) {
     return (
       <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg">
-        <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">
+        <h2 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">
           Sessions recentes
-        </h3>
+        </h2>
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
             <div
@@ -55,9 +55,9 @@ export function SessionHistory({ sessions, isLoading }: SessionHistoryProps) {
   if (sessions.length === 0) {
     return (
       <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg">
-        <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">
+        <h2 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">
           Sessions recentes
-        </h3>
+        </h2>
         <p className="text-gray-500 dark:text-gray-400 text-center py-8">
           Aucune session pour le moment. Commence a jouer !
         </p>
@@ -67,9 +67,9 @@ export function SessionHistory({ sessions, isLoading }: SessionHistoryProps) {
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg">
-      <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">
+      <h2 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">
         Sessions recentes
-      </h3>
+      </h2>
       <div className="space-y-3">
         {sessions.map((session, index) => (
           <motion.div

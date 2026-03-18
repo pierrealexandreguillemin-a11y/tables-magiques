@@ -76,7 +76,7 @@ export function NotificationsSection({ settings, updateSetting }: Props) {
     return {
       icon: <Bell size={16} className="text-yellow-500" />,
       text: 'Non demande',
-      color: 'text-yellow-600 dark:text-yellow-400',
+      color: 'text-yellow-700 dark:text-yellow-300',
     };
   };
 

@@ -20,7 +20,7 @@ export function HomeHeader() {
       <Link
         href="/profile"
         data-tour="profile-button"
-        className="flex h-9 w-9 items-center justify-center rounded-full text-white/80 hover:bg-white/20 transition-colors"
+        className="flex h-11 w-11 items-center justify-center rounded-full text-white/80 hover:bg-white/20 transition-colors"
         aria-label="Mon profil"
       >
         <User className="h-5 w-5" />
@@ -28,7 +28,7 @@ export function HomeHeader() {
       <Link
         href="/settings"
         data-tour="settings-button"
-        className="flex h-9 w-9 items-center justify-center rounded-full text-white/80 hover:bg-white/20 transition-colors"
+        className="flex h-11 w-11 items-center justify-center rounded-full text-white/80 hover:bg-white/20 transition-colors"
         aria-label="Parametres"
       >
         <Settings className="h-5 w-5" />

@@ -94,6 +94,7 @@ function SwitchVariant({
   size,
   animate,
   onClick,
+  ariaLabel,
 }: {
   checked: boolean;
   disabled: boolean;
@@ -101,6 +102,7 @@ function SwitchVariant({
   size: 'sm' | 'md' | 'lg';
   animate: boolean;
   onClick: () => void;
+  ariaLabel?: string;
 }) {
   const config = sizeConfig[size].switch;
   const thumbOffset = checked ? config.width - config.thumb - 2 : 2;
@@ -110,6 +112,7 @@ function SwitchVariant({
       type="button"
       role="switch"
       aria-checked={checked}
+      aria-label={ariaLabel}
       disabled={disabled || loading}
       onClick={onClick}
       className={cn(
@@ -152,6 +155,7 @@ function CheckboxVariant({
   size,
   animate,
   onClick,
+  ariaLabel,
 }: {
   checked: boolean;
   disabled: boolean;
@@ -159,6 +163,7 @@ function CheckboxVariant({
   size: 'sm' | 'md' | 'lg';
   animate: boolean;
   onClick: () => void;
+  ariaLabel?: string;
 }) {
   const config = sizeConfig[size].checkbox;
 
@@ -167,6 +172,7 @@ function CheckboxVariant({
       type="button"
       role="checkbox"
       aria-checked={checked}
+      aria-label={ariaLabel}
       disabled={disabled || loading}
       onClick={onClick}
       className={cn(
@@ -206,6 +212,7 @@ export function AnimatedCheckbox({
   label,
   description,
   className,
+  'aria-label': ariaLabel,
 }: AnimatedCheckboxProps) {
   const { shouldAnimate } = useReducedMotion();
 
@@ -233,6 +240,7 @@ export function AnimatedCheckbox({
         size={size}
         animate={shouldAnimate}
         onClick={handleClick}
+        ariaLabel={ariaLabel}
       />
 
       {(label || description) && (

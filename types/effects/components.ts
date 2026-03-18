@@ -126,6 +126,7 @@ export interface AnimatedCheckboxProps {
   label?: string;
   description?: string;
   className?: string;
+  'aria-label'?: string;
 }
 
 // Ripple

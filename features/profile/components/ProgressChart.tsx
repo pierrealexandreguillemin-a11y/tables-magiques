@@ -31,9 +31,9 @@ export function ProgressChart({ tables, isLoading }: ProgressChartProps) {
   if (isLoading) {
     return (
       <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg">
-        <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">
+        <h2 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">
           Progression par table
-        </h3>
+        </h2>
         <div className="grid grid-cols-5 gap-3">
           {Array.from({ length: 10 }, (_, i) => (
             <div
@@ -51,9 +51,9 @@ export function ProgressChart({ tables, isLoading }: ProgressChartProps) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white">
           Progression par table
-        </h3>
+        </h2>
         <span className="text-sm text-gray-500 dark:text-gray-400">
           {masteredCount}/10 maitrisees
         </span>

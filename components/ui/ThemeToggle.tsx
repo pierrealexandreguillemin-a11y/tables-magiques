@@ -80,7 +80,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       data-testid="theme-toggle"
       className={`
         relative inline-flex items-center justify-center
-        w-10 h-10 rounded-full
+        w-11 h-11 rounded-full
         bg-white/20 dark:bg-black/20
         backdrop-blur-sm
         border border-white/30 dark:border-white/10

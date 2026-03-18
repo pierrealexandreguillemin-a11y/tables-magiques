@@ -61,13 +61,13 @@ export function SettingsPage() {
     <main className="min-h-screen py-8">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8 max-w-2xl mx-auto">
-          <div className="w-10" />
+          <div className="w-11" />
           <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
             Parametres
           </h1>
           <Link
             href="/"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 dark:bg-slate-700 text-pink-600 dark:text-pink-300 hover:bg-pink-200 dark:hover:bg-slate-600 transition-colors"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-pink-100 dark:bg-slate-700 text-pink-600 dark:text-pink-300 hover:bg-pink-200 dark:hover:bg-slate-600 transition-colors"
             aria-label="Fermer"
           >
             <X size={20} />

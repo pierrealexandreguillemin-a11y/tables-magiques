@@ -42,7 +42,7 @@ export function HelpButton({ className }: HelpButtonProps) {
       onClick={handleClick}
       data-tour="help-button"
       className={cn(
-        'flex h-9 w-9 items-center justify-center rounded-full',
+        'flex h-11 w-11 items-center justify-center rounded-full',
         'text-muted-foreground',
         'hover:bg-accent hover:text-accent-foreground',
         'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',

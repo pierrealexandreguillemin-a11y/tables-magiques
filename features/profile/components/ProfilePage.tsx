@@ -153,9 +153,9 @@ export function ProfilePage() {
           <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg">
             <div className="flex items-center gap-3 mb-4">
               <span className="text-3xl">📚</span>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white">
                 Mode Entraînement
-              </h3>
+              </h2>
             </div>
             <div className="space-y-2 text-gray-600 dark:text-gray-400">
               <div className="flex justify-between">
@@ -182,9 +182,9 @@ export function ProfilePage() {
           <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg">
             <div className="flex items-center gap-3 mb-4">
               <span className="text-3xl">🔥</span>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white">
                 Mode Challenge
-              </h3>
+              </h2>
             </div>
             <div className="space-y-2 text-gray-600 dark:text-gray-400">
               <div className="flex justify-between">

@@ -1,4 +1,9 @@
 import type { NextConfig } from 'next';
+import withBundleAnalyzer from '@next/bundle-analyzer';
+
+const withAnalyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+});
 
 const nextConfig: NextConfig = {
   // React Compiler: automatic memoization (memo, useMemo, useCallback)
@@ -11,4 +16,4 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
 };
 
-export default nextConfig;
+export default withAnalyzer(nextConfig);

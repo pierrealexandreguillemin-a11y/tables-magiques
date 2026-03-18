@@ -95,9 +95,9 @@ export function TourTooltip({
 
       {/* Header avec titre et bouton fermer */}
       <div className="mb-2 flex items-start justify-between gap-2">
-        <h3 id="tour-title" className="text-lg font-bold text-foreground">
+        <h2 id="tour-title" className="text-lg font-bold text-foreground">
           {title}
-        </h3>
+        </h2>
         {canSkip && (
           <button
             type="button"

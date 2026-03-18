@@ -25,7 +25,7 @@ export function ShareDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button
-          className="flex h-9 w-9 items-center justify-center rounded-full text-white/80 hover:bg-white/20 transition-colors"
+          className="flex h-11 w-11 items-center justify-center rounded-full text-white/80 hover:bg-white/20 transition-colors"
           aria-label="Partager"
         >
           <Share2 className="h-5 w-5" />
