@@ -19,9 +19,9 @@ interface PulseGlowProps {
 }
 
 const intensityMap = {
-  subtle: { blur: 10, opacity: 0.3 },
-  medium: { blur: 20, opacity: 0.5 },
-  strong: { blur: 30, opacity: 0.7 },
+  subtle: { blur: 6, opacity: 0.25 },
+  medium: { blur: 12, opacity: 0.4 },
+  strong: { blur: 18, opacity: 0.55 },
 };
 
 const speedMap = {
@@ -48,17 +48,17 @@ export function PulseGlow({
 
   return (
     <div className={cn('relative inline-block', className)}>
-      {/* Glow layer */}
+      {/* Glow layer - opacity only animation for performance */}
       <motion.div
         className="absolute inset-0 rounded-inherit pointer-events-none"
         style={{
           background: color,
           filter: `blur(${config.blur}px)`,
           borderRadius: 'inherit',
+          willChange: 'opacity',
         }}
         animate={{
           opacity: [config.opacity * 0.5, config.opacity, config.opacity * 0.5],
-          scale: [0.95, 1.05, 0.95],
         }}
         transition={{
           duration,

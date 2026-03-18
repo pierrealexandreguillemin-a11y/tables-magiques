@@ -37,19 +37,27 @@ export function MagneticButton({
     if (!shouldAnimate || !buttonRef.current) return;
 
     const button = buttonRef.current;
+    let rafId: number | null = null;
 
     const handleMouseMove = (e: MouseEvent) => {
-      const rect = button.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-
-      const deltaX = (e.clientX - centerX) * strength;
-      const deltaY = (e.clientY - centerY) * strength;
-
-      setPosition({ x: deltaX, y: deltaY });
+      if (rafId !== null) return; // Skip if a frame is pending
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        const rect = button.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        setPosition({
+          x: (e.clientX - centerX) * strength,
+          y: (e.clientY - centerY) * strength,
+        });
+      });
     };
 
     const handleMouseLeave = () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
       setPosition({ x: 0, y: 0 });
     };
 
@@ -57,6 +65,7 @@ export function MagneticButton({
     button.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
       button.removeEventListener('mousemove', handleMouseMove);
       button.removeEventListener('mouseleave', handleMouseLeave);
     };

@@ -7,6 +7,7 @@
 
 'use client';
 
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
@@ -99,7 +100,7 @@ function clampProgress(value: number): number {
  * <CrownProgress progress={75} variant="star" size="lg" />
  * ```
  */
-export function CrownProgress({
+export const CrownProgress = memo(function CrownProgress({
   progress,
   size = 'md',
   variant = 'princess',
@@ -284,6 +285,6 @@ export function CrownProgress({
       )}
     </motion.svg>
   );
-}
+});
 
 export default CrownProgress;

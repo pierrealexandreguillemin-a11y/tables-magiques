@@ -5,6 +5,7 @@
 
 'use client';
 
+import { memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { RippleEffect } from '@/components/effects/RippleEffect';
 import { cn } from '@/lib/utils';
@@ -18,7 +19,7 @@ export interface NumberPadProps {
   className?: string;
 }
 
-export function NumberPad({
+export const NumberPad = memo(function NumberPad({
   onNumberClick,
   onClear,
   onSubmit,
@@ -103,4 +104,4 @@ export function NumberPad({
       </RippleEffect>
     </div>
   );
-}
+});
