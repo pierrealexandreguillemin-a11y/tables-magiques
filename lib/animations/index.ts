@@ -140,6 +140,11 @@ export {
   CONFETTI_COLORS,
   FIREWORKS_COLORS,
   STAR_COLORS,
+  THEME_GRADIENTS,
+  THEME_GLOWS,
+  THEME_OVERLAYS,
+  ACCENT_PURPLE,
+  ACCENT_ORANGE,
 } from './colors';
 
 // =============================================================================

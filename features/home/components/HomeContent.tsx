@@ -6,7 +6,6 @@
 
 'use client';
 
-import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import {
   GradientText,
@@ -14,40 +13,20 @@ import {
   PulseGlow,
   MagneticButton,
 } from '@/components/effects';
-import { LazyKawaiiMascot } from '@/lib/animations';
+import {
+  LazyKawaiiMascot,
+  ACCENT_PURPLE,
+  ACCENT_ORANGE,
+} from '@/lib/animations';
+import { UnicornHero } from './UnicornHero';
 
 export function HomeContent() {
-  const [popping, setPopping] = useState(false);
-
-  const handleUnicornClick = useCallback(() => {
-    setPopping(false);
-    requestAnimationFrame(() => setPopping(true));
-  }, []);
-
   return (
     <div className="text-center z-10 relative px-4">
-      {/* Licorne — outer: CSS bob (infinite), inner: CSS interactions (hover/tap/click) */}
-      <div className="unicorn-bob inline-block">
-        <div
-          data-tour="logo"
-          className={`text-8xl sm:text-9xl mb-6 cursor-pointer select-none unicorn-interactive ${popping ? 'unicorn-pop' : ''}`}
-          onClick={handleUnicornClick}
-          onAnimationEnd={(e) => {
-            if (e.animationName === 'unicorn-pop') setPopping(false);
-          }}
-          style={{ filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.5))' }}
-        >
-          🦄
-        </div>
-      </div>
+      {/* Licorne — extracted to UnicornHero (SRP) */}
+      <UnicornHero />
 
-      <h1
-        className="text-4xl sm:text-6xl md:text-7xl font-bold mb-4 animate-title-enter"
-        style={{
-          textShadow:
-            '0 0 40px rgba(255,255,255,0.6), 0 4px 20px rgba(0,0,0,0.3)',
-        }}
-      >
+      <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-4 animate-title-enter shadow-title-magic">
         <GradientText variant="rainbow" animate as="span">
           Tables Magiques
         </GradientText>
@@ -66,7 +45,7 @@ export function HomeContent() {
       >
         {/* Mode Entrainement - Glassmorphism premium */}
         <Link href="/practice" data-tour="practice-button">
-          <PulseGlow color="#a855f7" intensity="medium">
+          <PulseGlow color={ACCENT_PURPLE} intensity="medium">
             <GradientBorder variant="unicorn" animate glow borderWidth={3}>
               <MagneticButton
                 className="text-xl px-8 py-5 font-bold rounded-xl shadow-2xl
@@ -74,11 +53,7 @@ export function HomeContent() {
                   border border-white/30
                   text-white
                   hover:bg-white/30 hover:border-white/50
-                  transition-all duration-300"
-                style={{
-                  boxShadow:
-                    '0 8px 32px rgba(168, 85, 247, 0.3), inset 0 1px 0 rgba(255,255,255,0.4)',
-                }}
+                  transition-all duration-300 shadow-btn-unicorn"
               >
                 🎮 Mode Entraînement
               </MagneticButton>
@@ -88,7 +63,7 @@ export function HomeContent() {
 
         {/* Mode Challenge - Glassmorphism premium */}
         <Link href="/challenge" data-tour="challenge-button">
-          <PulseGlow color="#f97316" intensity="medium">
+          <PulseGlow color={ACCENT_ORANGE} intensity="medium">
             <GradientBorder variant="star" animate glow borderWidth={3}>
               <MagneticButton
                 className="text-xl px-8 py-5 font-bold rounded-xl shadow-2xl
@@ -97,11 +72,7 @@ export function HomeContent() {
                   border border-white/30
                   text-white
                   hover:from-orange-500/60 hover:to-red-500/60 hover:border-white/50
-                  transition-all duration-300"
-                style={{
-                  boxShadow:
-                    '0 8px 32px rgba(249, 115, 22, 0.3), inset 0 1px 0 rgba(255,255,255,0.4)',
-                }}
+                  transition-all duration-300 shadow-btn-challenge"
               >
                 🔥 Mode Challenge
               </MagneticButton>
