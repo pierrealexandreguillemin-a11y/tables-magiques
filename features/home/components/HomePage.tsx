@@ -17,10 +17,7 @@ export function HomePage() {
   const { particles, stars } = useParticles();
 
   return (
-    <main
-      className="min-h-screen flex items-center justify-center overflow-hidden relative bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-500 dark:from-indigo-900 dark:via-purple-900 dark:to-slate-900 bg-drift"
-      style={{ backgroundSize: '400% 400%' }}
-    >
+    <main className="min-h-screen flex items-center justify-center overflow-hidden relative bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-500 dark:from-indigo-900 dark:via-purple-900 dark:to-slate-900 bg-drift">
       <FairyBackground />
       <HomeHeader />
       <FloatingParticles particles={particles} stars={stars} />
