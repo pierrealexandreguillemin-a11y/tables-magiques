@@ -5,10 +5,10 @@
  * ISO/IEC 25010 - Ambiance visuelle immersive
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import Particles, { initParticlesEngine } from '@tsparticles/react';
-import { loadSlim } from '@tsparticles/slim';
+import { useCallback, useMemo } from 'react';
+import Particles from '@tsparticles/react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useParticlesEngine } from '@/hooks/useParticlesEngine';
 import { getParticleConfig, type ParticlePreset } from '@/lib/animations';
 import { cn } from '@/lib/utils';
 
@@ -24,16 +24,7 @@ export function ParticlesBackground({
   opacity = 1,
 }: ParticlesBackgroundProps) {
   const { shouldAnimate } = useReducedMotion();
-  const [engineReady, setEngineReady] = useState(false);
-
-  // Initialize tsParticles engine
-  useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => {
-      setEngineReady(true);
-    });
-  }, []);
+  const engineReady = useParticlesEngine();
 
   const particlesLoaded = useCallback(async () => {
     // Particles loaded

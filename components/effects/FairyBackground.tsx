@@ -8,11 +8,11 @@
 
 'use client';
 
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import Particles, { initParticlesEngine } from '@tsparticles/react';
-import { loadSlim } from '@tsparticles/slim';
+import { memo, useCallback, useMemo, useState } from 'react';
+import Particles from '@tsparticles/react';
 import type { ISourceOptions } from '@tsparticles/engine';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useParticlesEngine } from '@/hooks/useParticlesEngine';
 import { cn } from '@/lib/utils';
 import type { AnimatedComponentProps } from '@/types/effects';
 
@@ -213,17 +213,8 @@ export const FairyBackground = memo(function FairyBackground({
 }: FairyBackgroundProps) {
   const { shouldAnimate } = useReducedMotion();
   const animate = shouldAnimate && !disableAnimation;
-  const [engineReady, setEngineReady] = useState(false);
+  const engineReady = useParticlesEngine();
   const [particlesReady, setParticlesReady] = useState(false);
-
-  // Initialize tsParticles engine (once per app lifetime)
-  useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => {
-      setEngineReady(true);
-    });
-  }, []);
 
   // Callback when particles container is loaded
   const particlesLoaded = useCallback(async () => {
