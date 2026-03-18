@@ -24,6 +24,7 @@ interface Props {
 
 export function PracticeCompleted({
   result,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   selectedTable: _selectedTable,
   onBack,
   onReplay,

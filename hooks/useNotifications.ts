@@ -137,11 +137,13 @@ export function useNotifications(): UseNotificationsReturn {
         navigator.serviceWorker.ready.then((registration) => {
           // ServiceWorkerRegistration.showNotification accepts NotificationOptions
           // which includes vibrate in the spec, but TS types may lag behind
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { vibrate: _v, ...swOptions } = defaultOptions;
           registration.showNotification(title, swOptions);
         });
       } else {
         // Fallback to direct notification (vibrate may not be supported)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { vibrate: _v, ...notificationOptions } = defaultOptions;
         new Notification(title, notificationOptions);
       }

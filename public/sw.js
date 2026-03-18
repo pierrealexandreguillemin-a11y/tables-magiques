@@ -224,6 +224,7 @@ self.addEventListener('message', (event) => {
             if (response.ok) {
               await cache.put(iconUrl, response);
             }
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
           } catch (error) {
             console.warn(`[SW v6] Failed to refresh ${iconUrl}`);
           }

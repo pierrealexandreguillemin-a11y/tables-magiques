@@ -92,7 +92,10 @@ async function createIconWithBackground(sourceBuffer, size, outputPath) {
 
   // Redimensionner l'emoji source
   const resizedEmoji = await sharp(sourceBuffer)
-    .resize(emojiSize, emojiSize, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .resize(emojiSize, emojiSize, {
+      fit: 'contain',
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    })
     .toBuffer();
 
   // Creer le fond avec degrades (simplifie en couleur unie pour compatibilite)
@@ -176,8 +179,12 @@ async function generateIcons() {
   }
 
   console.log('\n✅ All PWA icons generated successfully!');
-  console.log(`   Total: ${PWA_SIZES.length + IOS_SIZES.length + faviconSizes.length} icons`);
-  console.log(`   Source: ${sourceType === 'png' ? 'icon-source.png' : 'icon.svg'}`);
+  console.log(
+    `   Total: ${PWA_SIZES.length + IOS_SIZES.length + faviconSizes.length} icons`
+  );
+  console.log(
+    `   Source: ${sourceType === 'png' ? 'icon-source.png' : 'icon.svg'}`
+  );
 
   if (sourceType === 'png') {
     console.log('\n📜 License: Google Noto Emoji - Apache 2.0');

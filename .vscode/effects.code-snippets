@@ -27,9 +27,9 @@
       "      {children}",
       "    </motion.div>",
       "  );",
-      "}"
+      "}",
     ],
-    "description": "Créer un composant MagicCard avec variants"
+    "description": "Créer un composant MagicCard avec variants",
   },
 
   "Magic Button": {
@@ -41,9 +41,9 @@
       "  onClick={${3:handleClick}}",
       ">",
       "  ${4:Button Text}",
-      "</MagicButton>"
+      "</MagicButton>",
     ],
-    "description": "Insérer un MagicButton"
+    "description": "Insérer un MagicButton",
   },
 
   "Framer Motion Basic": {
@@ -56,9 +56,9 @@
       "  transition={{ duration: ${3:0.3} }}",
       ">",
       "  ${4:content}",
-      "</motion.div>"
+      "</motion.div>",
     ],
-    "description": "Div Framer Motion avec animations de base"
+    "description": "Div Framer Motion avec animations de base",
   },
 
   "Framer Motion Hover & Tap": {
@@ -72,9 +72,9 @@
       "  whileTap={{ scale: ${4:0.95} }}",
       ">",
       "  ${5:content}",
-      "</motion.${1:div}>"
+      "</motion.${1:div}>",
     ],
-    "description": "Élément avec hover et tap animations"
+    "description": "Élément avec hover et tap animations",
   },
 
   "Stagger Children": {
@@ -106,9 +106,9 @@
       "      {item.content}",
       "    </motion.div>",
       "  ))}",
-      "</motion.div>"
+      "</motion.div>",
     ],
-    "description": "Stagger animation pour liste"
+    "description": "Stagger animation pour liste",
   },
 
   "Use Reduced Motion Hook": {
@@ -120,9 +120,9 @@
       "  return <${1:StaticComponent} />;",
       "}",
       "",
-      "return <${2:AnimatedComponent} />;"
+      "return <${2:AnimatedComponent} />;",
     ],
-    "description": "Hook reduced motion avec fallback"
+    "description": "Hook reduced motion avec fallback",
   },
 
   "Confetti Celebration": {
@@ -141,9 +141,9 @@
       "};",
       "",
       "// Appeler:",
-      "fireMagicConfetti();"
+      "fireMagicConfetti();",
     ],
-    "description": "Confetti avec couleurs princesse"
+    "description": "Confetti avec couleurs princesse",
   },
 
   "Toast Notification": {
@@ -156,9 +156,9 @@
       "  title: '${2:🌟 Super !}',",
       "  description: '${3:Tu es un champion !}',",
       "  duration: ${4:3000}",
-      "});"
+      "});",
     ],
-    "description": "Afficher un toast"
+    "description": "Afficher un toast",
   },
 
   "Magic Counter": {
@@ -168,9 +168,9 @@
       "  value={${1:score}}",
       "  suffix={${2:' étoiles'}}",
       "  showParticles={${3:true}}",
-      "/>"
+      "/>",
     ],
-    "description": "Compteur animé avec particules"
+    "description": "Compteur animé avec particules",
   },
 
   "Crown Progress": {
@@ -179,9 +179,9 @@
       "<CrownProgress",
       "  progress={${1:75}}",
       "  size={${2:128}}",
-      "/>"
+      "/>",
     ],
-    "description": "Barre de progression couronne"
+    "description": "Barre de progression couronne",
   },
 
   "Answer Icon": {
@@ -189,9 +189,9 @@
     "body": [
       "const [answerState, setAnswerState] = useState<'waiting' | 'checking' | 'correct' | 'incorrect'>('waiting');",
       "",
-      "<AnswerIcon state={answerState} size=\"${1|sm,md,lg|}\" />"
+      "<AnswerIcon state={answerState} size=\"${1|sm,md,lg|}\" />",
     ],
-    "description": "Icône feedback réponse"
+    "description": "Icône feedback réponse",
   },
 
   "Gradient Text": {
@@ -202,9 +202,9 @@
       "  style={{ backgroundSize: '200% 200%' }}",
       ">",
       "  ${1:Texte magique}",
-      "</span>"
+      "</span>",
     ],
-    "description": "Texte avec gradient animé"
+    "description": "Texte avec gradient animé",
   },
 
   "Fairy Background": {
@@ -223,9 +223,9 @@
       "      </div>",
       "    </div>",
       "  );",
-      "}"
+      "}",
     ],
-    "description": "Page avec fond féerique"
+    "description": "Page avec fond féerique",
   },
 
   "Gentle Shake Error": {
@@ -248,9 +248,9 @@
       "      💭 ${3:Presque ! Essaie encore}",
       "    </motion.p>",
       "  )}",
-      "</motion.div>"
+      "</motion.div>",
     ],
-    "description": "Shake doux avec message encourageant"
+    "description": "Shake doux avec message encourageant",
   },
 
   "Skeleton Loader": {
@@ -258,9 +258,9 @@
     "body": [
       "<div className=\"animate-shimmer bg-gradient-to-r from-pink-100/20 via-pink-200/40 to-pink-100/20 bg-[length:200%_100%]\">",
       "  <div className=\"h-${1:4} bg-transparent rounded\" />",
-      "</div>"
+      "</div>",
     ],
-    "description": "Skeleton loader animé"
+    "description": "Skeleton loader animé",
   },
 
   "Magic Input Focus": {
@@ -276,9 +276,9 @@
       "  }}",
       "  value={${3:value}}",
       "  onChange={(e) => ${4:setValue}(e.target.value)}",
-      "/>"
+      "/>",
     ],
-    "description": "Input avec effet magique au focus"
+    "description": "Input avec effet magique au focus",
   },
 
   "Accessibility Check": {
@@ -295,9 +295,9 @@
       "const ref = useRef<HTMLElement>(null);",
       "useEffect(() => {",
       "  ref.current?.focus();",
-      "}, []);"
+      "}, []);",
     ],
-    "description": "Checklist accessibilité de base"
+    "description": "Checklist accessibilité de base",
   },
 
   "Performance Optimization": {
@@ -310,9 +310,9 @@
       "const ${2:MemoComponent} = memo(${3:Component});",
       "",
       "// Debounce animation",
-      "const debouncedValue = useDebounce(${4:value}, ${5:300});"
+      "const debouncedValue = useDebounce(${4:value}, ${5:300});",
     ],
-    "description": "Patterns optimisation performance"
+    "description": "Patterns optimisation performance",
   },
 
   "Test Component": {
@@ -332,8 +332,8 @@
       "    render(<${1:ComponentName} onClick={handleClick} />);",
       "    // TODO: Test interaction",
       "  });",
-      "});"
+      "});",
     ],
-    "description": "Template test composant"
-  }
+    "description": "Template test composant",
+  },
 }
