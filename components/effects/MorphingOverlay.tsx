@@ -9,22 +9,8 @@ import { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
-
-/**
- * Variantes de couleur disponibles
- */
-export type MorphingVariant = 'princess' | 'unicorn' | 'star' | 'rainbow';
-
-/**
- * Themes de couleur pour l'overlay
- */
-const OVERLAY_COLORS: Record<MorphingVariant, string> = {
-  princess: '#f472b6', // pink-400
-  unicorn: '#a855f7', // purple-500
-  star: '#facc15', // yellow-400
-  rainbow:
-    'linear-gradient(135deg, #f472b6 0%, #a855f7 33%, #6366f1 66%, #3b82f6 100%)',
-};
+import { THEME_OVERLAYS } from '@/lib/animations/colors';
+import type { ThemeVariant } from '@/types/effects';
 
 /**
  * Animation configs par direction
@@ -64,7 +50,7 @@ export interface MorphingOverlayProps {
   /** Est-ce que l'overlay est visible (pendant transition) */
   isAnimating: boolean;
   /** Variante de couleur */
-  variant?: MorphingVariant;
+  variant?: ThemeVariant;
   /** Direction de l'animation: enter, exit, ou full (cover+reveal) */
   direction?: 'enter' | 'exit' | 'full';
   /** Callback quand l'ecran est completement couvert (pour direction='full') */
@@ -152,7 +138,7 @@ export function MorphingOverlay({
   }
 
   const config = ANIMATIONS[direction];
-  const color = OVERLAY_COLORS[variant];
+  const color = THEME_OVERLAYS[variant];
 
   return (
     <AnimatePresence>

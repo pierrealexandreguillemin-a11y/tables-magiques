@@ -11,12 +11,13 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { MorphingOverlay, type MorphingVariant } from './MorphingOverlay';
+import { MorphingOverlay } from './MorphingOverlay';
+import type { ThemeVariant } from '@/types/effects';
 
 /**
  * Map des routes vers les variantes de couleur
  */
-const ROUTE_VARIANTS: Record<string, MorphingVariant> = {
+const ROUTE_VARIANTS: Record<string, ThemeVariant> = {
   '/': 'rainbow',
   '/practice': 'unicorn',
   '/challenge': 'star',
@@ -27,7 +28,7 @@ const ROUTE_VARIANTS: Record<string, MorphingVariant> = {
 interface PageTransitionProps {
   children: React.ReactNode;
   enableMorphing?: boolean;
-  variant?: MorphingVariant;
+  variant?: ThemeVariant;
 }
 
 /**
@@ -47,7 +48,7 @@ export function PageTransition({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [displayedChildren, setDisplayedChildren] = useState(children);
   const [transitionVariant, setTransitionVariant] =
-    useState<MorphingVariant>('unicorn');
+    useState<ThemeVariant>('unicorn');
 
   // Refs pour stocker les valeurs pending
   const previousPathnameRef = useRef<string>(pathname);
