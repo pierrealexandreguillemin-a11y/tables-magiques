@@ -87,7 +87,7 @@ export function SettingsSlider({
           className={cn(
             'text-sm font-medium px-2 py-0.5 rounded-full',
             'bg-pink-100 dark:bg-pink-900/30',
-            'text-pink-700 dark:text-pink-300'
+            'text-pink-800 dark:text-pink-200'
           )}
         >
           {displayValue}

@@ -84,7 +84,8 @@ Fondations qualite manquantes: CI/CD, couverture, accessibilite, bundle.
 
 ```
 [x] 12.1 - Bundle analysis (2026-03-18)
-    - @next/bundle-analyzer installe (ANALYZE=true)
+    - @next/bundle-analyzer installe mais incompatible Turbopack
+    - Mesure manuelle via du + gzip sur .next/static/
     - Total JS: 2068KB raw / 558KB gzipped
     - Top chunks: next/app 308KB(78KB gz), lottie-json 300KB(37KB gz),
       react-dom 220KB(68KB gz), tsparticles 140KB(39KB gz), gsap 76KB(29KB gz)
@@ -92,9 +93,10 @@ Fondations qualite manquantes: CI/CD, couverture, accessibilite, bundle.
     - Cible < 300KB: non atteinte (558KB gz) — GSAP removable (29KB),
       Lottie JSON compresse bien (37KB), le reste est framework
 
-[x] 12.3 - Audit WCAG 2.1 AA (2026-03-18)
-    - Lighthouse accessibility: / 95→100, /practice 100, /challenge 100,
-      /profile 95→100, /settings 90→100 (a confirmer post-deploy)
+[~] 12.3 - Audit WCAG 2.1 AA (2026-03-18, EN COURS)
+    - Lighthouse post-deploy: / 96, /practice 100, /challenge 100,
+      /profile 96, /settings 96
+    - Cible: 100 sur toutes les pages
     - Fix: aria-label forwarding AnimatedCheckbox toggles
     - Fix: heading order h3→h2 sur profile
     - Fix: touch targets 36px→44px sur header buttons

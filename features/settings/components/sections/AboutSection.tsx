@@ -48,7 +48,7 @@ export function AboutSection({
           className={cn(
             'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium',
             'bg-pink-100 dark:bg-pink-900/30',
-            'text-pink-700 dark:text-pink-300',
+            'text-pink-800 dark:text-pink-200',
             'hover:bg-pink-200 dark:hover:bg-pink-900/50',
             'transition-colors'
           )}

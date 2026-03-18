@@ -44,7 +44,7 @@ export function HomeContent() {
         style={{ '--delay': '1.2s' } as React.CSSProperties}
       >
         {/* Mode Entrainement - Glassmorphism premium */}
-        <Link href="/practice" data-tour="practice-button">
+        <Link href="/practice" data-tour="practice-button" className="block">
           <PulseGlow color={ACCENT_PURPLE} intensity="medium">
             <GradientBorder variant="unicorn" animate glow borderWidth={3}>
               <MagneticButton
@@ -62,7 +62,7 @@ export function HomeContent() {
         </Link>
 
         {/* Mode Challenge - Glassmorphism premium */}
-        <Link href="/challenge" data-tour="challenge-button">
+        <Link href="/challenge" data-tour="challenge-button" className="block">
           <PulseGlow color={ACCENT_ORANGE} intensity="medium">
             <GradientBorder variant="star" animate glow borderWidth={3}>
               <MagneticButton

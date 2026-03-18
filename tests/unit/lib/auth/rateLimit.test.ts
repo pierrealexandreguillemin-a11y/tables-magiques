@@ -10,11 +10,9 @@ import { NextRequest } from 'next/server';
 // MOCKS
 // =============================================================================
 
-// Mock du limiteur Ratelimit
-const mockLimit = vi.fn();
+// Mock du limiteur Ratelimit (used inside vi.mock factory below)
 
-// mockLimit is used in MockRatelimit class below
-void mockLimit;
+const mockLimit = vi.fn();
 
 vi.mock('@upstash/ratelimit', () => ({
   Ratelimit: class MockRatelimit {
