@@ -53,7 +53,7 @@ export function SettingsPage() {
     handleImport,
     handleReset,
   } = useSettingsActions({ exportSettings, importSettings, resetSettings });
-  const shouldAnimate = !useReducedMotion();
+  const { shouldAnimate } = useReducedMotion();
 
   if (isLoading) return <SettingsPageSkeleton />;
 

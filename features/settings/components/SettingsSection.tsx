@@ -36,7 +36,7 @@ export function SettingsSection({
   className,
   testId,
 }: SettingsSectionProps) {
-  const shouldAnimate = !useReducedMotion();
+  const { shouldAnimate } = useReducedMotion();
 
   return (
     <motion.section
