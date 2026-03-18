@@ -9,22 +9,6 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { FairyBackground } from '@/components/effects/FairyBackground';
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      className,
-      'data-testid': testId,
-      ...props
-    }: React.ComponentProps<'div'> & { 'data-testid'?: string }) => (
-      <div className={className} data-testid={testId} {...props}>
-        {children}
-      </div>
-    ),
-  },
-}));
-
 // Mock tsParticles
 vi.mock('@tsparticles/react', () => ({
   default: ({

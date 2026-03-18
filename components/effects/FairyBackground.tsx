@@ -3,13 +3,12 @@
  * ISO/IEC 25010 - Utilisabilite, Performance
  *
  * P0 Component - Ambiance magique essentielle
- * tsParticles pour etoiles (performance) + Framer Motion pour nuages
+ * tsParticles pour etoiles (performance) + CSS keyframes pour nuages
  */
 
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 import type { ISourceOptions } from '@tsparticles/engine';
@@ -45,7 +44,7 @@ interface CloudConfig {
 }
 
 /**
- * Configuration des nuages (Framer Motion - elements larges)
+ * Configuration des nuages (CSS keyframes — GPU compositor)
  * Opacite augmentee pour meilleure visibilite
  */
 const CLOUDS: CloudConfig[] = [
@@ -123,7 +122,7 @@ function createStarParticlesConfig(
 ): ISourceOptions {
   return {
     fullScreen: false,
-    fpsLimit: 60,
+    fpsLimit: 30,
     pauseOnBlur: true,
     pauseOnOutsideViewport: true,
     particles: {
@@ -164,13 +163,7 @@ function createStarParticlesConfig(
       },
       size: {
         value: { min: 3, max: 8 }, // Plus gros
-        animation: animate
-          ? {
-              enable: true,
-              speed: 3,
-              sync: false,
-            }
-          : { enable: false },
+        animation: { enable: false }, // Static size - perf: avoids per-particle recalc
       },
       move: {
         enable: animate,
@@ -213,7 +206,7 @@ function createStarParticlesConfig(
  * <FairyBackground starCount={30} className="opacity-50" />
  * ```
  */
-export function FairyBackground({
+export const FairyBackground = memo(function FairyBackground({
   className,
   disableAnimation = false,
   starCount = 20,
@@ -270,35 +263,41 @@ export function FairyBackground({
         />
       )}
 
-      {/* Nuages colores (Framer Motion - elements larges) */}
+      {/* Nuages colores (CSS keyframes — GPU compositor) */}
       {CLOUDS.map((cloud) => (
-        <motion.div
+        <div
           key={cloud.id}
           data-testid={`cloud-${cloud.id}`}
-          className="absolute rounded-full pointer-events-none gpu-accelerated"
-          style={{
-            width: cloud.size,
-            height: cloud.size,
-            background: cloud.color,
-            opacity: cloud.opacity,
-            filter: `blur(${cloud.blur}px)`,
-            ...cloud.position,
-          }}
-          animate={animate ? cloud.animation : undefined}
-          transition={
-            animate
-              ? {
-                  duration: cloud.duration,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  delay: cloud.delay ?? 0,
-                }
-              : undefined
+          className={cn(
+            'absolute rounded-full pointer-events-none gpu-accelerated',
+            animate && 'cloud'
+          )}
+          style={
+            {
+              width: cloud.size,
+              height: cloud.size,
+              background: cloud.color,
+              opacity: cloud.opacity,
+              filter: `blur(${cloud.blur}px)`,
+              ...cloud.position,
+              ...(animate
+                ? {
+                    '--duration': `${cloud.duration}s`,
+                    '--delay': `${cloud.delay ?? 0}s`,
+                    '--x1': `${cloud.animation.x[1]}px`,
+                    '--y1': `${cloud.animation.y[1]}px`,
+                    '--s1': cloud.animation.scale[1],
+                    '--x2': `${cloud.animation.x[2]}px`,
+                    '--y2': `${cloud.animation.y[2]}px`,
+                    '--s2': cloud.animation.scale[2],
+                  }
+                : {}),
+            } as React.CSSProperties
           }
         />
       ))}
     </div>
   );
-}
+});
 
 export default FairyBackground;

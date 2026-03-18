@@ -1,48 +1,48 @@
 /**
  * HomeContent
  * ISO/IEC 25010 - SRP: Main content only
+ * CSS animations — zero Framer Motion
  */
 
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import {
   GradientText,
-  KawaiiMascot,
   GradientBorder,
   PulseGlow,
   MagneticButton,
 } from '@/components/effects';
+import { LazyKawaiiMascot } from '@/lib/animations';
 
-interface Props {
-  titleRef: React.RefObject<HTMLHeadingElement | null>;
-  unicornRef: React.RefObject<HTMLDivElement | null>;
-  onUnicornClick: () => void;
-}
+export function HomeContent() {
+  const [popping, setPopping] = useState(false);
 
-export function HomeContent({ titleRef, unicornRef, onUnicornClick }: Props) {
+  const handleUnicornClick = useCallback(() => {
+    setPopping(false);
+    requestAnimationFrame(() => setPopping(true));
+  }, []);
+
   return (
     <div className="text-center z-10 relative px-4">
-      <motion.div
-        ref={unicornRef}
-        data-tour="logo"
-        className="text-8xl sm:text-9xl mb-6 cursor-pointer select-none"
-        onClick={onUnicornClick}
-        whileHover={{
-          scale: 1.3,
-          rotate: [0, -10, 10, -10, 0],
-          transition: { duration: 0.5 },
-        }}
-        whileTap={{ scale: 0.9 }}
-        style={{ filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.5))' }}
-      >
-        🦄
-      </motion.div>
+      {/* Licorne — outer: CSS bob (infinite), inner: CSS interactions (hover/tap/click) */}
+      <div className="unicorn-bob inline-block">
+        <div
+          data-tour="logo"
+          className={`text-8xl sm:text-9xl mb-6 cursor-pointer select-none unicorn-interactive ${popping ? 'unicorn-pop' : ''}`}
+          onClick={handleUnicornClick}
+          onAnimationEnd={(e) => {
+            if (e.animationName === 'unicorn-pop') setPopping(false);
+          }}
+          style={{ filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.5))' }}
+        >
+          🦄
+        </div>
+      </div>
 
       <h1
-        ref={titleRef}
-        className="text-4xl sm:text-6xl md:text-7xl font-bold mb-4"
+        className="text-4xl sm:text-6xl md:text-7xl font-bold mb-4 animate-title-enter"
         style={{
           textShadow:
             '0 0 40px rgba(255,255,255,0.6), 0 4px 20px rgba(0,0,0,0.3)',
@@ -53,20 +53,16 @@ export function HomeContent({ titleRef, unicornRef, onUnicornClick }: Props) {
         </GradientText>
       </h1>
 
-      <motion.p
-        className="text-xl sm:text-2xl text-white/90 mb-8 font-medium"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8, duration: 0.8 }}
+      <p
+        className="text-xl sm:text-2xl text-white/90 mb-8 font-medium animate-fade-up"
+        style={{ '--delay': '0.8s' } as React.CSSProperties}
       >
         Apprends tes multiplications en t&apos;amusant !
-      </motion.p>
+      </p>
 
-      <motion.div
-        className="flex flex-col sm:flex-row gap-6 justify-center items-center"
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1.2, duration: 0.6, type: 'spring' }}
+      <div
+        className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-fade-scale"
+        style={{ '--delay': '1.2s' } as React.CSSProperties}
       >
         {/* Mode Entrainement - Glassmorphism premium */}
         <Link href="/practice" data-tour="practice-button">
@@ -112,16 +108,14 @@ export function HomeContent({ titleRef, unicornRef, onUnicornClick }: Props) {
             </GradientBorder>
           </PulseGlow>
         </Link>
-      </motion.div>
+      </div>
 
-      <motion.div
-        className="mt-12 flex justify-center"
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1.8, type: 'spring', stiffness: 200 }}
+      <div
+        className="mt-12 flex justify-center animate-fade-scale"
+        style={{ '--delay': '1.8s' } as React.CSSProperties}
       >
-        <KawaiiMascot character="planet" mood="blissful" size={100} />
-      </motion.div>
+        <LazyKawaiiMascot character="planet" mood="blissful" size={100} />
+      </div>
     </div>
   );
 }
