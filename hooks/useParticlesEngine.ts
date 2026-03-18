@@ -2,8 +2,8 @@
  * useParticlesEngine - tsParticles engine initialization
  * ISO/IEC 25010 - SRP: Engine init only, shared across all particle components
  *
- * Initializes the tsParticles slim engine once per app lifetime.
- * Multiple components can call this hook — init is idempotent.
+ * Lazy: engine initializes on first hook call, not on module import.
+ * Idempotent: multiple components can call this hook safely.
  * Uses useSyncExternalStore for React Compiler compatibility.
  */
 
@@ -14,20 +14,22 @@ import { initParticlesEngine } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 
 let engineReady = false;
+let initStarted = false;
 const listeners = new Set<() => void>();
 
-// Start init immediately on module load (not in a hook)
-const initPromise = initParticlesEngine(async (engine) => {
-  await loadSlim(engine);
-}).then(() => {
-  engineReady = true;
-  listeners.forEach((fn) => fn());
-});
-
-// Prevent unhandled rejection if init fails before any subscriber
-initPromise.catch(() => {});
+function ensureInit() {
+  if (initStarted) return;
+  initStarted = true;
+  initParticlesEngine(async (engine) => {
+    await loadSlim(engine);
+  }).then(() => {
+    engineReady = true;
+    listeners.forEach((fn) => fn());
+  });
+}
 
 function subscribe(callback: () => void) {
+  ensureInit();
   listeners.add(callback);
   return () => listeners.delete(callback);
 }
