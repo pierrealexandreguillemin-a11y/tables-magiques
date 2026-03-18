@@ -93,10 +93,11 @@ Fondations qualite manquantes: CI/CD, couverture, accessibilite, bundle.
     - Cible < 300KB: non atteinte (558KB gz) — GSAP removable (29KB),
       Lottie JSON compresse bien (37KB), le reste est framework
 
-[~] 12.3 - Audit WCAG 2.1 AA (2026-03-18, EN COURS)
-    - Lighthouse post-deploy: / 96, /practice 100, /challenge 100,
-      /profile 96, /settings 96
-    - Cible: 100 sur toutes les pages
+[x] 12.3 - Audit WCAG 2.1 AA (2026-03-18)
+    - Lighthouse post-deploy verifie: / 100, /practice 100, /challenge 100,
+      /profile 100, /settings 100
+    - Fixes: aria-label forwarding, heading order, touch targets 44px,
+      button-in-link nesting, contrast ratios, disabled slider colors
     - Fix: aria-label forwarding AnimatedCheckbox toggles
     - Fix: heading order h3→h2 sur profile
     - Fix: touch targets 36px→44px sur header buttons
