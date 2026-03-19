@@ -129,42 +129,39 @@ Fondations qualite manquantes: CI/CD, couverture, accessibilite, bundle.
 
 ---
 
-## Phase 13 : Performance avancee
+## Phase 13 : Performance avancee (EN COURS)
 
 ### Objectif
 
-Proposition C: supprimer GSAP completement. Propager les patterns CSS a toute l'app.
+Supprimer GSAP. Propager CSS a toute l'app. Simplifier les couches.
 
 ### Tasks
 
 ```
-[ ] 13.1 - Proposition C: virer GSAP
-    - Celebrations confetti/fireworks → tsParticles (config existante)
-    - shakeError → CSS @keyframes (pattern deja utilise)
-    - animateScore → Framer Motion useMotionValue ou CSS counter
-    - badgeUnlock → CSS @keyframes
-    - Supprimer gsap + @gsap/react du package.json (-6.4MB)
-
-[ ] 13.2 - Migrer MagneticButton vers CSS
-    - mousemove rAF → CSS :hover transform (simplifie)
-    - Ou supprimer l'effet magnetique (valeur UX discutable)
-
-[ ] 13.3 - Migrer ShareDialog animations
-    - 3 motion.span/div avec repeat: Infinity
-    - → CSS keyframes (meme pattern que home)
-
-[ ] 13.4 - Migrer pages Practice/Challenge
-    - GSAP bg tween (identique a home) → CSS .bg-drift
-    - motion.div dans ChallengePlaying/PracticePlaying → CSS
+[x] 13.1 - Proposition C: virer GSAP (2026-03-19)
+    - Practice/Challenge GSAP bg-drift → CSS .bg-drift
+    - ShareDialog 5 motion elements → CSS keyframes
+    - 8 composants entry/interaction → CSS classes
+    - AnimatedCheckbox spring → CSS transition
+    - GentleShake useAnimationControls → useRestartableAnimation
+    - MagicCounter GSAP counter → requestAnimationFrame
+    - SuccessExplosion GSAP → tsParticles confettiConfig
+    - BadgeUnlockModal GSAP → tsParticles + CSS
+    - PulseGlow blur filter supprime (lag fix)
+    - GradientBorder simplifie (3 divs → 2)
+    - gsap + @gsap/react supprimes du package.json
+    - Resultats: bundle 558KB → 526KB gz (-32KB)
+    - Lighthouse perf: / +4, /practice +5, /profile +12, /settings +5
+    - A11y: 100 sur 4/5 pages (settings 96 non-deterministe)
 
 [ ] 13.5 - Speed Index
-    - Particules client-only (useSyncExternalStore) causent apparition tardive
+    - Particules client-only causent apparition tardive
     - Evaluer: SSR avec arrondi agressif vs client-only avec skeleton
 
-[ ] 13.6 - LCP 4s → < 2.5s
-    - Identifier l'element LCP (probablement la licorne ou le titre)
+[ ] 13.6 - LCP → < 2.5s
+    - Identifier l'element LCP
     - Preload critical fonts
-    - Optimiser le critical rendering path
+    - Optimiser critical rendering path
 ```
 
 ---
