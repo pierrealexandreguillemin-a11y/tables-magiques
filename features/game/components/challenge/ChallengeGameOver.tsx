@@ -9,7 +9,11 @@ import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { LottieAnimation, NumberReveal } from '@/components/effects';
+import {
+  LottieAnimation,
+  NumberReveal,
+  TextReveal,
+} from '@/components/effects';
 import { useSaveScore } from '../../hooks/useSaveScore';
 import type { ChallengeResult } from '@/types/game';
 
@@ -46,9 +50,14 @@ export function ChallengeGameOver({ result, onReplay }: Props) {
         />
       </div>
 
-      <h2 className="text-4xl font-bold text-white mb-4">
+      <TextReveal
+        as="h2"
+        variant="fade"
+        duration={1}
+        className="text-4xl font-bold text-white mb-4"
+      >
         Challenge termine !
-      </h2>
+      </TextReveal>
 
       <div className="bg-white/20 backdrop-blur-md rounded-3xl p-8 mb-8 max-w-md mx-auto">
         <div className="text-6xl font-bold text-white mb-4">

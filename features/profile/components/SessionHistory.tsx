@@ -5,6 +5,8 @@
  * ISO/IEC 25010 - Liste des sessions recentes
  */
 
+import { Skeleton } from '@/components/effects/Skeleton';
+import { ScrollReveal } from '@/components/effects/ScrollReveal';
 import type { SessionSummary } from '@/types/profile';
 
 export interface SessionHistoryProps {
@@ -41,10 +43,7 @@ export function SessionHistory({ sessions, isLoading }: SessionHistoryProps) {
         </h2>
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="h-16 bg-gray-200 dark:bg-slate-700 rounded-xl animate-pulse"
-            />
+            <Skeleton key={i} variant="rect" height={64} rounded="lg" />
           ))}
         </div>
       </div>
@@ -69,39 +68,40 @@ export function SessionHistory({ sessions, isLoading }: SessionHistoryProps) {
       <h2 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">
         Sessions recentes
       </h2>
-      <div className="space-y-3">
-        {sessions.map((session, index) => (
-          <div
-            key={session.id}
-            className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700 rounded-xl animate-fade-up"
-            style={{ '--delay': `${index * 0.1}s` } as React.CSSProperties}
-          >
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">{getModeEmoji(session.mode)}</span>
-              <div>
-                <div className="font-medium text-gray-900 dark:text-white">
-                  {session.mode === 'practice'
-                    ? `Table de ${session.table}`
-                    : 'Challenge'}
+      <ScrollReveal variant="fade-up" threshold={0.2}>
+        <div className="space-y-3">
+          {sessions.map((session) => (
+            <div
+              key={session.id}
+              className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700 rounded-xl"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{getModeEmoji(session.mode)}</span>
+                <div>
+                  <div className="font-medium text-gray-900 dark:text-white">
+                    {session.mode === 'practice'
+                      ? `Table de ${session.table}`
+                      : 'Challenge'}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    {formatDate(session.timestamp)}
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div
+                  className={`font-bold ${getAccuracyColor(session.accuracy)}`}
+                >
+                  {session.accuracy}%
                 </div>
                 <div className="text-sm text-gray-500 dark:text-gray-400">
-                  {formatDate(session.timestamp)}
+                  {session.score}/{session.total}
                 </div>
               </div>
             </div>
-            <div className="text-right">
-              <div
-                className={`font-bold ${getAccuracyColor(session.accuracy)}`}
-              >
-                {session.accuracy}%
-              </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                {session.score}/{session.total}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </ScrollReveal>
     </div>
   );
 }

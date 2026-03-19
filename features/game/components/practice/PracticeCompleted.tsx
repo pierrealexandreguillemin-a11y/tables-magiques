@@ -12,6 +12,7 @@ import {
   NumberReveal,
   MagicCard,
   MagicButton,
+  TextReveal,
 } from '@/components/effects';
 import { useSaveScore } from '../../hooks/useSaveScore';
 import type { PracticeResult } from '@/types/game';
@@ -51,9 +52,14 @@ export function PracticeCompleted({
         />
       </div>
 
-      <h2 className="text-4xl font-bold text-white mb-4">
+      <TextReveal
+        as="h2"
+        variant="slide"
+        duration={0.8}
+        className="text-4xl font-bold text-white mb-4"
+      >
         {result.isPerfect ? 'Parfait !' : 'Bien joue !'}
-      </h2>
+      </TextReveal>
 
       <MagicCard
         variant="rainbow"

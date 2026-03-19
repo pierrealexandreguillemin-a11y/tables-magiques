@@ -8,6 +8,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { ProfileSkeleton } from '@/components/effects/Skeleton';
 import { useProfile } from '../hooks/useProfile';
 import { StatsCard } from './StatsCard';
 import { SessionHistory } from './SessionHistory';
@@ -30,17 +31,7 @@ export function ProfilePage() {
     return (
       <main className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100 dark:from-slate-900 dark:via-purple-900 dark:to-slate-900 p-4 sm:p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="animate-pulse space-y-6">
-            <div className="h-32 bg-gray-200 dark:bg-slate-700 rounded-2xl" />
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="h-24 bg-gray-200 dark:bg-slate-700 rounded-2xl"
-                />
-              ))}
-            </div>
-          </div>
+          <ProfileSkeleton />
         </div>
       </main>
     );
