@@ -39,6 +39,7 @@ export const ChallengeResultSchema = z.object({
   accuracy: z.number().min(0).max(1),
   timeBonus: z.number().min(0),
   streakBonus: z.number().min(0),
+  bestStreak: z.number().min(0).optional().default(0),
   totalScore: z.number().min(0),
 });
 
@@ -81,6 +82,7 @@ export const SaveScoreSchema = z.object({
   table: z.number().min(1).max(10).optional(),
   correct: z.number().min(0),
   total: z.number().min(1),
+  streak: z.number().min(0).optional(),
   timeRemaining: z.number().min(0).optional(),
 });
 

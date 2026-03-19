@@ -40,6 +40,7 @@ export function createChallengeState(
     score: 0,
     questionsAnswered: 0,
     streak: 0,
+    bestStreak: 0,
     currentQuestion: null,
     config: fullConfig,
   };
@@ -125,11 +126,14 @@ export function answerQuestion(
 
   const isCorrect = answer === state.currentQuestion.answer;
 
+  const newStreak = updateStreak(state.streak, isCorrect);
+
   return {
     ...state,
     score: isCorrect ? state.score + 1 : state.score,
     questionsAnswered: state.questionsAnswered + 1,
-    streak: updateStreak(state.streak, isCorrect),
+    streak: newStreak,
+    bestStreak: Math.max(state.bestStreak, newStreak),
     questionTimeRemaining: state.config.questionTime,
     currentQuestion: generateRandomQuestion(),
   };
@@ -190,6 +194,7 @@ export function calculateChallengeScore(
     accuracy,
     timeBonus,
     streakBonus,
+    bestStreak: state.bestStreak,
     totalScore,
   };
 }

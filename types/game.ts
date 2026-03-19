@@ -56,6 +56,7 @@ export interface ChallengeState {
   score: number;
   questionsAnswered: number;
   streak: number;
+  bestStreak: number;
   currentQuestion: Question | null;
   config: ChallengeConfig;
 }
@@ -66,6 +67,7 @@ export interface ChallengeResult {
   accuracy: number;
   timeBonus: number;
   streakBonus: number;
+  bestStreak: number;
   totalScore: number;
 }
 
@@ -145,6 +147,7 @@ export interface Score {
   table?: number; // Pour le mode practice
   correct: number;
   total: number;
+  streak?: number; // Meilleure serie consecutive dans cette session
   timeRemaining?: number; // Pour le mode challenge
   timestamp: string; // ISO 8601
 }
@@ -158,6 +161,7 @@ export interface SaveScoreInput {
   table?: number;
   correct: number;
   total: number;
+  streak?: number;
   timeRemaining?: number;
 }
 

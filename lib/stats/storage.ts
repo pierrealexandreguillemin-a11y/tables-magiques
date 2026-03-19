@@ -107,12 +107,17 @@ export async function getUserStats(userId: string): Promise<UserStats> {
     }
   }
 
+  const bestStreak = allScores.reduce(
+    (max, score) => Math.max(max, score.streak ?? 0),
+    0
+  );
+
   return {
     totalGames,
     totalQuestions,
     totalCorrect,
     averageAccuracy,
-    bestStreak: 0, // TODO: calculer depuis les données
+    bestStreak,
     practiceGames: practiceCount,
     challengeGames: challengeCount,
     lastPlayedAt,

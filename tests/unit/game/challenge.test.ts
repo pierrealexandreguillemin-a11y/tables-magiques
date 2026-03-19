@@ -254,6 +254,7 @@ describe('Challenge Mode Logic', () => {
         score: 10,
         questionsAnswered: 15,
         streak: 0,
+        bestStreak: 0,
         currentQuestion: null,
         config: { globalTime: 180, questionTime: 5 },
       };
@@ -273,6 +274,7 @@ describe('Challenge Mode Logic', () => {
         score: 10,
         questionsAnswered: 15,
         streak: 5,
+        bestStreak: 5,
         currentQuestion: null,
         config: { globalTime: 180, questionTime: 5 },
       };
@@ -290,6 +292,7 @@ describe('Challenge Mode Logic', () => {
         score: 20,
         questionsAnswered: 20,
         streak: 10,
+        bestStreak: 10,
         currentQuestion: null,
         config: { globalTime: 180, questionTime: 5 },
       };
@@ -307,6 +310,7 @@ describe('Challenge Mode Logic', () => {
         score: 15,
         questionsAnswered: 20,
         streak: 5,
+        bestStreak: 5,
         currentQuestion: null,
         config: { globalTime: 180, questionTime: 5 },
       };

@@ -265,6 +265,7 @@ describe('Badges Logic', () => {
           accuracy: 0.6,
           timeBonus: 120,
           streakBonus: 0,
+          bestStreak: 0,
           totalScore: 50,
         };
 
@@ -279,6 +280,7 @@ describe('Badges Logic', () => {
           accuracy: 0.75,
           timeBonus: 120,
           streakBonus: 0,
+          bestStreak: 0,
           totalScore: 50,
         };
 
@@ -295,6 +297,7 @@ describe('Badges Logic', () => {
           accuracy: 0.8,
           timeBonus: 60,
           streakBonus: 0,
+          bestStreak: 0,
           totalScore: 140,
         };
 
@@ -309,6 +312,7 @@ describe('Badges Logic', () => {
           accuracy: 0.89,
           timeBonus: 60,
           streakBonus: 0,
+          bestStreak: 0,
           totalScore: 140,
         };
 
@@ -325,6 +329,7 @@ describe('Badges Logic', () => {
           accuracy: 0.8,
           timeBonus: 30,
           streakBonus: 0,
+          bestStreak: 0,
           totalScore: 150,
         };
 
@@ -341,6 +346,7 @@ describe('Badges Logic', () => {
           accuracy: 0.9,
           timeBonus: 0,
           streakBonus: 10,
+          bestStreak: 0,
           totalScore: 190,
         };
 
@@ -357,6 +363,7 @@ describe('Badges Logic', () => {
           accuracy: 1.0,
           timeBonus: 30,
           streakBonus: 130,
+          bestStreak: 0,
           totalScore: 310,
         };
 
@@ -371,6 +378,7 @@ describe('Badges Logic', () => {
           accuracy: 0.93,
           timeBonus: 30,
           streakBonus: 0,
+          bestStreak: 0,
           totalScore: 170,
         };
 
@@ -385,6 +393,7 @@ describe('Badges Logic', () => {
           accuracy: 0,
           timeBonus: 180,
           streakBonus: 0,
+          bestStreak: 0,
           totalScore: 180,
         };
 
@@ -401,6 +410,7 @@ describe('Badges Logic', () => {
           accuracy: 0.8,
           timeBonus: 30,
           streakBonus: 0,
+          bestStreak: 0,
           totalScore: 150,
         };
 
@@ -417,6 +427,7 @@ describe('Badges Logic', () => {
           accuracy: 1.0,
           timeBonus: 0,
           streakBonus: 180,
+          bestStreak: 0,
           totalScore: 380,
         };
 

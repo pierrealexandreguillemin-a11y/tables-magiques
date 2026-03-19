@@ -128,9 +128,14 @@ export async function getScoreStats(
 
   const averageAccuracy = Math.round(totalAccuracy / scores.length);
 
+  const bestStreak = scores.reduce(
+    (max, score) => Math.max(max, score.streak ?? 0),
+    0
+  );
+
   return {
     totalGames,
     averageAccuracy,
-    bestStreak: 0, // TODO: Calculer a partir des donnees
+    bestStreak,
   };
 }
