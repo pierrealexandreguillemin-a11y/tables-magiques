@@ -98,61 +98,6 @@ vi.mock('lottie-web', () => ({
 }));
 
 // ============================================================================
-// Animation Library Mocks (UNIT tests only - integration tests use real libs)
-// ============================================================================
-
-// GSAP Mock - pour tests unitaires rapides
-// Les tests d'intégration peuvent importer le vrai GSAP
-const mockGsap = {
-  to: vi.fn().mockReturnValue({ kill: vi.fn() }),
-  from: vi.fn().mockReturnValue({ kill: vi.fn() }),
-  fromTo: vi.fn().mockReturnValue({ kill: vi.fn() }),
-  set: vi.fn(),
-  timeline: vi.fn(() => ({
-    to: vi.fn().mockReturnThis(),
-    from: vi.fn().mockReturnThis(),
-    fromTo: vi.fn().mockReturnThis(),
-    add: vi.fn().mockReturnThis(),
-    play: vi.fn().mockReturnThis(),
-    pause: vi.fn().mockReturnThis(),
-    kill: vi.fn(),
-  })),
-  registerPlugin: vi.fn(),
-  defaults: vi.fn(),
-  ticker: {
-    lagSmoothing: vi.fn(),
-    fps: vi.fn(),
-  },
-  context: vi.fn(() => ({
-    revert: vi.fn(),
-    add: vi.fn(),
-  })),
-};
-
-vi.mock('gsap', () => ({
-  gsap: mockGsap,
-  default: mockGsap,
-}));
-
-// useGSAP Mock - simule le hook React
-vi.mock('@gsap/react', () => ({
-  useGSAP: vi.fn((callback?: () => void) => {
-    // Exécute le callback immédiatement en test
-    if (typeof callback === 'function') {
-      try {
-        callback();
-      } catch {
-        // Ignore errors in test environment
-      }
-    }
-    return {
-      context: { revert: vi.fn() },
-      contextSafe: vi.fn((fn: unknown) => fn),
-    };
-  }),
-}));
-
-// ============================================================================
 // Console Warnings Suppression (dev only)
 // ============================================================================
 

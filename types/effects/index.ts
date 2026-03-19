@@ -5,6 +5,5 @@
 
 export * from './animations';
 export * from './particles';
-export * from './gsap';
 export * from './toast';
 export * from './components';

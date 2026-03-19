@@ -2,7 +2,7 @@
  * Lazy Loading - Composants d'animation lourds
  * ISO/IEC 25010 - Performance, Efficacité
  *
- * Charge les composants lourds (Lottie, Particles, GSAP)
+ * Charge les composants lourds (Lottie, Particles)
  * uniquement quand nécessaire pour réduire le bundle initial.
  *
  * Économie estimée: ~150KB sur le bundle initial
@@ -87,21 +87,6 @@ export const LazyFairyBackground = dynamic(
   () =>
     import('@/components/effects/FairyBackground').then((mod) => ({
       default: mod.FairyBackground,
-    })),
-  {
-    ssr: false,
-    loading: () => null,
-  }
-);
-
-/**
- * GsapCelebration - Chargé à la demande
- * Poids: ~25KB (GSAP effects)
- */
-export const LazyGsapCelebration = dynamic(
-  () =>
-    import('@/components/effects/GsapCelebration').then((mod) => ({
-      default: mod.GsapCelebration,
     })),
   {
     ssr: false,

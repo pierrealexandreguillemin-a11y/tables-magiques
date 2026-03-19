@@ -3,35 +3,8 @@
  * ISO/IEC 25010 - Barrel exports centralises
  *
  * Usage:
- * import { gsap, cardVariants, getAnimation } from '@/lib/animations';
+ * import { cardVariants, getAnimation } from '@/lib/animations';
  */
-
-// =============================================================================
-// GSAP
-// =============================================================================
-
-export { gsap, useGSAP } from './gsap/register';
-export {
-  // Effects
-  confettiExplosion,
-  fireworksDisplay,
-  celebrationCascade,
-  shakeError,
-  animateScore,
-  badgeUnlock,
-  timerPulse,
-  glowPulse,
-  magneticHover,
-  staggerReveal,
-  numberWave,
-  pageTransition,
-  // Types
-  type ConfettiConfig,
-  type FireworksConfig,
-  type ShakeConfig,
-  type ScoreConfig,
-  type GlowConfig,
-} from './gsap/effects';
 
 // =============================================================================
 // FRAMER MOTION
@@ -157,7 +130,6 @@ export {
   LazySuccessExplosion,
   LazyBadgeUnlockModal,
   LazyFairyBackground,
-  LazyGsapCelebration,
   LazyKawaiiMascot,
   preloadHeavyComponents,
   preloadParticles,

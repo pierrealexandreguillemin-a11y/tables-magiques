@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /**
- * Tests batch-d — GsapCelebration, SuccessExplosion, LottieAnimation,
+ * Tests batch-d — SuccessExplosion, LottieAnimation,
  *                  ToastProvider / useToastContext, AccessibilitySection
  * ISO/IEC 29119 - Tests unitaires
  */
@@ -48,18 +48,6 @@ vi.mock('framer-motion', () => {
     ),
   };
 });
-
-const mockConfettiExplosion = vi.fn();
-const mockFireworksDisplay = vi.fn(() => vi.fn());
-const mockCelebrationCascade = vi.fn(() => vi.fn());
-
-vi.mock('@/hooks/useGsapEffects', () => ({
-  useGsapEffects: () => ({
-    confettiExplosion: mockConfettiExplosion,
-    fireworksDisplay: mockFireworksDisplay,
-    celebrationCascade: mockCelebrationCascade,
-  }),
-}));
 
 vi.mock('@/hooks/useParticlesEngine', () => ({
   useParticlesEngine: () => true,
@@ -195,7 +183,6 @@ let mockUseToastReturn = {
 // Component imports (after mocks)
 // ---------------------------------------------------------------------------
 
-import { GsapCelebration } from '@/components/effects/GsapCelebration';
 import { SuccessExplosion } from '@/components/effects/SuccessExplosion';
 import { LottieAnimation } from '@/components/effects/LottieAnimation';
 import {
@@ -205,124 +192,7 @@ import {
 import { AccessibilitySection } from '@/features/settings/components/sections/AccessibilitySection';
 
 // ---------------------------------------------------------------------------
-// 1. GsapCelebration
-// ---------------------------------------------------------------------------
-
-describe('GsapCelebration', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    mockConfettiExplosion.mockClear();
-    mockFireworksDisplay.mockClear();
-    mockCelebrationCascade.mockClear();
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-    vi.restoreAllMocks();
-  });
-
-  it('rend le wrapper avec data-testid', () => {
-    render(<GsapCelebration type="confetti" trigger={false} />);
-    expect(screen.getByTestId('gsap-celebration')).toBeInTheDocument();
-  });
-
-  it('expose le type via data-celebration-type', () => {
-    render(<GsapCelebration type="fireworks" trigger={false} />);
-    expect(screen.getByTestId('gsap-celebration')).toHaveAttribute(
-      'data-celebration-type',
-      'fireworks'
-    );
-  });
-
-  it('rend les children', () => {
-    render(
-      <GsapCelebration type="confetti" trigger={false}>
-        <span>Enfant</span>
-      </GsapCelebration>
-    );
-    expect(screen.getByText('Enfant')).toBeInTheDocument();
-  });
-
-  it('applique className', () => {
-    const { container } = render(
-      <GsapCelebration type="none" trigger={false} className="test-class" />
-    );
-    expect(container.firstChild).toHaveClass('test-class');
-  });
-
-  it('ne declenche pas confetti quand trigger=false', () => {
-    render(<GsapCelebration type="confetti" trigger={false} />);
-    expect(mockConfettiExplosion).not.toHaveBeenCalled();
-  });
-
-  it('declenche confettiExplosion quand trigger=true et type=confetti', () => {
-    render(<GsapCelebration type="confetti" trigger={true} />);
-    expect(mockConfettiExplosion).toHaveBeenCalledOnce();
-  });
-
-  it('passe particleCount a confettiExplosion', () => {
-    render(
-      <GsapCelebration type="confetti" trigger={true} particleCount={80} />
-    );
-    expect(mockConfettiExplosion).toHaveBeenCalledWith(
-      expect.any(HTMLDivElement),
-      { count: 80 }
-    );
-  });
-
-  it('declenche fireworksDisplay quand type=fireworks', () => {
-    render(<GsapCelebration type="fireworks" trigger={true} />);
-    expect(mockFireworksDisplay).toHaveBeenCalledOnce();
-  });
-
-  it('declenche celebrationCascade quand type=cascade', () => {
-    render(<GsapCelebration type="cascade" trigger={true} />);
-    expect(mockCelebrationCascade).toHaveBeenCalledOnce();
-  });
-
-  it('appelle onComplete apres timeout confetti (1500ms)', () => {
-    const onComplete = vi.fn();
-    render(
-      <GsapCelebration type="confetti" trigger={true} onComplete={onComplete} />
-    );
-    expect(onComplete).not.toHaveBeenCalled();
-    act(() => vi.advanceTimersByTime(1500));
-    expect(onComplete).toHaveBeenCalledOnce();
-  });
-
-  it('appelle onComplete apres timeout fireworks (2000ms)', () => {
-    const onComplete = vi.fn();
-    render(
-      <GsapCelebration
-        type="fireworks"
-        trigger={true}
-        onComplete={onComplete}
-      />
-    );
-    act(() => vi.advanceTimersByTime(1999));
-    expect(onComplete).not.toHaveBeenCalled();
-    act(() => vi.advanceTimersByTime(1));
-    expect(onComplete).toHaveBeenCalledOnce();
-  });
-
-  it('appelle onComplete immediatement quand type=none et trigger=true', () => {
-    const onComplete = vi.fn();
-    render(
-      <GsapCelebration type="none" trigger={true} onComplete={onComplete} />
-    );
-    expect(onComplete).toHaveBeenCalledOnce();
-  });
-
-  it('ne declenche rien quand disableAnimation=true', () => {
-    render(
-      <GsapCelebration type="confetti" trigger={true} disableAnimation={true} />
-    );
-    expect(mockConfettiExplosion).not.toHaveBeenCalled();
-  });
-});
-
-// ---------------------------------------------------------------------------
-// 2. SuccessExplosion
+// 1. SuccessExplosion
 // ---------------------------------------------------------------------------
 
 describe('SuccessExplosion', () => {
@@ -405,7 +275,7 @@ describe('SuccessExplosion', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 3. LottieAnimation
+// 2. LottieAnimation
 // ---------------------------------------------------------------------------
 
 describe('LottieAnimation', () => {
@@ -485,7 +355,7 @@ describe('LottieAnimation', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 4. ToastProvider / useToastContext
+// 3. ToastProvider / useToastContext
 // ---------------------------------------------------------------------------
 
 describe('ToastProvider', () => {
@@ -651,7 +521,7 @@ describe('useToastContext', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 5. AccessibilitySection
+// 4. AccessibilitySection
 // ---------------------------------------------------------------------------
 
 const defaultSettings = {
