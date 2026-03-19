@@ -293,7 +293,9 @@
   will-change: transform, opacity;
 }
 
-/* === BG DRIFT (gradient background — paint, pas compositor) === */
+/* === BG DRIFT (gradient background — uses background-position which triggers
+   paint, but at 15s cycle the perf impact is negligible. No compositor-only
+   alternative exists for gradient animation without @property or Houdini.) === */
 @keyframes bg-drift {
   0%,
   100% {
@@ -610,6 +612,61 @@
   transition: transform 0.2s var(--ease-spring);
 }
 
+/* === FADE DOWN (dropdown menus) === */
+@keyframes fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-down {
+  animation: fade-down 0.3s var(--ease-smooth) both;
+  animation-delay: var(--delay, 0s);
+}
+
+/* === ICON ROTATE (theme/state toggles) === */
+.icon-rotate {
+  transition: transform 0.3s var(--ease-spring);
+}
+
+/* === PROGRESS FILL (animated progress bars) === */
+.progress-fill {
+  transition: width 0.8s var(--ease-spring);
+}
+
+/* === HOVER LIFT (cards with elevation change) === */
+.hover-lift {
+  transition:
+    transform 0.2s var(--ease-spring),
+    box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: scale(1.02) translateY(-2px);
+}
+
+/* === CELEBRATION ENTRY (badge/score reveal) === */
+@keyframes celebration-entry {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-celebration-entry {
+  animation: celebration-entry 0.5s var(--ease-spring) both;
+  animation-delay: var(--delay, 0s);
+}
+
 /* === REDUCED MOTION (A11Y) === */
 @media (prefers-reduced-motion: reduce) {
   .animate-shimmer,
@@ -633,7 +690,9 @@
   .share-sparkle,
   .share-glow-pulse,
   .animate-answer-pop,
-  .shake-error {
+  .shake-error,
+  .animate-fade-down,
+  .animate-celebration-entry {
     animation: none;
   }
 
@@ -650,8 +709,14 @@
   .magic-card-interactive:hover {
     transform: none;
   }
-  .switch-thumb {
+  .switch-thumb,
+  .icon-rotate,
+  .progress-fill,
+  .hover-lift {
     transition: none;
+  }
+  .hover-lift:hover {
+    transform: none;
   }
 
   /* Désactiver GPU hints en reduced motion */
