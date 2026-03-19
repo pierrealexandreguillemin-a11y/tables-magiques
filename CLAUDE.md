@@ -10,7 +10,7 @@ App web PWA d'apprentissage des multiplications pour enfants (9+). Stack: Next.j
 npm run dev          # Dev server
 npm run build        # Production build
 npm run typecheck    # tsc --noEmit
-npm run test:run     # Vitest (1360 tests)
+npm run test:run     # Vitest (1398 tests)
 npm run test:e2e     # Playwright
 npm run test:e2e:visual       # Visual regression (Playwright screenshots)
 npm run test:e2e:visual:update # Update visual baselines
@@ -46,7 +46,7 @@ npm run quality:bundle-size  # Bundle size guard (560KB threshold)
 - **Particules etoiles**: tsParticles (canvas GPU, fpsLimit 30, pauseOnBlur: true)
 - **Celebrations**: tsParticles `confettiConfig` (remplace GSAP)
 - **Easings**: `var(--ease-spring)` ou `var(--ease-smooth)` de tokens.css — jamais hardcoder cubic-bezier
-- **GSAP**: supprime completement (Phase 13)
+- **GSAP**: supprime completement (Phase 12)
 
 ### Framer Motion — usages restants (legitimes)
 
