@@ -14,9 +14,6 @@ jobs:
   quality:
     name: Quality Gates
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: tables-magiques
 
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +22,6 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: tables-magiques/package-lock.json
 
       - name: Install dependencies
         run: npm ci

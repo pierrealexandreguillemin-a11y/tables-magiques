@@ -1,8 +1,8 @@
 # E2E Test Coverage
 
-> **Dernière mise à jour**: 2026-03-19 07:45
-> **Total fichiers E2E**: 11
-> **Total tests E2E**: 168
+> **Dernière mise à jour**: 2026-03-19 11:25
+> **Total fichiers E2E**: 12
+> **Total tests E2E**: 171
 
 ## Fichiers de test
 
@@ -17,3 +17,4 @@
 - `practice.spec.ts`: 13 tests
 - `profile.spec.ts`: 16 tests
 - `settings.spec.ts`: 20 tests
+- `visual-regression.spec.ts`: 3 tests
