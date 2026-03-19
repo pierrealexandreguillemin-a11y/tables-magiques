@@ -70,6 +70,6 @@ Tout le reste utilise CSS — voir `styles/animations.css`.
 - Les barrel exports utilisent des exports nommes explicites, pas `export *`
 - Les couleurs d'animation passent par `lib/animations/colors.ts`
 - `next.config.ts` a le React Compiler active (memoization automatique)
-- 1369 tests (71 fichiers), coverage ~87%
+- 1390 tests (75 fichiers), coverage ~87%
 - Zero dependances circulaires (madge verifie)
 - Bundle size guard: 525 KB gzipped, threshold 560 KB

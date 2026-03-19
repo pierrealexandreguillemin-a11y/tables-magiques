@@ -160,12 +160,12 @@ corrige en Phase 13 et les composants branches en Phase 14.
 ### Tasks
 
 ```
-[ ] 15.1 - Setup MSW
+[x] 15.1 - Setup MSW (2026-03-19)
     - Creer tests/integration/setup.ts (server + handlers)
     - Creer tests/integration/handlers/ (auth, profile, badges, scores)
     - Configurer vitest pour inclure tests/integration/
 
-[ ] 15.2 - Tests auth (useAuth + /api/auth/*)
+[x] 15.2 - Tests auth (useAuth + /api/auth/*) (2026-03-19)
     - POST /api/auth/register → session + cache update
     - POST /api/auth/login → session + cache update
     - GET /api/auth/me → user ou 401
@@ -173,20 +173,20 @@ corrige en Phase 13 et les composants branches en Phase 14.
     - Rate limiting (429)
     - ~12 tests
 
-[ ] 15.3 - Tests profile (useProfile + /api/profile)
+[x] 15.3 - Tests profile (useProfile + /api/profile) (2026-03-19)
     - GET /api/profile → donnees completes
     - GET /api/profile/history → filtres + pagination
     - 401 si non authentifie
     - ~6 tests
 
-[ ] 15.4 - Tests badges (useBadges + /api/badges)
+[x] 15.4 - Tests badges (useBadges + /api/badges) (2026-03-19)
     - GET /api/badges → liste avec earned/not-earned
     - POST /api/badges practice mode → newBadges[]
     - POST /api/badges challenge mode → newBadges[]
     - Filtre already-earned
     - ~8 tests
 
-[ ] 15.5 - Tests scores (mutations + /api/scores)
+[x] 15.5 - Tests scores (mutations + /api/scores) (2026-03-19)
     - POST /api/scores (save practice result)
     - POST /api/scores (save challenge result)
     - GET /api/scores?mode=practice&limit=20
