@@ -46,3 +46,44 @@ jobs:
 
       - name: Bundle size check
         run: bash scripts/check-bundle-size.sh
+
+  lighthouse:
+    name: Lighthouse Audit
+    runs-on: ubuntu-latest
+    needs: quality
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci && npx next build
+
+      - name: Start server
+        run: npx next start &
+        env:
+          PORT: 3000
+
+      - name: Wait for server
+        run: npx wait-on http://localhost:3000 --timeout 30000
+
+      - name: Lighthouse audit
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            http://localhost:3000/
+            http://localhost:3000/practice
+            http://localhost:3000/challenge
+            http://localhost:3000/profile
+            http://localhost:3000/settings
+          budgetPath: ./lighthouse-budget.json
+          uploadArtifacts: true
+
+      - name: Check results
+        run: |
+          echo "Lighthouse audit complete — check artifacts for details"
