@@ -127,23 +127,23 @@ est du code mort — et les E2E (Phase 16) testeraient des parcours incomplets.
 ### Tasks
 
 ```
-[ ] 14.1 - Brancher Skeleton loaders
+[x] 14.1 - Brancher Skeleton loaders (2026-03-19)
     - BadgeCollection → BadgeGridSkeleton
     - ProfilePage → ProfileSkeleton
     - Toute page avec data fetching (practice loading, challenge loading)
     - Verifier que loading states sont testes dans les unit tests existants
 
-[ ] 14.2 - Brancher TextReveal
+[x] 14.2 - Brancher TextReveal (2026-03-19)
     - Titres de niveau dans Practice/Challenge
     - "Bravo!" / "Game Over!" avec reveal anime
     - Respecter prefers-reduced-motion (TextReveal le gere deja)
 
-[ ] 14.3 - Brancher ScrollReveal
+[x] 14.3 - Brancher ScrollReveal (2026-03-19)
     - Page profil: stats apparaissent au scroll (ProgressChart, SessionHistory)
     - Page resultats: trophees progressifs
     - Respecter prefers-reduced-motion (ScrollReveal le gere deja)
 
-[ ] 14.4 - Integrer RippleEffect dans MagicButton
+[x] 14.4 - Integrer RippleEffect dans MagicButton (deja fait, verifie)
     - Unifier le feedback tactile (useRipple deja importe mais pas rendu)
     - Verifier que les tests MagicButton couvrent le ripple
 ```
