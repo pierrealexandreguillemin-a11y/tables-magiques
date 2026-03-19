@@ -37,7 +37,7 @@ export function PracticeCompleted({
       table: selectedTable ?? undefined,
       correct: result.score,
       total: result.total,
-      streak: result.streak,
+      streak: result.bestStreak,
     });
   }, [saveScore, result, selectedTable]);
 

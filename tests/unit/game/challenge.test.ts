@@ -264,6 +264,7 @@ describe('Challenge Mode Logic', () => {
       expect(result.correctAnswers).toBe(10);
       expect(result.totalQuestions).toBe(15);
       expect(result.accuracy).toBeCloseTo(0.67, 1);
+      expect(result.bestStreak).toBe(0);
     });
 
     it('calcule bonus temps', () => {
@@ -300,6 +301,7 @@ describe('Challenge Mode Logic', () => {
       const result = calculateChallengeScore(state);
 
       expect(result.streakBonus).toBeGreaterThan(0);
+      expect(result.bestStreak).toBe(10);
     });
 
     it('score total = base + bonus', () => {

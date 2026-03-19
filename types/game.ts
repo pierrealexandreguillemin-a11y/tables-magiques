@@ -108,6 +108,7 @@ export interface PracticeState {
   userAnswer: string;
   score: number;
   streak: number;
+  bestStreak: number;
   isCorrect: boolean | null;
   showFeedback: boolean;
 }
@@ -117,6 +118,7 @@ export interface PracticeResult {
   total: number;
   accuracy: number;
   streak: number;
+  bestStreak: number;
   isPerfect: boolean;
   bonus: number;
 }

@@ -44,6 +44,7 @@ const INITIAL_STATE: PracticeState = {
   userAnswer: '',
   score: 0,
   streak: 0,
+  bestStreak: 0,
   isCorrect: null,
   showFeedback: false,
 };
@@ -111,12 +112,15 @@ export function usePractice(): UsePracticeReturn {
       const userNum = parseInt(prev.userAnswer, 10);
       const isCorrect = checkAnswer(userNum, currentQuestion.answer);
 
+      const newStreak = updateStreak(prev.streak, isCorrect);
+
       return {
         ...prev,
         isCorrect,
         showFeedback: true,
         score: isCorrect ? prev.score + 1 : prev.score,
-        streak: updateStreak(prev.streak, isCorrect),
+        streak: newStreak,
+        bestStreak: Math.max(prev.bestStreak, newStreak),
       };
     });
 
@@ -171,6 +175,7 @@ export function usePractice(): UsePracticeReturn {
         total: state.questions.length,
         accuracy: calculateAccuracy(state.score, state.questions.length),
         streak: state.streak,
+        bestStreak: state.bestStreak,
         isPerfect: checkPerfect(state.score, state.questions.length),
         bonus: calculateBonus(
           state.streak,
