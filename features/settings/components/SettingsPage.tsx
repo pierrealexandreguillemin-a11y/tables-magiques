@@ -5,12 +5,10 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import Link from 'next/link';
 import { useSettings } from '../hooks/useSettings';
 import { useSettingsActions } from '../hooks/useSettingsActions';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { SettingsPageSkeleton } from './SettingsPageSkeleton';
 import {
   AccessibilitySection,
@@ -21,16 +19,6 @@ import {
   PrivacySection,
   AboutSection,
 } from './sections';
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
 
 export function SettingsPage() {
   const {
@@ -53,9 +41,49 @@ export function SettingsPage() {
     handleImport,
     handleReset,
   } = useSettingsActions({ exportSettings, importSettings, resetSettings });
-  const { shouldAnimate } = useReducedMotion();
 
   if (isLoading) return <SettingsPageSkeleton />;
+
+  const sections = [
+    <AccessibilitySection
+      key="a11y"
+      settings={settings}
+      updateSetting={updateSetting}
+    />,
+    <AudioSection
+      key="audio"
+      settings={settings}
+      updateSetting={updateSetting}
+    />,
+    <DisplaySection
+      key="display"
+      settings={settings}
+      updateSetting={updateSetting}
+    />,
+    <GameSection
+      key="game"
+      settings={settings}
+      updateSetting={updateSetting}
+    />,
+    <NotificationsSection
+      key="notif"
+      settings={settings}
+      updateSetting={updateSetting}
+    />,
+    <PrivacySection
+      key="privacy"
+      settings={settings}
+      updateSetting={updateSetting}
+    />,
+    <AboutSection
+      key="about"
+      showResetConfirm={showResetConfirm}
+      importError={importError}
+      onExport={handleExport}
+      onImport={handleImport}
+      onReset={handleReset}
+    />,
+  ];
 
   return (
     <main className="min-h-screen py-8">
@@ -73,46 +101,17 @@ export function SettingsPage() {
             <X size={20} />
           </Link>
         </div>
-        <motion.div
-          className="space-y-6 max-w-2xl mx-auto p-4"
-          variants={shouldAnimate ? containerVariants : undefined}
-          initial={shouldAnimate ? 'hidden' : undefined}
-          animate="visible"
-        >
-          <motion.div variants={shouldAnimate ? itemVariants : undefined}>
-            <AccessibilitySection
-              settings={settings}
-              updateSetting={updateSetting}
-            />
-          </motion.div>
-          <motion.div variants={shouldAnimate ? itemVariants : undefined}>
-            <AudioSection settings={settings} updateSetting={updateSetting} />
-          </motion.div>
-          <motion.div variants={shouldAnimate ? itemVariants : undefined}>
-            <DisplaySection settings={settings} updateSetting={updateSetting} />
-          </motion.div>
-          <motion.div variants={shouldAnimate ? itemVariants : undefined}>
-            <GameSection settings={settings} updateSetting={updateSetting} />
-          </motion.div>
-          <motion.div variants={shouldAnimate ? itemVariants : undefined}>
-            <NotificationsSection
-              settings={settings}
-              updateSetting={updateSetting}
-            />
-          </motion.div>
-          <motion.div variants={shouldAnimate ? itemVariants : undefined}>
-            <PrivacySection settings={settings} updateSetting={updateSetting} />
-          </motion.div>
-          <motion.div variants={shouldAnimate ? itemVariants : undefined}>
-            <AboutSection
-              showResetConfirm={showResetConfirm}
-              importError={importError}
-              onExport={handleExport}
-              onImport={handleImport}
-              onReset={handleReset}
-            />
-          </motion.div>
-        </motion.div>
+        <div className="space-y-6 max-w-2xl mx-auto p-4">
+          {sections.map((section, i) => (
+            <div
+              key={section.key}
+              className="animate-fade-up"
+              style={{ '--delay': `${i * 0.1}s` } as React.CSSProperties}
+            >
+              {section}
+            </div>
+          ))}
+        </div>
       </div>
     </main>
   );

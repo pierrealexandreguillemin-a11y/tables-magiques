@@ -6,7 +6,6 @@
 'use client';
 
 import { useTheme } from '@/hooks/useTheme';
-import { motion } from 'framer-motion';
 
 /**
  * Icone Soleil (mode light)
@@ -74,7 +73,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
   const { isDark, toggleTheme } = useTheme();
 
   return (
-    <motion.button
+    <button
       type="button"
       onClick={toggleTheme}
       data-testid="theme-toggle"
@@ -88,23 +87,21 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
         hover:bg-white/30 dark:hover:bg-black/30
         focus:outline-none focus:ring-2 focus:ring-pink-400 dark:focus:ring-yellow-400
         transition-colors duration-200
+        interactive-scale
         ${className ?? ''}
       `}
       aria-label={isDark ? 'Activer le mode clair' : 'Activer le mode sombre'}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
     >
-      <motion.div
-        initial={false}
-        animate={{ rotate: isDark ? 180 : 0 }}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
+      <div
+        className="icon-rotate"
+        style={{ transform: isDark ? 'rotate(180deg)' : 'rotate(0deg)' }}
       >
         {isDark ? (
           <MoonIcon className="w-5 h-5" />
         ) : (
           <SunIcon className="w-5 h-5" />
         )}
-      </motion.div>
-    </motion.button>
+      </div>
+    </button>
   );
 }

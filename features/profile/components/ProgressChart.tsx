@@ -5,7 +5,6 @@
  * ISO/IEC 25010 - Visualisation progression par table
  */
 
-import { motion } from 'framer-motion';
 import type { TableProgress } from '@/types/profile';
 
 export interface ProgressChartProps {
@@ -61,16 +60,13 @@ export function ProgressChart({ tables, isLoading }: ProgressChartProps) {
 
       <div className="grid grid-cols-5 gap-3">
         {tables.map((table, index) => (
-          <motion.div
+          <div
             key={table.table}
-            className={`relative p-3 rounded-xl text-center ${getProgressBg(
+            className={`relative p-3 rounded-xl text-center hover-lift animate-fade-scale ${getProgressBg(
               table.accuracy,
               table.mastered
             )}`}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.05 }}
-            whileHover={{ scale: 1.05 }}
+            style={{ '--delay': `${index * 0.05}s` } as React.CSSProperties}
           >
             {/* Badge maitrise */}
             {table.mastered && (
@@ -83,18 +79,16 @@ export function ProgressChart({ tables, isLoading }: ProgressChartProps) {
 
             {/* Barre de progression */}
             <div className="mt-2 h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
-              <motion.div
-                className={`h-full ${getProgressColor(table.accuracy, table.mastered)}`}
-                initial={{ width: 0 }}
-                animate={{ width: `${table.accuracy}%` }}
-                transition={{ delay: index * 0.05 + 0.2, duration: 0.5 }}
+              <div
+                className={`h-full progress-fill ${getProgressColor(table.accuracy, table.mastered)}`}
+                style={{ width: `${table.accuracy}%` }}
               />
             </div>
 
             <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
               {table.accuracy > 0 ? `${table.accuracy}%` : '-'}
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
 

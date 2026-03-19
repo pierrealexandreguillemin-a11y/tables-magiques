@@ -1,8 +1,6 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { motion } from 'framer-motion';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 
 // =============================================================================
@@ -36,10 +34,8 @@ export function SettingsSection({
   className,
   testId,
 }: SettingsSectionProps) {
-  const { shouldAnimate } = useReducedMotion();
-
   return (
-    <motion.section
+    <section
       data-testid={testId}
       className={cn(
         'rounded-2xl bg-white/80 dark:bg-slate-800/90',
@@ -48,9 +44,6 @@ export function SettingsSection({
         'overflow-hidden',
         className
       )}
-      initial={shouldAnimate ? { opacity: 0, y: 20 } : undefined}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
     >
       {/* Header */}
       <div
@@ -87,6 +80,6 @@ export function SettingsSection({
 
       {/* Content */}
       <div className="p-5 space-y-4">{children}</div>
-    </motion.section>
+    </section>
   );
 }

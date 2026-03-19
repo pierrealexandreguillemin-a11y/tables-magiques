@@ -5,8 +5,6 @@
  * ISO/IEC 25010 - Carte statistiques utilisateur
  */
 
-import { motion } from 'framer-motion';
-
 export interface StatsCardProps {
   icon: string;
   label: string;
@@ -31,12 +29,8 @@ export function StatsCard({
   color = 'purple',
 }: StatsCardProps) {
   return (
-    <motion.div
-      className={`relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br ${colorClasses[color]} shadow-lg`}
-      whileHover={{ scale: 1.02, y: -2 }}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+    <div
+      className={`relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br ${colorClasses[color]} shadow-lg animate-fade-up hover-lift`}
     >
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
@@ -49,7 +43,7 @@ export function StatsCard({
           <div className="text-xs text-white/60 mt-1">{sublabel}</div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
 

@@ -6,7 +6,6 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '../hooks/useAuth';
 import { AuthModal } from './AuthModal';
@@ -22,13 +21,9 @@ export function UserButton({ className }: UserButtonProps) {
 
   if (isLoading) {
     return (
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-        className="w-10 h-10 flex items-center justify-center"
-      >
+      <div className="w-10 h-10 flex items-center justify-center animate-spin">
         🌀
-      </motion.div>
+      </div>
     );
   }
 
@@ -56,12 +51,7 @@ export function UserButton({ className }: UserButtonProps) {
       </Button>
 
       {showMenu && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden z-50"
-        >
+        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden z-50 animate-fade-down">
           <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
             <p className="text-sm font-medium text-gray-900 dark:text-white">
               {user?.username}
@@ -82,7 +72,7 @@ export function UserButton({ className }: UserButtonProps) {
           >
             Deconnexion 👋
           </button>
-        </motion.div>
+        </div>
       )}
 
       {/* Overlay pour fermer le menu */}

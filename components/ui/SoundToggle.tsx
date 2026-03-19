@@ -5,7 +5,6 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
 import { useSound } from '@/hooks/useSound';
 
 /**
@@ -70,7 +69,7 @@ export function SoundToggle({ className }: SoundToggleProps) {
   const { enabled, toggle, reducedMotion } = useSound();
 
   return (
-    <motion.button
+    <button
       type="button"
       onClick={toggle}
       data-testid="sound-toggle"
@@ -84,26 +83,19 @@ export function SoundToggle({ className }: SoundToggleProps) {
         hover:bg-white/30 dark:hover:bg-black/30
         focus:outline-none focus:ring-2 focus:ring-purple-400 dark:focus:ring-purple-400
         transition-colors duration-200
+        interactive-scale
         ${reducedMotion ? 'opacity-50' : ''}
         ${className ?? ''}
       `}
       aria-label={enabled ? 'Désactiver le son' : 'Activer le son'}
       aria-pressed={enabled}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
     >
-      <motion.div
-        initial={false}
-        animate={{ scale: enabled ? 1 : 0.9 }}
-        transition={{ duration: 0.2, ease: 'easeInOut' }}
-      >
-        {enabled ? (
-          <VolumeOnIcon className="w-5 h-5" />
-        ) : (
-          <VolumeOffIcon className="w-5 h-5" />
-        )}
-      </motion.div>
-    </motion.button>
+      {enabled ? (
+        <VolumeOnIcon className="w-5 h-5" />
+      ) : (
+        <VolumeOffIcon className="w-5 h-5" />
+      )}
+    </button>
   );
 }
 

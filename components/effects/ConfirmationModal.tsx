@@ -5,7 +5,6 @@
  * ISO/IEC 25010 - Pattern confirmation avec feedback visuel
  */
 
-import { motion } from 'framer-motion';
 import {
   AnimatedDialog,
   AnimatedDialogContent,
@@ -17,7 +16,6 @@ import {
 import { MagicButton } from './MagicButton';
 import { Button } from '@/components/ui/button';
 import { LottieAnimation } from './LottieAnimation';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface ConfirmationModalProps {
   open: boolean;
@@ -32,11 +30,6 @@ interface ConfirmationModalProps {
   showAnimation?: boolean;
 }
 
-const iconVariants = {
-  initial: { scale: 0, rotate: -180 },
-  animate: { scale: 1, rotate: 0 },
-};
-
 export function ConfirmationModal({
   open,
   onOpenChange,
@@ -49,8 +42,6 @@ export function ConfirmationModal({
   variant = 'info',
   showAnimation = true,
 }: ConfirmationModalProps) {
-  const { shouldAnimate } = useReducedMotion();
-
   const handleConfirm = () => {
     onConfirm();
     onOpenChange(false);
@@ -73,14 +64,9 @@ export function ConfirmationModal({
       <AnimatedDialogContent>
         <AnimatedDialogHeader>
           {showAnimation && (
-            <motion.div
-              className="mx-auto mb-4"
-              initial={shouldAnimate ? iconVariants.initial : undefined}
-              animate={shouldAnimate ? iconVariants.animate : undefined}
-              transition={{ type: 'spring', stiffness: 200, delay: 0.1 }}
-            >
+            <div className="mx-auto mb-4 animate-fade-scale">
               <LottieAnimation type={animationType} size={80} />
-            </motion.div>
+            </div>
           )}
           <AnimatedDialogTitle>{title}</AnimatedDialogTitle>
           <AnimatedDialogDescription>{description}</AnimatedDialogDescription>

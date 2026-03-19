@@ -5,7 +5,6 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
 import { useInstallPrompt } from '@/hooks/useInstallPrompt';
 
 interface InstallButtonProps {
@@ -50,15 +49,13 @@ export function InstallButton({ className = '' }: InstallButtonProps) {
   };
 
   return (
-    <motion.button
+    <button
       onClick={handleInstall}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className={`flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full backdrop-blur-sm transition-colors ${className}`}
+      className={`flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full backdrop-blur-sm transition-colors interactive-scale ${className}`}
       aria-label="Installer l'application Tables Magiques"
     >
       <DownloadIcon />
       <span>Installer</span>
-    </motion.button>
+    </button>
   );
 }

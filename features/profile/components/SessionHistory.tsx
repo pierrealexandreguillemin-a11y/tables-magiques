@@ -5,7 +5,6 @@
  * ISO/IEC 25010 - Liste des sessions recentes
  */
 
-import { motion } from 'framer-motion';
 import type { SessionSummary } from '@/types/profile';
 
 export interface SessionHistoryProps {
@@ -72,12 +71,10 @@ export function SessionHistory({ sessions, isLoading }: SessionHistoryProps) {
       </h2>
       <div className="space-y-3">
         {sessions.map((session, index) => (
-          <motion.div
+          <div
             key={session.id}
-            className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700 rounded-xl"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1 }}
+            className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700 rounded-xl animate-fade-up"
+            style={{ '--delay': `${index * 0.1}s` } as React.CSSProperties}
           >
             <div className="flex items-center gap-3">
               <span className="text-2xl">{getModeEmoji(session.mode)}</span>
@@ -102,7 +99,7 @@ export function SessionHistory({ sessions, isLoading }: SessionHistoryProps) {
                 {session.score}/{session.total}
               </div>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
     </div>

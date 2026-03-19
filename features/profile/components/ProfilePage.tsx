@@ -5,7 +5,6 @@
  * ISO/IEC 25010 - Page profil utilisateur
  */
 
-import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -85,11 +84,7 @@ export function ProfilePage() {
         </Link>
 
         {/* User Header */}
-        <motion.div
-          className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
+        <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg animate-fade-up">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-3xl">
               🦄
@@ -107,14 +102,12 @@ export function ProfilePage() {
               </p>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Stats Cards */}
-        <motion.div
-          className="grid grid-cols-2 sm:grid-cols-4 gap-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
+        <div
+          className="grid grid-cols-2 sm:grid-cols-4 gap-4 animate-fade-up"
+          style={{ '--delay': '0.2s' } as React.CSSProperties}
         >
           <StatsCard
             icon="🎮"
@@ -141,14 +134,12 @@ export function ProfilePage() {
             value={badgeCount}
             color="orange"
           />
-        </motion.div>
+        </div>
 
         {/* Mode Stats */}
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-up"
+          style={{ '--delay': '0.3s' } as React.CSSProperties}
         >
           <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg">
             <div className="flex items-center gap-3 mb-4">
@@ -207,28 +198,26 @@ export function ProfilePage() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Progress Chart */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
+        <div
+          className="animate-fade-up"
+          style={{ '--delay': '0.4s' } as React.CSSProperties}
         >
           <ProgressChart
             tables={progress?.tables ?? []}
             isLoading={isLoading}
           />
-        </motion.div>
+        </div>
 
         {/* Session History */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
+        <div
+          className="animate-fade-up"
+          style={{ '--delay': '0.5s' } as React.CSSProperties}
         >
           <SessionHistory sessions={recentSessions} isLoading={isLoading} />
-        </motion.div>
+        </div>
       </div>
     </main>
   );
