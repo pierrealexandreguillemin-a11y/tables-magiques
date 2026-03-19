@@ -10,10 +10,14 @@ App web PWA d'apprentissage des multiplications pour enfants (9+). Stack: Next.j
 npm run dev          # Dev server
 npm run build        # Production build
 npm run typecheck    # tsc --noEmit
-npm run test:run     # Vitest (941 tests)
+npm run test:run     # Vitest (1360 tests)
 npm run test:e2e     # Playwright
+npm run test:e2e:visual       # Visual regression (Playwright screenshots)
+npm run test:e2e:visual:update # Update visual baselines
 npm run lint         # ESLint
 npm run format:check # Prettier
+npm run quality:circular     # Madge zero circular deps
+npm run quality:bundle-size  # Bundle size guard (560KB threshold)
 ```
 
 ## Architecture
@@ -33,14 +37,30 @@ npm run format:check # Prettier
 ## Conventions animation
 
 - **Fonds de page**: CSS `@keyframes` + `.bg-drift` (zero JS par frame)
-- **Entrees one-shot**: CSS `.animate-fade-up`, `.animate-fade-scale`, `.animate-title-enter`, `.animate-answer-pop`
-- **Interactions hover/tap**: CSS `.interactive-scale` ou `.magic-card-interactive`
+- **Entrees one-shot**: CSS `.animate-fade-up`, `.animate-fade-scale`, `.animate-fade-down`, `.animate-title-enter`, `.animate-answer-pop`, `.animate-celebration-entry`
+- **Stagger delays**: CSS `animation-delay` via `style={{ '--delay': 'Xs' }}`
+- **Interactions hover/tap**: CSS `.interactive-scale`, `.magic-card-interactive`, `.hover-lift`
+- **Icon transitions**: CSS `.icon-rotate` (theme toggle, state changes)
+- **Progress bars**: CSS `.progress-fill` (transition: width)
 - **Animation triggers**: `useRestartableAnimation` hook (CSS class toggle via rAF)
 - **Particules etoiles**: tsParticles (canvas GPU, fpsLimit 30, pauseOnBlur: true)
 - **Celebrations**: tsParticles `confettiConfig` (remplace GSAP)
-- **Transitions mount/unmount**: Framer Motion `AnimatePresence` (seul usage FM restant)
 - **Easings**: `var(--ease-spring)` ou `var(--ease-smooth)` de tokens.css — jamais hardcoder cubic-bezier
 - **GSAP**: supprime completement (Phase 13)
+
+### Framer Motion — usages restants (legitimes)
+
+FM est reserve aux cas ou CSS ne suffit pas :
+
+- **AnimatePresence mount/unmount**: modals, toasts, phase transitions (practice/challenge)
+- **useSpring/useTransform**: NumberReveal (compteur anime avec physique spring)
+- **useInView + variants**: ScrollReveal (intersection observer + animation)
+- **Character stagger**: TextReveal (animation lettre par lettre)
+- **SVG spring animations**: CrownProgress (progression couronne animee)
+- **Gesture variants**: KawaiiMascot (whileHover/whileTap conditionnels)
+- **Sparkle particles**: MagicButton (AnimatePresence pour particules)
+
+Tout le reste utilise CSS — voir `styles/animations.css`.
 
 ## Regles
 
@@ -50,4 +70,6 @@ npm run format:check # Prettier
 - Les barrel exports utilisent des exports nommes explicites, pas `export *`
 - Les couleurs d'animation passent par `lib/animations/colors.ts`
 - `next.config.ts` a le React Compiler active (memoization automatique)
-- 1261 tests (64 fichiers), coverage ~87%
+- 1360 tests (69 fichiers), coverage ~87%
+- Zero dependances circulaires (madge verifie)
+- Bundle size guard: 525 KB gzipped, threshold 560 KB
