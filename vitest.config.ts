@@ -15,7 +15,12 @@ export default defineConfig({
     coverage: {
       reporter: ['text', 'json', 'html'],
       include: ['lib/**/*.ts', 'components/**/*.tsx'],
-      exclude: ['node_modules', 'tests'],
+      exclude: [
+        'node_modules',
+        'tests',
+        '**/index.ts',
+        'lib/animations/lazy.tsx',
+      ],
       thresholds: {
         lines: 85,
         functions: 80,
