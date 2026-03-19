@@ -1,16 +1,17 @@
 # E2E Test Coverage
 
-> **Dernière mise à jour**: 2026-03-19 12:31
-> **Total fichiers E2E**: 12
-> **Total tests E2E**: 171
+> **Dernière mise à jour**: 2026-03-19 13:20
+> **Total fichiers E2E**: 13
+> **Total tests E2E**: 176
 
 ## Fichiers de test
 
-- `accessibility.spec.ts`: 13 tests
+- `accessibility.spec.ts`: 14 tests
 - `auth.spec.ts`: 16 tests
 - `challenge.spec.ts`: 16 tests
 - `effects-phase8.spec.ts`: 19 tests
 - `home.spec.ts`: 17 tests
+- `journeys.spec.ts`: 4 tests
 - `navigation.spec.ts`: 18 tests
 - `onboarding.spec.ts`: 13 tests
 - `performance.spec.ts`: 7 tests

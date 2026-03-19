@@ -25,7 +25,9 @@ export const LazyParticlesBackground = dynamic(
     })),
   {
     ssr: false,
-    loading: () => null,
+    loading: () => (
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/10 to-blue-900/20" />
+    ),
   }
 );
 
@@ -90,7 +92,9 @@ export const LazyFairyBackground = dynamic(
     })),
   {
     ssr: false,
-    loading: () => null,
+    loading: () => (
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-200/30 via-pink-100/20 to-blue-200/30 dark:from-purple-900/20 dark:via-pink-900/10 dark:to-blue-900/20" />
+    ),
   }
 );
 
