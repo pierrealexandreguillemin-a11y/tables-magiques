@@ -13,12 +13,12 @@ Ordre logique: bugs → donnees → integration composants → tests → perf �
 - [x] Phase 0-10 : Fondations (2025-12-26 → 2026-01)
 - [x] Phase 11 : Migration CSS home (2026-03-18)
 - [x] Phase 12 : GSAP removal + quality gates (2026-03-19)
-- [ ] **Phase 13 : Bugs & intégrité données** ← PROCHAINE
-- [ ] Phase 14 : Intégration composants (valide DRY/SRP phases 9-12)
-- [ ] Phase 15 : Tests d'intégration (MSW + hook/API)
-- [ ] Phase 16 : Couverture & E2E
-- [ ] Phase 17 : Performance avancée
-- [ ] Phase 18 : Cleanup docs & deps
+- [x] Phase 13 : Bugs & intégrité données (2026-03-19)
+- [x] Phase 14 : Intégration composants (2026-03-19)
+- [x] Phase 15 : Tests d'intégration (2026-03-19)
+- [x] Phase 16 : Couverture & E2E (2026-03-19)
+- [x] Phase 17 : Performance avancée (2026-03-19)
+- [ ] **Phase 18 : Cleanup docs & deps** ← PROCHAINE
 - [ ] Phase 19 : User testing
 
 ---

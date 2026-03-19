@@ -82,9 +82,7 @@ export default function RootLayout({
     <html lang="fr" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        {/* Preconnect: Google Fonts (next/font) et Vercel Edge */}
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        {/* next/font/google gere automatiquement preconnect — pas de link manuel */}
         {/* Les apple-touch-icons sont geres par metadata.icons.apple */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
