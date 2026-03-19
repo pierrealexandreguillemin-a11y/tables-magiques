@@ -508,6 +508,108 @@
   will-change: opacity;
 }
 
+/* === ANSWER POP (icon feedback) === */
+@keyframes answer-pop {
+  from {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+.animate-answer-pop {
+  animation: answer-pop 0.4s var(--ease-spring) both;
+}
+
+/* === SHAKE ERROR (gentle shake feedback) === */
+@keyframes shake-error {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(var(--shake-amplitude, -5px));
+  }
+  40%,
+  80% {
+    transform: translateX(calc(-1 * var(--shake-amplitude, -5px)));
+  }
+}
+.shake-error {
+  animation: shake-error 0.4s ease-in-out;
+}
+
+/* === SHARE DIALOG === */
+@keyframes share-bounce {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(10deg);
+  }
+}
+.share-bounce {
+  animation: share-bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes share-sparkle {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.3) rotate(180deg);
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+  }
+}
+.share-sparkle {
+  animation: share-sparkle 2s ease-in-out infinite;
+}
+
+@keyframes share-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+.share-glow-pulse {
+  animation: share-glow-pulse 2s ease-in-out infinite;
+}
+
+/* === REUSABLE INTERACTIVE SCALE === */
+.interactive-scale {
+  transition: transform 0.2s var(--ease-spring);
+}
+.interactive-scale:hover {
+  transform: scale(1.05);
+}
+.interactive-scale:active {
+  transform: scale(0.95);
+}
+
+.magic-card-interactive {
+  transition: transform 0.2s ease;
+}
+.magic-card-interactive:hover {
+  transform: scale(1.02);
+}
+.magic-card-interactive:active {
+  transform: scale(0.98);
+}
+
+/* === SWITCH THUMB (checkbox toggle) === */
+.switch-thumb {
+  transition: transform 0.2s var(--ease-spring);
+}
+
 /* === REDUCED MOTION (A11Y) === */
 @media (prefers-reduced-motion: reduce) {
   .animate-shimmer,
@@ -526,7 +628,12 @@
   .animate-fade-up,
   .animate-fade-scale,
   .animate-title-enter,
-  .pulse-glow-layer {
+  .pulse-glow-layer,
+  .share-bounce,
+  .share-sparkle,
+  .share-glow-pulse,
+  .animate-answer-pop,
+  .shake-error {
     animation: none;
   }
 
@@ -537,6 +644,14 @@
 
   .unicorn-interactive:active {
     transform: none;
+  }
+
+  .interactive-scale:hover,
+  .magic-card-interactive:hover {
+    transform: none;
+  }
+  .switch-thumb {
+    transition: none;
   }
 
   /* Désactiver GPU hints en reduced motion */

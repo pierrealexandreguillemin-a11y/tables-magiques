@@ -5,10 +5,8 @@
 
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { gsap } from 'gsap';
-import { useGSAP } from '@gsap/react';
 import {
   LazyFairyBackground,
   LazySuccessExplosion,
@@ -24,10 +22,7 @@ import {
   PracticeCompleted,
 } from './practice';
 
-gsap.registerPlugin(useGSAP);
-
 export function PracticePage() {
-  const containerRef = useRef<HTMLDivElement>(null);
   const {
     state,
     currentQuestion,
@@ -56,24 +51,8 @@ export function PracticePage() {
     preloadHeavyComponents();
   }, []);
 
-  useGSAP(
-    () => {
-      if (!containerRef.current) return;
-      gsap.to(containerRef.current, {
-        backgroundPosition: '200% 50%',
-        duration: 20,
-        ease: 'none',
-        repeat: -1,
-      });
-    },
-    { scope: containerRef }
-  );
-
   const content = (
-    <div
-      ref={containerRef}
-      className="min-h-screen flex items-center justify-center overflow-hidden relative"
-    >
+    <div className="bg-drift min-h-screen flex items-center justify-center overflow-hidden relative">
       <LazyFairyBackground />
       <LazySuccessExplosion show={explosionVisible} type="confetti" size="lg" />
       <div className="w-full max-w-4xl mx-auto px-4 py-8 relative z-10">

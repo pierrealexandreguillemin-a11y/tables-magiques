@@ -5,10 +5,7 @@
 
 'use client';
 
-import { useRef } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { gsap } from 'gsap';
-import { useGSAP } from '@gsap/react';
 import {
   LazyParticlesBackground,
   LazySuccessExplosion,
@@ -23,10 +20,7 @@ import {
   ChallengeGameOver,
 } from './challenge';
 
-gsap.registerPlugin(useGSAP);
-
 export function ChallengePage() {
-  const containerRef = useRef<HTMLDivElement>(null);
   const {
     state,
     userAnswer,
@@ -50,25 +44,8 @@ export function ChallengePage() {
     result,
   });
 
-  useGSAP(
-    () => {
-      if (!containerRef.current) return;
-      gsap.to(containerRef.current, {
-        backgroundPosition: '200% 50%',
-        duration: 20,
-        ease: 'none',
-        repeat: -1,
-      });
-    },
-    { scope: containerRef }
-  );
-
   const content = (
-    <div
-      ref={containerRef}
-      className="min-h-screen flex items-center justify-center overflow-hidden relative bg-gradient-to-br from-pink-400 via-red-400 to-blue-400 dark:from-slate-900 dark:via-red-900 dark:to-indigo-900"
-      style={{ backgroundSize: '400% 400%' }}
-    >
+    <div className="bg-drift min-h-screen flex items-center justify-center overflow-hidden relative bg-gradient-to-br from-pink-400 via-red-400 to-blue-400 dark:from-slate-900 dark:via-red-900 dark:to-indigo-900">
       <LazyParticlesBackground preset="sparkles" opacity={0.6} />
       <LazySuccessExplosion
         show={feedback.explosion}
