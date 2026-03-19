@@ -208,12 +208,12 @@ Atteindre 90% coverage. E2E parcours complets sur l'app finale
 ### Tasks
 
 ```
-[ ] 16.1 - Coverage 90%+
+[x] 16.1 - Coverage 90%+ (2026-03-19)
     - vitest --coverage → identifier zones < 90%
     - Ajouter tests manquants Phase 9 composants (~48 tests selon doc)
     - Report HTML genere et archive
 
-[ ] 16.2 - E2E parcours complets
+[x] 16.2 - E2E parcours complets (2026-03-19)
     - Login complet (register → login → session persistee)
     - Practice session (selection → jeu → resultats → score sauve)
     - Challenge session (ready → jeu → game over → score sauve)
@@ -221,7 +221,7 @@ Atteindre 90% coverage. E2E parcours complets sur l'app finale
     - Dark mode toggle (persiste apres refresh)
     - Skeleton loading states visibles pendant fetch
 
-[ ] 16.3 - Audit WCAG 2.1 AA formel
+[x] 16.3 - Audit WCAG 2.1 AA formel (2026-03-19)
     - axe-core integration dans tous les tests E2E
     - Verification screen reader (VoiceOver ou NVDA)
     - Documenter resultats dans docs/
