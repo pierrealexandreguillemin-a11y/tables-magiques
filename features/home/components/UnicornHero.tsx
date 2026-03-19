@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useRestartableAnimation } from '../hooks/useRestartableAnimation';
+import { useRestartableAnimation } from '@/hooks/useRestartableAnimation';
 
 export function UnicornHero() {
   const pop = useRestartableAnimation('unicorn-pop');

@@ -12,7 +12,7 @@
  */
 
 import { useEffect } from 'react';
-import { useRestartableAnimation } from '@/features/home/hooks/useRestartableAnimation';
+import { useRestartableAnimation } from '@/hooks/useRestartableAnimation';
 import { cn } from '@/lib/utils';
 import type { GentleShakeProps } from '@/types/effects';
 

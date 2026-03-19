@@ -9,7 +9,6 @@ import { motion } from 'framer-motion';
 import {
   LottieAnimation,
   NumberReveal,
-  PulseGlow,
   MagicCard,
   MagicButton,
 } from '@/components/effects';
@@ -56,11 +55,9 @@ export function PracticeCompleted({
           {Math.round(result.accuracy * 100)}% de réussite
         </div>
         {result.bonus > 0 && (
-          <PulseGlow color="#fbbf24" intensity="strong" speed="normal">
-            <div className="mt-4 text-yellow-600 text-xl font-bold">
-              ⭐ +{result.bonus} points bonus !
-            </div>
-          </PulseGlow>
+          <div className="mt-4 text-yellow-600 text-xl font-bold">
+            ⭐ +{result.bonus} points bonus !
+          </div>
         )}
       </MagicCard>
 

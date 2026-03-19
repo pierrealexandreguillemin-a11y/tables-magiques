@@ -11,7 +11,6 @@ import { Button } from '@/components/ui/button';
 import {
   GentleShake,
   LottieAnimation,
-  PulseGlow,
   CrownProgress,
 } from '@/components/effects';
 import { QuestionDisplay } from '../QuestionDisplay';
@@ -67,11 +66,9 @@ export function PracticePlaying({
             Question {state.currentIndex + 1} / {state.questions.length}
           </div>
           <div className="w-48 h-3 bg-white/20 rounded-full overflow-hidden mt-2">
-            <motion.div
+            <div
               className="h-full bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500"
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ type: 'spring', stiffness: 100 }}
+              style={{ width: `${progress}%`, transition: 'width 0.3s ease' }}
             />
           </div>
         </div>
@@ -121,9 +118,7 @@ export function PracticePlaying({
 
       {state.streak >= 3 && (
         <div className="mt-6 text-xl font-bold animate-fade-up">
-          <PulseGlow color="#fbbf24" intensity="strong" speed="fast">
-            <span className="text-yellow-300">Série de {state.streak} !</span>
-          </PulseGlow>
+          <span className="text-yellow-300">Série de {state.streak} !</span>
         </div>
       )}
     </motion.div>

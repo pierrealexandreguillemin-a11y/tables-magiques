@@ -56,8 +56,6 @@ export { NumberReveal } from './NumberReveal';
 export { SuccessExplosion } from './SuccessExplosion';
 export { BadgeUnlockModal } from './BadgeUnlockModal';
 export { StaggerList } from './StaggerList';
-export { MagneticButton } from './MagneticButton';
-export { PulseGlow } from './PulseGlow';
 export { ParticlesBackground } from './ParticlesBackground';
 
 // Phase 9 - Enrichissement P2

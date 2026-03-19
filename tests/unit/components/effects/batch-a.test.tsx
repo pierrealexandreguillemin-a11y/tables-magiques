@@ -3,13 +3,12 @@
  * batch-a.test.tsx
  * Unit tests for effect components with 0% coverage:
  *   - ParticlesBackground
- *   - MagneticButton
  *   - ConsoleBanner
  *   - NumberReveal
  */
 
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 // ---------------------------------------------------------------------------
@@ -101,7 +100,6 @@ vi.mock('@/lib/animations', () => ({
 // ---------------------------------------------------------------------------
 
 import { ParticlesBackground } from '@/components/effects/ParticlesBackground';
-import { MagneticButton } from '@/components/effects/MagneticButton';
 import { ConsoleBanner } from '@/components/effects/console-banner';
 import { NumberReveal } from '@/components/effects/NumberReveal';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -167,88 +165,6 @@ describe('ParticlesBackground', () => {
     render(<ParticlesBackground />);
     const particles = screen.getByTestId('tsparticles');
     expect(particles.getAttribute('data-particles-id')).toBe('particles-fairy');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// MagneticButton
-// ---------------------------------------------------------------------------
-
-describe('MagneticButton', () => {
-  it('renders without crashing', () => {
-    render(<MagneticButton>Click me</MagneticButton>);
-    expect(screen.getByRole('button')).toBeTruthy();
-  });
-
-  it('renders a button element', () => {
-    render(<MagneticButton>Label</MagneticButton>);
-    const btn = screen.getByRole('button');
-    expect(btn.tagName.toLowerCase()).toBe('button');
-  });
-
-  it('renders children text', () => {
-    render(<MagneticButton>Magic</MagneticButton>);
-    expect(screen.getByText('Magic')).toBeTruthy();
-  });
-
-  it('applies className prop', () => {
-    render(<MagneticButton className="my-btn">Click</MagneticButton>);
-    const btn = screen.getByRole('button');
-    expect(btn.className).toContain('my-btn');
-  });
-
-  it('calls onClick when clicked', () => {
-    const handleClick = vi.fn();
-    render(<MagneticButton onClick={handleClick}>Click</MagneticButton>);
-    fireEvent.click(screen.getByRole('button'));
-    expect(handleClick).toHaveBeenCalledTimes(1);
-  });
-
-  it('is disabled when disabled prop is true', () => {
-    render(<MagneticButton disabled>Disabled</MagneticButton>);
-    const btn = screen.getByRole('button') as HTMLButtonElement;
-    expect(btn.disabled).toBe(true);
-  });
-
-  it('sets type attribute correctly', () => {
-    render(<MagneticButton type="submit">Submit</MagneticButton>);
-    const btn = screen.getByRole('button') as HTMLButtonElement;
-    expect(btn.type).toBe('submit');
-  });
-
-  it('defaults to type="button"', () => {
-    render(<MagneticButton>Button</MagneticButton>);
-    const btn = screen.getByRole('button') as HTMLButtonElement;
-    expect(btn.type).toBe('button');
-  });
-
-  it('renders plain button when shouldAnimate is false', () => {
-    vi.mocked(useReducedMotion).mockReturnValueOnce({
-      shouldAnimate: false,
-      prefersReducedMotion: true,
-    });
-    render(<MagneticButton className="no-anim">No anim</MagneticButton>);
-    const btn = screen.getByRole('button');
-    expect(btn).toBeTruthy();
-    expect(btn.className).toBe('no-anim');
-  });
-
-  it('applies style prop', () => {
-    render(<MagneticButton style={{ color: 'red' }}>Styled</MagneticButton>);
-    const btn = screen.getByRole('button') as HTMLButtonElement;
-    expect(btn.style.color).toBe('red');
-  });
-
-  it('does not call onClick when disabled and clicked', () => {
-    const handleClick = vi.fn();
-    render(
-      <MagneticButton disabled onClick={handleClick}>
-        Disabled
-      </MagneticButton>
-    );
-    const btn = screen.getByRole('button');
-    fireEvent.click(btn);
-    expect(handleClick).not.toHaveBeenCalled();
   });
 });
 

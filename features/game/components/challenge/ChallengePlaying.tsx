@@ -6,7 +6,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { GentleShake, LottieAnimation, PulseGlow } from '@/components/effects';
+import { GentleShake, LottieAnimation } from '@/components/effects';
 import { QuestionDisplay } from '../QuestionDisplay';
 import { NumberPad } from '../NumberPad';
 import { QuestionTimer } from '../QuestionTimer';
@@ -90,9 +90,7 @@ export function ChallengePlaying({
           animate={{ opacity: 1, y: 0 }}
           className="mt-6 text-xl font-bold"
         >
-          <PulseGlow color="#fbbf24" intensity="strong" speed="fast">
-            <span className="text-yellow-300">Série de {streak} !</span>
-          </PulseGlow>
+          <span className="text-yellow-300">Série de {streak} !</span>
         </motion.div>
       )}
     </motion.div>

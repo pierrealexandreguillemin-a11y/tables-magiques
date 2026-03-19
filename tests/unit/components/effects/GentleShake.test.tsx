@@ -12,7 +12,7 @@ import { GentleShake } from '@/components/effects/GentleShake';
 // Mock useRestartableAnimation
 const mockTrigger = vi.fn();
 const mockReset = vi.fn();
-vi.mock('@/features/home/hooks/useRestartableAnimation', () => ({
+vi.mock('@/hooks/useRestartableAnimation', () => ({
   useRestartableAnimation: () => ({
     className: '',
     trigger: mockTrigger,

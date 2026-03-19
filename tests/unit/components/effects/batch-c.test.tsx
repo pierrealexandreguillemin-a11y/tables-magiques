@@ -1,5 +1,5 @@
 /**
- * Tests batch-c — PulseGlow, ConfirmationModal, BadgeUnlockModal, ScrollReveal, presets.ts
+ * Tests batch-c — ConfirmationModal, BadgeUnlockModal, ScrollReveal, presets.ts
  * ISO/IEC 29119 - Tests unitaires
  */
 
@@ -203,7 +203,6 @@ vi.mock('@/components/effects/AnimatedDialog', () => ({
 // Imports under test (after mocks)
 // ---------------------------------------------------------------------------
 
-import { PulseGlow } from '@/components/effects/PulseGlow';
 import { ConfirmationModal } from '@/components/effects/ConfirmationModal';
 import { BadgeUnlockModal } from '@/components/effects/BadgeUnlockModal';
 import {
@@ -218,106 +217,7 @@ import {
 } from '@/lib/animations/lottie/presets';
 
 // ---------------------------------------------------------------------------
-// 1. PulseGlow
-// ---------------------------------------------------------------------------
-
-describe('PulseGlow', () => {
-  afterEach(() => vi.restoreAllMocks());
-
-  it('rend les children', () => {
-    render(
-      <PulseGlow>
-        <span>Brille</span>
-      </PulseGlow>
-    );
-    expect(screen.getByText('Brille')).toBeInTheDocument();
-  });
-
-  it('accepte className', () => {
-    const { container } = render(
-      <PulseGlow className="my-class">
-        <span>X</span>
-      </PulseGlow>
-    );
-    expect(container.firstChild).toHaveClass('my-class');
-  });
-
-  it('rend le layer glow quand active=true (par defaut)', () => {
-    const { container } = render(
-      <PulseGlow>
-        <span>Glow</span>
-      </PulseGlow>
-    );
-    // Animated version: inline-block wrapper
-    expect(container.firstChild).toHaveClass('inline-block');
-  });
-
-  it('rend sans glow quand active=false', () => {
-    const { container } = render(
-      <PulseGlow active={false}>
-        <span>No glow</span>
-      </PulseGlow>
-    );
-    // Falls back to plain div — no relative inline-block class
-    expect(container.firstChild).not.toHaveClass('inline-block');
-    expect(screen.getByText('No glow')).toBeInTheDocument();
-  });
-
-  it('accepte la prop color sans planter (blur layer supprime)', () => {
-    render(
-      <PulseGlow color="#00ff00">
-        <span>Color</span>
-      </PulseGlow>
-    );
-    // Blur layer removed — no pulse-glow-layer in DOM
-    expect(document.querySelector('.pulse-glow-layer')).toBeNull();
-    expect(screen.getByText('Color')).toBeInTheDocument();
-  });
-
-  it('accepte intensity subtle sans planter', () => {
-    const { container } = render(
-      <PulseGlow intensity="subtle">
-        <span>Subtle</span>
-      </PulseGlow>
-    );
-    // Still renders wrapper with inline-block
-    expect(container.firstChild).toHaveClass('inline-block');
-    expect(screen.getByText('Subtle')).toBeInTheDocument();
-  });
-
-  it('accepte intensity strong sans planter', () => {
-    const { container } = render(
-      <PulseGlow intensity="strong">
-        <span>Strong</span>
-      </PulseGlow>
-    );
-    expect(container.firstChild).toHaveClass('inline-block');
-    expect(screen.getByText('Strong')).toBeInTheDocument();
-  });
-
-  it('accepte speed fast sans planter', () => {
-    const { container } = render(
-      <PulseGlow speed="fast">
-        <span>Fast</span>
-      </PulseGlow>
-    );
-    expect(container.firstChild).toHaveClass('inline-block');
-    expect(screen.getByText('Fast')).toBeInTheDocument();
-  });
-
-  it('accepte speed slow sans planter', () => {
-    const { container } = render(
-      <PulseGlow speed="slow">
-        <span>Slow</span>
-      </PulseGlow>
-    );
-    expect(container.firstChild).toHaveClass('inline-block');
-    expect(screen.getByText('Slow')).toBeInTheDocument();
-  });
-});
-
-// ---------------------------------------------------------------------------
-// 2. ConfirmationModal
+// 1. ConfirmationModal
 // ---------------------------------------------------------------------------
 
 describe('ConfirmationModal', () => {

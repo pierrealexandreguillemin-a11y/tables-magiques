@@ -7,12 +7,8 @@
 'use client';
 
 import Link from 'next/link';
-import { GradientText, GradientBorder, PulseGlow } from '@/components/effects';
-import {
-  LazyKawaiiMascot,
-  ACCENT_PURPLE,
-  ACCENT_ORANGE,
-} from '@/lib/animations';
+import { GradientText, GradientBorder } from '@/components/effects';
+import { LazyKawaiiMascot } from '@/lib/animations';
 import { UnicornHero } from './UnicornHero';
 
 export function HomeContent() {
@@ -40,39 +36,35 @@ export function HomeContent() {
       >
         {/* Mode Entrainement - Glassmorphism premium */}
         <Link href="/practice" data-tour="practice-button" className="block">
-          <PulseGlow color={ACCENT_PURPLE} intensity="medium">
-            <GradientBorder variant="unicorn" animate glow borderWidth={3}>
-              <span
-                className="block text-xl px-8 py-5 font-bold rounded-xl shadow-2xl
-                  bg-white/20 backdrop-blur-xl backdrop-saturate-150
-                  border border-white/30
-                  text-white
-                  hover:bg-white/30 hover:border-white/50
-                  transition-all duration-300 shadow-btn-unicorn"
-              >
-                🎮 Mode Entraînement
-              </span>
-            </GradientBorder>
-          </PulseGlow>
+          <GradientBorder variant="unicorn" animate glow borderWidth={3}>
+            <span
+              className="block text-xl px-8 py-5 font-bold rounded-xl shadow-2xl
+                bg-white/20 backdrop-blur-xl backdrop-saturate-150
+                border border-white/30
+                text-white
+                hover:bg-white/30 hover:border-white/50
+                transition-all duration-300 shadow-btn-unicorn"
+            >
+              🎮 Mode Entraînement
+            </span>
+          </GradientBorder>
         </Link>
 
         {/* Mode Challenge - Glassmorphism premium */}
         <Link href="/challenge" data-tour="challenge-button" className="block">
-          <PulseGlow color={ACCENT_ORANGE} intensity="medium">
-            <GradientBorder variant="star" animate glow borderWidth={3}>
-              <span
-                className="block text-xl px-8 py-5 font-bold rounded-xl shadow-2xl
-                  bg-gradient-to-r from-orange-500/40 to-red-500/40
-                  backdrop-blur-xl backdrop-saturate-150
-                  border border-white/30
-                  text-white
-                  hover:from-orange-500/60 hover:to-red-500/60 hover:border-white/50
-                  transition-all duration-300 shadow-btn-challenge"
-              >
-                🔥 Mode Challenge
-              </span>
-            </GradientBorder>
-          </PulseGlow>
+          <GradientBorder variant="star" animate glow borderWidth={3}>
+            <span
+              className="block text-xl px-8 py-5 font-bold rounded-xl shadow-2xl
+                bg-gradient-to-r from-orange-500/40 to-red-500/40
+                backdrop-blur-xl backdrop-saturate-150
+                border border-white/30
+                text-white
+                hover:from-orange-500/60 hover:to-red-500/60 hover:border-white/50
+                transition-all duration-300 shadow-btn-challenge"
+            >
+              🔥 Mode Challenge
+            </span>
+          </GradientBorder>
         </Link>
       </div>
 
