@@ -176,6 +176,33 @@ test.describe('Accessibilité WCAG 2.1 AA', () => {
   });
 });
 
+test.describe('Accessibilité - Toutes les pages (axe-core)', () => {
+  const pages = [
+    { name: 'Home', path: '/' },
+    { name: 'Practice', path: '/practice' },
+    { name: 'Challenge', path: '/challenge' },
+    { name: 'Profile', path: '/profile' },
+    { name: 'Settings', path: '/settings' },
+  ];
+
+  for (const { name, path } of pages) {
+    test(`${name} (${path}) — zero violation critique`, async ({ page }) => {
+      await page.goto(path);
+      await page.waitForLoadState('networkidle');
+
+      const results = await new AxeBuilder({ page })
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+        .analyze();
+
+      const critical = results.violations.filter(
+        (v) => v.impact === 'critical' || v.impact === 'serious'
+      );
+
+      expect(critical).toEqual([]);
+    });
+  }
+});
+
 test.describe('Accessibilité - Reduced Motion', () => {
   test('respecte prefers-reduced-motion', async ({ page }) => {
     // Émuler prefers-reduced-motion
