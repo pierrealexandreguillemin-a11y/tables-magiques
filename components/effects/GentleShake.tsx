@@ -11,9 +11,8 @@
  * - Couleurs douces (rose pastel)
  */
 
-import { useEffect, useCallback } from 'react';
-import { motion, useAnimationControls } from 'framer-motion';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useEffect } from 'react';
+import { useRestartableAnimation } from '@/features/home/hooks/useRestartableAnimation';
 import { cn } from '@/lib/utils';
 import type { GentleShakeProps } from '@/types/effects';
 
@@ -54,56 +53,43 @@ export function GentleShake({
   amplitude = 10,
   message,
   className,
-  disableAnimation = false,
+  // disableAnimation handled by CSS prefers-reduced-motion
   children,
 }: GentleShakeProps) {
-  const { shouldAnimate } = useReducedMotion();
-  const controls = useAnimationControls();
+  const shake = useRestartableAnimation('shake-error');
 
-  const animate = shouldAnimate && !disableAnimation;
-
-  // Fonction pour declencher le shake
-  const shake = useCallback(async () => {
-    if (!animate) {
-      // Reduced motion: flash opacity instead
-      await controls.start({
-        opacity: [1, 0.5, 1],
-        transition: { duration: 0.3 },
-      });
-    } else {
-      // Shake animation
-      const amp = Math.min(amplitude, 10); // Cap amplitude
-      await controls.start({
-        x: [0, amp, -amp, amp, 0],
-        transition: {
-          duration: 0.4,
-          ease: 'easeInOut',
-        },
-      });
-    }
-    onShakeComplete?.();
-  }, [controls, animate, amplitude, onShakeComplete]);
-
-  // Declencher quand trigger passe a true
   useEffect(() => {
     if (trigger) {
-      shake();
+      shake.trigger();
     }
   }, [trigger, shake]);
 
   const displayMessage = message || getRandomMessage();
 
   return (
-    <div className={cn('relative', className)}>
-      <motion.div animate={controls}>{children}</motion.div>
+    <div
+      className={cn('relative', className, shake.className)}
+      style={
+        amplitude !== 10
+          ? ({
+              '--shake-amplitude': `${Math.min(amplitude, 10)}px`,
+            } as React.CSSProperties)
+          : undefined
+      }
+      onAnimationEnd={(e) => {
+        if (e.animationName === 'shake-error') {
+          shake.reset();
+          onShakeComplete?.();
+        }
+      }}
+    >
+      {children}
 
       {/* Message encourageant */}
       {trigger && (
-        <motion.p
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0 }}
+        <p
           className={cn(
+            'animate-fade-up',
             'absolute -bottom-8 left-1/2 -translate-x-1/2',
             'text-pink-400 dark:text-pink-300',
             'text-sm font-medium whitespace-nowrap',
@@ -114,7 +100,7 @@ export function GentleShake({
         >
           <span aria-hidden="true">💭</span>
           {displayMessage}
-        </motion.p>
+        </p>
       )}
     </div>
   );

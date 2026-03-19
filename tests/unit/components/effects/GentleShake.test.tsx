@@ -6,34 +6,18 @@
  */
 
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { GentleShake } from '@/components/effects/GentleShake';
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      className,
-      animate,
-    }: React.ComponentProps<'div'> & { animate?: unknown }) => (
-      <div className={className} data-animate={JSON.stringify(animate)}>
-        {children}
-      </div>
-    ),
-    p: ({
-      children,
-      className,
-      role,
-      'aria-live': ariaLive,
-    }: React.ComponentProps<'p'> & { 'aria-live'?: string }) => (
-      <p className={className} role={role} aria-live={ariaLive}>
-        {children}
-      </p>
-    ),
-  },
-  useAnimationControls: () => ({
-    start: vi.fn().mockResolvedValue(undefined),
+// Mock useRestartableAnimation
+const mockTrigger = vi.fn();
+const mockReset = vi.fn();
+vi.mock('@/features/home/hooks/useRestartableAnimation', () => ({
+  useRestartableAnimation: () => ({
+    className: '',
+    trigger: mockTrigger,
+    reset: mockReset,
+    active: false,
   }),
 }));
 
@@ -152,19 +136,15 @@ describe('GentleShake', () => {
     });
   });
 
-  describe('callback', () => {
-    it('appelle onShakeComplete apres l animation', async () => {
-      const onComplete = vi.fn();
-
+  describe('shake trigger', () => {
+    it('appelle shake.trigger quand trigger=true', () => {
       render(
-        <GentleShake trigger={true} onShakeComplete={onComplete}>
+        <GentleShake trigger={true}>
           <span>Test</span>
         </GentleShake>
       );
 
-      await waitFor(() => {
-        expect(onComplete).toHaveBeenCalled();
-      });
+      expect(mockTrigger).toHaveBeenCalled();
     });
   });
 

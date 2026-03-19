@@ -11,7 +11,6 @@
  * - Accessibilite complete
  */
 
-import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
@@ -54,11 +53,6 @@ function CheckMark({
   checked: boolean;
   animate: boolean;
 }) {
-  const pathVariants = {
-    unchecked: { pathLength: 0, opacity: 0 },
-    checked: { pathLength: 1, opacity: 1 },
-  };
-
   return (
     <svg
       width={size}
@@ -67,17 +61,18 @@ function CheckMark({
       fill="none"
       className="absolute inset-0 m-auto"
     >
-      <motion.path
+      <path
         d="M5 12l5 5L19 7"
         stroke="currentColor"
         strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeLinejoin="round"
-        initial="unchecked"
-        animate={checked ? 'checked' : 'unchecked'}
-        variants={animate ? pathVariants : undefined}
-        transition={{ duration: 0.2, ease: 'easeOut' }}
-        style={{ pathLength: checked ? 1 : 0, opacity: checked ? 1 : 0 }}
+        style={{
+          strokeDasharray: 30,
+          strokeDashoffset: checked ? 0 : 30,
+          transition: animate ? 'stroke-dashoffset 0.2s ease-out' : 'none',
+          opacity: checked ? 1 : 0,
+        }}
       />
     </svg>
   );
@@ -92,7 +87,6 @@ function SwitchVariant({
   disabled,
   loading,
   size,
-  animate,
   onClick,
   ariaLabel,
 }: {
@@ -122,24 +116,21 @@ function SwitchVariant({
       )}
       style={{ width: config.width, height: config.height }}
     >
-      <motion.span
+      <span
         className={cn(
-          'absolute top-1/2 -translate-y-1/2 rounded-full bg-white shadow-sm flex items-center justify-center',
+          'switch-thumb absolute top-1/2 rounded-full bg-white shadow-sm flex items-center justify-center',
           loading && 'bg-transparent'
         )}
-        style={{ width: config.thumb, height: config.thumb }}
-        initial={false}
-        animate={{ x: thumbOffset }}
-        transition={
-          animate
-            ? { type: 'spring', stiffness: 500, damping: 30 }
-            : { duration: 0 }
-        }
+        style={{
+          width: config.thumb,
+          height: config.thumb,
+          transform: `translateX(${thumbOffset}px) translateY(-50%)`,
+        }}
       >
         {loading && (
           <Loader2 className="w-3 h-3 animate-spin text-muted-foreground" />
         )}
-      </motion.span>
+      </span>
     </button>
   );
 }
