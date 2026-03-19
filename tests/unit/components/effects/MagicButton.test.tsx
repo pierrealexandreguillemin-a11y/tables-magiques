@@ -5,46 +5,50 @@
  * P0 Component - Bouton avec effet paillettes
  */
 
+import React from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MagicButton } from '@/components/effects/MagicButton';
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    button: ({
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// Mock framer-motion (still used for AnimatePresence + motion.span sparkles)
+vi.mock('framer-motion', () => {
+  const motion: Record<
+    string,
+    React.FC<React.HTMLAttributes<HTMLElement> & Record<string, unknown>>
+  > = {};
+
+  const tags = ['span'];
+  tags.forEach((tag) => {
+    motion[tag] = ({
       children,
-      className,
-      'data-testid': testId,
-      onClick,
-      disabled,
-      ...props
-    }: React.ComponentProps<'button'> & { 'data-testid'?: string }) => (
-      <button
-        className={className}
-        data-testid={testId}
-        onClick={onClick}
-        disabled={disabled}
-        {...props}
-      >
-        {children}
-      </button>
+      ...rest
+    }: React.PropsWithChildren<Record<string, unknown>>) => {
+      // Strip framer-motion-only props so React doesn't warn
+      const {
+        animate: _a,
+        initial: _i,
+        exit: _e,
+        transition: _t,
+        variants: _v,
+        ...domProps
+      } = rest;
+      return React.createElement(
+        tag,
+        domProps as React.HTMLAttributes<HTMLElement>,
+        children
+      );
+    };
+  });
+
+  return {
+    motion,
+    AnimatePresence: ({ children }: React.PropsWithChildren<unknown>) => (
+      <>{children}</>
     ),
-    span: ({
-      children,
-      className,
-      'data-testid': testId,
-      ...props
-    }: React.ComponentProps<'span'> & { 'data-testid'?: string }) => (
-      <span className={className} data-testid={testId} {...props}>
-        {children}
-      </span>
-    ),
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
-  ),
-}));
+  };
+});
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 describe('MagicButton', () => {
   afterEach(() => {
@@ -130,6 +134,22 @@ describe('MagicButton', () => {
       fireEvent.click(screen.getByRole('button'));
 
       expect(handleClick).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('CSS interactive-scale', () => {
+    it('a la classe interactive-scale quand animate et non disabled', () => {
+      render(<MagicButton>Test</MagicButton>);
+
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass('interactive-scale');
+    });
+
+    it('n a pas interactive-scale quand disabled', () => {
+      render(<MagicButton disabled>Test</MagicButton>);
+
+      const button = screen.getByRole('button');
+      expect(button).not.toHaveClass('interactive-scale');
     });
   });
 

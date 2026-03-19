@@ -9,35 +9,6 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { AnswerIcon } from '@/components/effects/AnswerIcon';
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      className,
-      'data-testid': testId,
-      ...props
-    }: React.ComponentProps<'div'> & { 'data-testid'?: string }) => (
-      <div className={className} data-testid={testId} {...props}>
-        {children}
-      </div>
-    ),
-    svg: ({
-      children,
-      className,
-      'data-testid': testId,
-      ...props
-    }: React.ComponentProps<'svg'> & { 'data-testid'?: string }) => (
-      <svg className={className} data-testid={testId} {...props}>
-        {children}
-      </svg>
-    ),
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
-  ),
-}));
-
 describe('AnswerIcon', () => {
   afterEach(() => {
     vi.restoreAllMocks();
@@ -144,13 +115,19 @@ describe('AnswerIcon', () => {
     });
   });
 
-  describe('animation', () => {
-    it('a attribut animate pour entree', () => {
+  describe('animation CSS', () => {
+    it('a la classe animate-answer-pop quand animate est true', () => {
       render(<AnswerIcon type="correct" />);
 
       const icon = screen.getByTestId('answer-icon');
-      // Le composant doit avoir des props d'animation
-      expect(icon).toBeInTheDocument();
+      expect(icon).toHaveClass('animate-answer-pop');
+    });
+
+    it('n a pas animate-answer-pop quand disableAnimation', () => {
+      render(<AnswerIcon type="correct" disableAnimation />);
+
+      const icon = screen.getByTestId('answer-icon');
+      expect(icon).not.toHaveClass('animate-answer-pop');
     });
   });
 

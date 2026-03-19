@@ -9,28 +9,6 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MagicCard } from '@/components/effects/MagicCard';
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      className,
-      'data-testid': testId,
-      onClick,
-      ...props
-    }: React.ComponentProps<'div'> & { 'data-testid'?: string }) => (
-      <div
-        className={className}
-        data-testid={testId}
-        onClick={onClick}
-        {...props}
-      >
-        {children}
-      </div>
-    ),
-  },
-}));
-
 describe('MagicCard', () => {
   afterEach(() => {
     vi.restoreAllMocks();
@@ -132,6 +110,20 @@ describe('MagicCard', () => {
 
       const card = screen.getByTestId('magic-card');
       expect(card).not.toHaveClass('cursor-pointer');
+    });
+
+    it('a la classe magic-card-interactive quand clickable et animate', () => {
+      render(<MagicCard onClick={() => {}}>Test</MagicCard>);
+
+      const card = screen.getByTestId('magic-card');
+      expect(card).toHaveClass('magic-card-interactive');
+    });
+
+    it('n a pas magic-card-interactive sans onClick', () => {
+      render(<MagicCard>Test</MagicCard>);
+
+      const card = screen.getByTestId('magic-card');
+      expect(card).not.toHaveClass('magic-card-interactive');
     });
   });
 
