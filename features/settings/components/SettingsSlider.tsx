@@ -65,7 +65,7 @@ export function SettingsSlider({
       className={cn(
         'py-3',
         'border-b border-pink-100/50 dark:border-slate-700/50 last:border-0',
-        disabled && 'opacity-50',
+        disabled && 'pointer-events-none',
         className
       )}
     >
