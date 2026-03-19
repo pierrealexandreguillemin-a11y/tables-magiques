@@ -18,12 +18,7 @@ interface Props {
 
 export function ChallengeGameOver({ result, onReplay }: Props) {
   return (
-    <motion.div
-      key="game_over"
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="text-center"
-    >
+    <motion.div key="game_over" className="text-center animate-fade-scale">
       <div className="mb-6">
         <LottieAnimation
           type={
@@ -80,14 +75,14 @@ export function ChallengeGameOver({ result, onReplay }: Props) {
       </div>
 
       <div className="flex gap-4 justify-center">
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <div className="interactive-scale">
           <Link href="/">
             <Button className="px-8 py-4 text-lg font-bold bg-white/20 hover:bg-white/30 text-white rounded-full">
               Accueil
             </Button>
           </Link>
-        </motion.div>
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        </div>
+        <div className="interactive-scale">
           <Button
             onClick={onReplay}
             className="px-8 py-4 text-lg font-bold bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white rounded-full"
@@ -95,7 +90,7 @@ export function ChallengeGameOver({ result, onReplay }: Props) {
           >
             Rejouer
           </Button>
-        </motion.div>
+        </div>
       </div>
     </motion.div>
   );

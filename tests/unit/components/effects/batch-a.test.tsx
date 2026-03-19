@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * batch-a.test.tsx
  * Unit tests for effect components with 0% coverage:

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * Batch B - Low-coverage effects tests
  * ISO/IEC 29119 - Tests unitaires

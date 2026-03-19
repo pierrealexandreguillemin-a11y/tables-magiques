@@ -22,10 +22,8 @@ export function PracticeSelection({ onSelectTable }: Props) {
   return (
     <motion.div
       key="selection"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="text-center"
+      className="text-center animate-fade-up"
     >
       <h1 className="text-4xl sm:text-5xl font-bold mb-8">
         <GradientText variant="unicorn" animate as="span">

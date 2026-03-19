@@ -17,10 +17,8 @@ export function ChallengeReady({ onStart }: Props) {
   return (
     <motion.div
       key="ready"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="text-center"
+      className="text-center animate-fade-up"
     >
       <h1 className="text-4xl sm:text-5xl font-bold mb-8">
         <GradientText variant="gold" animate as="span">
@@ -41,7 +39,7 @@ export function ChallengeReady({ onStart }: Props) {
         </ul>
       </div>
 
-      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+      <div className="interactive-scale">
         <Button
           onClick={onStart}
           className="px-12 py-6 text-xl font-bold bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white rounded-full shadow-xl"
@@ -49,7 +47,7 @@ export function ChallengeReady({ onStart }: Props) {
         >
           Commencer
         </Button>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }

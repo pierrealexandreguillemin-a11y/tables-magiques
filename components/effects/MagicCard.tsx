@@ -7,7 +7,6 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 import type { ThemeVariant } from '@/types/effects';
@@ -94,7 +93,7 @@ export function MagicCard({
   const isClickable = !!onClick;
 
   return (
-    <motion.div
+    <div
       data-testid="magic-card"
       role={Component === 'article' ? 'article' : undefined}
       aria-label={ariaLabel}
@@ -115,28 +114,14 @@ export function MagicCard({
 
         // Interactivite
         isClickable && 'cursor-pointer',
+        isClickable && animate && 'magic-card-interactive',
 
         // Custom
         className
       )}
-      whileHover={
-        animate && isClickable
-          ? {
-              scale: 1.02,
-              transition: { duration: 0.2 },
-            }
-          : undefined
-      }
-      whileTap={
-        animate && isClickable
-          ? {
-              scale: 0.98,
-            }
-          : undefined
-      }
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 

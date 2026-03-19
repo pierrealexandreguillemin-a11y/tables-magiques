@@ -7,7 +7,6 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 import type { ThemeVariant } from '@/types/effects';
@@ -133,7 +132,7 @@ export function AnswerIcon({
   const animate = shouldAnimate && !disableAnimation;
 
   return (
-    <motion.div
+    <div
       data-testid="answer-icon"
       data-type={type}
       data-animate={animate ? 'true' : 'false'}
@@ -146,29 +145,20 @@ export function AnswerIcon({
         TYPE_COLORS[type],
         // Shadow
         DROP_SHADOW_STYLES[variant],
+        // Animation
+        animate && 'animate-answer-pop',
         // Custom
         className
       )}
-      initial={animate ? { scale: 0, rotate: -180 } : undefined}
-      animate={animate ? { scale: 1, rotate: 0 } : undefined}
-      transition={
-        animate
-          ? {
-              type: 'spring',
-              stiffness: 300,
-              damping: 20,
-            }
-          : undefined
-      }
     >
-      <motion.svg
+      <svg
         data-testid="answer-icon-svg"
         viewBox="0 0 24 24"
         className="w-full h-full"
       >
         {type === 'correct' ? <CheckmarkPath /> : <XMarkPath />}
-      </motion.svg>
-    </motion.div>
+      </svg>
+    </div>
   );
 }
 

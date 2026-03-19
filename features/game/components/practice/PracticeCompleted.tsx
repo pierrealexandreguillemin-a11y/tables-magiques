@@ -30,12 +30,7 @@ export function PracticeCompleted({
   onReplay,
 }: Props) {
   return (
-    <motion.div
-      key="completed"
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="text-center"
-    >
+    <motion.div key="completed" className="text-center animate-fade-scale">
       <div className="mb-6">
         <LottieAnimation
           type={result.isPerfect ? 'crown' : 'celebration'}

@@ -120,7 +120,7 @@ export function MagicButton({
   );
 
   return (
-    <motion.button
+    <button
       type={type}
       onClick={handleClick}
       disabled={isDisabled}
@@ -139,12 +139,11 @@ export function MagicButton({
         // States
         isDisabled && 'opacity-50 cursor-not-allowed',
         loading && 'cursor-wait',
+        // Interactive scale
+        animate && !isDisabled && 'interactive-scale',
         // Custom
         className
       )}
-      whileHover={animate && !isDisabled ? { scale: 1.05 } : undefined}
-      whileTap={animate && !isDisabled ? { scale: 0.95 } : undefined}
-      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
     >
       {/* Ripple effects */}
       {animate &&
@@ -192,14 +191,12 @@ export function MagicButton({
 
       {/* Loading spinner */}
       {loading && (
-        <motion.span
+        <span
           data-testid="loading-spinner"
-          className="absolute inset-0 flex items-center justify-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          className="absolute inset-0 flex items-center justify-center animate-fade-scale"
         >
           <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-        </motion.span>
+        </span>
       )}
 
       {/* Content */}
@@ -209,7 +206,7 @@ export function MagicButton({
       >
         {children}
       </span>
-    </motion.button>
+    </button>
   );
 }
 

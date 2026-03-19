@@ -42,10 +42,8 @@ export function PracticePlaying({
   return (
     <motion.div
       key="playing"
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      className="text-center"
+      className="text-center animate-fade-scale"
     >
       <Button
         onClick={onBack}
@@ -101,10 +99,8 @@ export function PracticePlaying({
       <AnimatePresence>
         {state.showFeedback && (
           <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0 }}
-            className="fixed inset-0 pointer-events-none flex items-center justify-center z-50"
+            className="fixed inset-0 pointer-events-none flex items-center justify-center z-50 animate-fade-scale"
           >
             <LottieAnimation
               type={state.isCorrect ? 'success' : 'error'}
@@ -124,15 +120,11 @@ export function PracticePlaying({
       />
 
       {state.streak >= 3 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 text-xl font-bold"
-        >
+        <div className="mt-6 text-xl font-bold animate-fade-up">
           <PulseGlow color="#fbbf24" intensity="strong" speed="fast">
             <span className="text-yellow-300">Série de {state.streak} !</span>
           </PulseGlow>
-        </motion.div>
+        </div>
       )}
     </motion.div>
   );
