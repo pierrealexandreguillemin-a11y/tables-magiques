@@ -13,12 +13,14 @@ import {
   generateRandomQuestion,
   generateAllQuestionsForTable,
   shuffleArray,
+} from './questions';
+import {
   checkAnswer,
   updateStreak,
   calculateAccuracy,
   calculateBonus,
   checkPerfect,
-} from './index';
+} from './scoring';
 import type {
   Question,
   PracticePhase,

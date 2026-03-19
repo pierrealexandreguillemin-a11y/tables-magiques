@@ -2,7 +2,7 @@
  * Animation Color Palettes - Tables Magiques
  * ISO/IEC 25010 - DRY: Source unique pour couleurs d'animation
  *
- * Utilisé par GSAP effects et tsParticles configs.
+ * Utilisé par tsParticles configs et CSS animations.
  */
 
 /** Couleurs féériques (particules fond, effets ambiance) */

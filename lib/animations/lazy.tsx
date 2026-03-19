@@ -51,7 +51,7 @@ export const LazyLottieAnimation = dynamic(
 
 /**
  * SuccessExplosion - Chargé à la demande
- * Poids: ~20KB (GSAP effects)
+ * Poids: ~20KB (tsParticles confetti)
  */
 export const LazySuccessExplosion = dynamic(
   () =>
