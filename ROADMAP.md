@@ -242,18 +242,18 @@ Speed Index et LCP sous les seuils CWV.
 ### Tasks
 
 ```
-[ ] 17.1 - Speed Index
+[x] 17.1 - Speed Index (2026-03-19)
     - Particules client-only causent apparition tardive
     - Evaluer: SSR avec arrondi agressif vs client-only avec skeleton
     - Mesurer avant/apres
 
-[ ] 17.2 - LCP → < 2.5s
+[x] 17.2 - LCP → < 2.5s (2026-03-19)
     - Identifier l'element LCP sur chaque page
     - Preload critical fonts (Lexend)
     - Optimiser critical rendering path
     - Evaluer preconnect pour Vercel Edge
 
-[ ] 17.3 - Lighthouse CI
+[x] 17.3 - Lighthouse CI (2026-03-19)
     - Budget perf automatise dans GitHub Actions
     - Fail si regression > 5 points
 ```
