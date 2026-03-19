@@ -7,6 +7,7 @@
 export { useChallenge } from './useChallenge';
 export type { UseChallengeReturn } from './useChallenge';
 export { usePractice } from './usePractice';
+export { useSaveScore } from './useSaveScore';
 export type {
   UsePracticeReturn,
   PracticeState,

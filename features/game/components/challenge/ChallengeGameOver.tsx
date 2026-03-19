@@ -5,10 +5,12 @@
 
 'use client';
 
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { LottieAnimation, NumberReveal } from '@/components/effects';
+import { useSaveScore } from '../../hooks/useSaveScore';
 import type { ChallengeResult } from '@/types/game';
 
 interface Props {
@@ -17,6 +19,17 @@ interface Props {
 }
 
 export function ChallengeGameOver({ result, onReplay }: Props) {
+  const { saveScore } = useSaveScore();
+
+  useEffect(() => {
+    saveScore({
+      mode: 'challenge',
+      correct: result.correctAnswers,
+      total: result.totalQuestions,
+      streak: result.bestStreak,
+    });
+  }, [saveScore, result]);
+
   return (
     <motion.div key="game_over" className="text-center animate-fade-scale">
       <div className="mb-6">

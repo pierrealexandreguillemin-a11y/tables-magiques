@@ -5,6 +5,7 @@
 
 'use client';
 
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   LottieAnimation,
@@ -12,6 +13,7 @@ import {
   MagicCard,
   MagicButton,
 } from '@/components/effects';
+import { useSaveScore } from '../../hooks/useSaveScore';
 import type { PracticeResult } from '@/types/game';
 
 interface Props {
@@ -23,11 +25,22 @@ interface Props {
 
 export function PracticeCompleted({
   result,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  selectedTable: _selectedTable,
+  selectedTable,
   onBack,
   onReplay,
 }: Props) {
+  const { saveScore } = useSaveScore();
+
+  useEffect(() => {
+    saveScore({
+      mode: 'practice',
+      table: selectedTable ?? undefined,
+      correct: result.score,
+      total: result.total,
+      streak: result.streak,
+    });
+  }, [saveScore, result, selectedTable]);
+
   return (
     <motion.div key="completed" className="text-center animate-fade-scale">
       <div className="mb-6">
