@@ -1,5 +1,5 @@
 /**
- * MagicCounter - Compteur anime avec GSAP
+ * MagicCounter - Compteur anime avec requestAnimationFrame
  * ISO/IEC 25010 - Utilisabilite, Performance
  *
  * P0 Component - Animation fluide des scores/points
@@ -7,13 +7,8 @@
 
 'use client';
 
-import { useRef, useState } from 'react';
-import { gsap } from 'gsap';
-import { useGSAP } from '@gsap/react';
+import { useRef, useState, useEffect } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-
-// Register GSAP plugin for React
-gsap.registerPlugin(useGSAP);
 import { cn } from '@/lib/utils';
 import type { ThemeVariant } from '@/types/effects';
 
@@ -90,7 +85,7 @@ function formatNumber(value: number, format: CounterFormat): string {
 /**
  * MagicCounter Component
  *
- * Compteur avec animation GSAP fluide pour les transitions de valeur.
+ * Compteur avec animation requestAnimationFrame fluide pour les transitions de valeur.
  * Ideal pour scores, points, progression.
  *
  * @example
@@ -112,40 +107,35 @@ export function MagicCounter({
   const { shouldAnimate } = useReducedMotion();
   const animate = shouldAnimate && !disableAnimation;
 
-  // For non-animated mode, display value directly
   const [animatedValue, setAnimatedValue] = useState(value);
-  const counterRef = useRef({ value: value });
-  const containerRef = useRef<HTMLSpanElement>(null);
+  const prevValueRef = useRef(value);
 
-  // Determine display value: animated or direct
+  useEffect(() => {
+    if (!animate) {
+      prevValueRef.current = value;
+      return;
+    }
+    const from = prevValueRef.current;
+    prevValueRef.current = value;
+    if (from === value) return;
+    let start: number | null = null;
+    const durationMs = duration * 1000;
+    let rafId: number;
+    function step(timestamp: number) {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / durationMs, 1);
+      setAnimatedValue(Math.round(from + (value - from) * progress));
+      if (progress < 1) rafId = requestAnimationFrame(step);
+    }
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+  }, [value, animate, duration]);
+
+  // When not animating, display the prop value directly
   const displayValue = animate ? animatedValue : value;
-
-  // Use GSAP hook for proper React integration
-  useGSAP(
-    () => {
-      // Only animate if animation is enabled
-      if (!animate) {
-        counterRef.current.value = value;
-        setAnimatedValue(value);
-        return;
-      }
-
-      // Animate with GSAP (contextSafe automatically handles cleanup)
-      gsap.to(counterRef.current, {
-        value: value,
-        duration: duration,
-        ease: 'power2.out',
-        onUpdate: () => {
-          setAnimatedValue(counterRef.current.value);
-        },
-      });
-    },
-    { dependencies: [value, duration, animate], scope: containerRef }
-  );
 
   return (
     <span
-      ref={containerRef}
       data-testid="magic-counter"
       data-format={format}
       data-animate={animate ? 'true' : 'false'}

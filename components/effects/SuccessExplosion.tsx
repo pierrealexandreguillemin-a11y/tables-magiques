@@ -7,9 +7,11 @@
 
 import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useGsapEffects } from '@/hooks/useGsapEffects';
+import Particles from '@tsparticles/react';
+import { useParticlesEngine } from '@/hooks/useParticlesEngine';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { LottieAnimation } from './LottieAnimation';
+import { confettiConfig } from '@/lib/animations';
 import { cn } from '@/lib/utils';
 
 interface SuccessExplosionProps {
@@ -34,44 +36,9 @@ export function SuccessExplosion({
   type = 'confetti',
 }: SuccessExplosionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { confettiExplosion, fireworksDisplay, celebrationCascade } =
-    useGsapEffects();
+  const engineReady = useParticlesEngine();
   const { shouldAnimate } = useReducedMotion();
   const dimensions = sizeMap[size];
-
-  useEffect(() => {
-    if (!show || !containerRef.current || !shouldAnimate) {
-      return;
-    }
-
-    let effectCleanup: (() => void) | undefined;
-
-    switch (type) {
-      case 'fireworks':
-        effectCleanup = fireworksDisplay(containerRef.current);
-        break;
-      case 'celebration':
-        effectCleanup = celebrationCascade(containerRef.current);
-        break;
-      default:
-        confettiExplosion(containerRef.current, {
-          count: size === 'lg' ? 100 : 50,
-        });
-    }
-
-    // Cleanup des effets avec timeouts internes
-    return () => {
-      if (effectCleanup) effectCleanup();
-    };
-  }, [
-    show,
-    type,
-    size,
-    shouldAnimate,
-    confettiExplosion,
-    fireworksDisplay,
-    celebrationCascade,
-  ]);
 
   useEffect(() => {
     if (show && onComplete) {
@@ -94,6 +61,13 @@ export function SuccessExplosion({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
+          {show && engineReady && shouldAnimate && (
+            <Particles
+              id={`celebration-${type}`}
+              options={confettiConfig}
+              className="absolute inset-0"
+            />
+          )}
           <motion.div
             initial={{ scale: 0, rotate: -20 }}
             animate={{
@@ -116,38 +90,6 @@ export function SuccessExplosion({
               size={dimensions.lottie}
               autoplay
             />
-
-            {/* Particules supplémentaires */}
-            {shouldAnimate &&
-              [...Array(12)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-3 h-3 rounded-full"
-                  style={{
-                    background: [
-                      '#ff69b4',
-                      '#ffd700',
-                      '#00ff00',
-                      '#00ffff',
-                      '#ff6b6b',
-                    ][i % 5],
-                    top: '50%',
-                    left: '50%',
-                  }}
-                  initial={{ x: 0, y: 0, scale: 0 }}
-                  animate={{
-                    x: Math.cos((i * 30 * Math.PI) / 180) * 100,
-                    y: Math.sin((i * 30 * Math.PI) / 180) * 100,
-                    scale: [0, 1.5, 0],
-                    opacity: [1, 1, 0],
-                  }}
-                  transition={{
-                    duration: 1,
-                    delay: 0.2 + i * 0.05,
-                    ease: 'easeOut',
-                  }}
-                />
-              ))}
           </motion.div>
         </motion.div>
       )}

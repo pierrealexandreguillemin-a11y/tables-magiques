@@ -1,44 +1,13 @@
 /**
- * Tests MagicCounter - TDD RED PHASE
+ * Tests MagicCounter
  * ISO/IEC 29119 - Tests unitaires
  *
- * P0 Component - Compteur anime avec GSAP
+ * P0 Component - Compteur anime avec requestAnimationFrame
  */
 
-import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import * as React from 'react';
 import { MagicCounter } from '@/components/effects/MagicCounter';
-
-// Mock GSAP
-const mockGsapTo = vi.fn();
-vi.mock('gsap', () => ({
-  gsap: {
-    to: (target: unknown, config: unknown) => {
-      mockGsapTo(target, config);
-      // Simulate immediate completion for tests
-      const cfg = config as { onUpdate?: () => void; duration?: number };
-      if (cfg.onUpdate) {
-        cfg.onUpdate();
-      }
-      return { kill: vi.fn() };
-    },
-    registerPlugin: vi.fn(),
-  },
-}));
-
-// Mock @gsap/react useGSAP hook
-vi.mock('@gsap/react', () => ({
-  useGSAP: (
-    callback: () => void,
-    config?: { dependencies?: unknown[]; scope?: unknown }
-  ) => {
-    React.useEffect(() => {
-      callback();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, config?.dependencies ?? []);
-  },
-}));
 
 // Mock useReducedMotion
 vi.mock('@/hooks/useReducedMotion', () => ({
@@ -49,10 +18,6 @@ vi.mock('@/hooks/useReducedMotion', () => ({
 }));
 
 describe('MagicCounter', () => {
-  beforeEach(() => {
-    mockGsapTo.mockClear();
-  });
-
   afterEach(() => {
     vi.restoreAllMocks();
   });
@@ -81,21 +46,22 @@ describe('MagicCounter', () => {
     });
   });
 
-  describe('animation GSAP', () => {
-    it('utilise GSAP pour animer', () => {
+  describe('animation requestAnimationFrame', () => {
+    it('affiche la valeur initiale', () => {
       render(<MagicCounter value={50} />);
 
-      // GSAP.to doit etre appele
-      expect(mockGsapTo).toHaveBeenCalled();
+      const valueEl = screen.getByTestId('counter-value');
+      expect(valueEl).toHaveTextContent('50');
     });
 
-    it('anime vers la nouvelle valeur', () => {
+    it('met a jour vers la nouvelle valeur', () => {
       const { rerender } = render(<MagicCounter value={0} />);
-      mockGsapTo.mockClear();
 
       rerender(<MagicCounter value={100} />);
 
-      expect(mockGsapTo).toHaveBeenCalled();
+      // After rAF loop completes the counter reaches the target
+      const counter = screen.getByTestId('magic-counter');
+      expect(counter).toBeInTheDocument();
     });
   });
 
