@@ -64,6 +64,16 @@ export default defineConfig({
       dependencies: ['setup'],
       testIgnore: /auth\.spec\.ts/,
     },
+    // Firefox authenticated
+    {
+      name: 'firefox',
+      use: {
+        ...devices['Desktop Firefox'],
+        storageState: 'tests/e2e/.auth/user.json',
+      },
+      dependencies: ['setup'],
+      testIgnore: /auth\.spec\.ts/,
+    },
   ],
   // PAS de webServer - on teste contre la production Vercel
 });
