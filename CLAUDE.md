@@ -22,22 +22,25 @@ npm run format:check # Prettier
 - `features/` — Modules metier (game, home, settings, auth, onboarding)
 - `components/effects/` — Composants d'animation reutilisables
 - `components/ui/` — Composants UI de base (shadcn)
-- `lib/animations/` — Stack d'animation (GSAP, Framer Motion, tsParticles, Lottie, CSS)
+- `lib/animations/` — Stack d'animation (Framer Motion, tsParticles, Lottie, CSS)
 - `lib/animations/colors.ts` — Palettes de couleurs partagees (source unique)
 - `lib/animations/lazy.tsx` — Dynamic imports des composants lourds (~270KB economises)
 - `styles/animations.css` — Keyframes CSS + classes utilitaires GPU-safe
 - `styles/tokens.css` — Design tokens (couleurs, easings, timings, shadows)
-- `hooks/` — Hooks partages (useReducedMotion, useGsapEffects, etc.)
+- `hooks/` — Hooks partages (useReducedMotion, useParticlesEngine, useRestartableAnimation, etc.)
 - `types/` — Types TypeScript centralises
 
 ## Conventions animation
 
-- **Fond home page**: CSS `@keyframes` parametrises par custom properties (zero JS par frame)
+- **Fonds de page**: CSS `@keyframes` + `.bg-drift` (zero JS par frame)
+- **Entrees one-shot**: CSS `.animate-fade-up`, `.animate-fade-scale`, `.animate-title-enter`, `.animate-answer-pop`
+- **Interactions hover/tap**: CSS `.interactive-scale` ou `.magic-card-interactive`
+- **Animation triggers**: `useRestartableAnimation` hook (CSS class toggle via rAF)
 - **Particules etoiles**: tsParticles (canvas GPU, fpsLimit 30, pauseOnBlur: true)
-- **Celebrations**: GSAP (confetti, fireworks — one-shot, pas boucles infinies)
-- **Transitions mount/unmount**: Framer Motion AnimatePresence
-- **Interactions UI**: Framer Motion whileHover/whileTap dans composants effects internes
-- **Easings**: Utiliser `var(--ease-spring)` ou `var(--ease-smooth)` de tokens.css — jamais hardcoder cubic-bezier
+- **Celebrations**: tsParticles `confettiConfig` (remplace GSAP)
+- **Transitions mount/unmount**: Framer Motion `AnimatePresence` (seul usage FM restant)
+- **Easings**: `var(--ease-spring)` ou `var(--ease-smooth)` de tokens.css — jamais hardcoder cubic-bezier
+- **GSAP**: supprime completement (Phase 13)
 
 ## Regles
 
@@ -47,3 +50,4 @@ npm run format:check # Prettier
 - Les barrel exports utilisent des exports nommes explicites, pas `export *`
 - Les couleurs d'animation passent par `lib/animations/colors.ts`
 - `next.config.ts` a le React Compiler active (memoization automatique)
+- 1261 tests (64 fichiers), coverage ~87%
