@@ -83,14 +83,14 @@ Sans ca, les tests d'integration n'ont rien a tester.
 ### Tasks
 
 ```
-[ ] 13.1 - BUG: /api/profile/history route manquante
+[x] 13.1 - BUG: /api/profile/history route manquante (2026-03-19)
     - useProfile appelle fetchSessionHistory() vers une route qui n'existe pas
     - Creer app/api/profile/history/route.ts
     - GET avec filtres: mode, startDate, endDate, limit, offset
     - Validation Zod, auth requise, pagination
     - Tests unitaires pour la route
 
-[ ] 13.2 - BUG: scores non persistes
+[x] 13.2 - BUG: scores non persistes (2026-03-19)
     - usePractice et useChallenge ne sauvegardent pas vers /api/scores
     - Ajouter saveScore() en mutation React Query au game over
     - PracticeCompleted → POST /api/scores { mode: 'practice', ... }
@@ -98,14 +98,13 @@ Sans ca, les tests d'integration n'ont rien a tester.
     - Gerer le cas guest (pas de save, pas d'erreur)
     - Tests unitaires pour les mutations
 
-[ ] 13.3 - BUG: bestStreak hardcode a 0
+[x] 13.3 - BUG: bestStreak hardcode a 0 (2026-03-19)
     - lib/scores/storage.ts:134 et lib/stats/storage.ts:115
     - Calculer depuis les donnees de sessions
     - Tests unitaires
 
-[ ] 13.4 - Cleanup: tw-animate-css potentiellement inutilise
-    - Verifier si importe quelque part
-    - Si dead: npm uninstall tw-animate-css
+[x] 13.4 - Cleanup: tw-animate-css verifie (2026-03-19)
+    - Importe dans globals.css — pas dead, rien a supprimer
 ```
 
 ---
