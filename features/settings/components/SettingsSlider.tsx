@@ -87,7 +87,7 @@ export function SettingsSlider({
           className={cn(
             'text-sm font-medium px-2 py-0.5 rounded-full',
             disabled
-              ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+              ? 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
               : 'bg-pink-100 dark:bg-pink-900/30 text-pink-800 dark:text-pink-200'
           )}
         >
