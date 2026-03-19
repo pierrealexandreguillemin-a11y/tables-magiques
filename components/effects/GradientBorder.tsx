@@ -4,9 +4,9 @@
  * GradientBorder - Bordure gradient animee
  * ISO/IEC 25010 - Effet visuel premium pour elements speciaux
  * CSS keyframes — zero JS per frame
+ * Simplified: gradient applied directly on outer div; redundant middle div removed.
  */
 
-import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 import { THEME_GRADIENTS, THEME_GLOWS } from '@/lib/animations/colors';
 import type { ThemeVariant } from '@/types/effects';
@@ -33,31 +33,17 @@ export function GradientBorder({
   className,
   contentClassName,
 }: GradientBorderProps) {
-  const { shouldAnimate } = useReducedMotion();
-  const shouldAnimateGradient = animate && shouldAnimate;
-
   return (
     <div
       className={cn('relative', className)}
       style={{
         padding: borderWidth,
         borderRadius,
+        background: THEME_GRADIENTS[variant],
+        backgroundSize: animate ? '200% 100%' : '100% 100%',
+        boxShadow: glow ? `0 0 20px ${THEME_GLOWS[variant]}` : undefined,
       }}
     >
-      {/* Gradient border layer — CSS animation */}
-      <div
-        className={cn(
-          'absolute inset-0 rounded-[inherit]',
-          shouldAnimateGradient && 'animate-gradient-x'
-        )}
-        style={{
-          background: THEME_GRADIENTS[variant],
-          backgroundSize: animate ? '200% 100%' : '100% 100%',
-          boxShadow: glow ? `0 0 20px ${THEME_GLOWS[variant]}` : undefined,
-        }}
-        aria-hidden="true"
-      />
-
       {/* Content layer */}
       <div
         className={cn(

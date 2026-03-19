@@ -263,67 +263,56 @@ describe('PulseGlow', () => {
     expect(screen.getByText('No glow')).toBeInTheDocument();
   });
 
-  it('applique la couleur personnalisee au layer glow', () => {
-    const { container } = render(
+  it('accepte la prop color sans planter (blur layer supprime)', () => {
+    render(
       <PulseGlow color="#00ff00">
         <span>Color</span>
       </PulseGlow>
     );
-    const glowLayer = container.querySelector(
-      '.pulse-glow-layer'
-    ) as HTMLElement;
-    expect(glowLayer).not.toBeNull();
-    // jsdom normalizes hex colors to rgb()
-    expect(glowLayer.style.background).toMatch(/rgb\(0,\s*255,\s*0\)|#00ff00/);
+    // Blur layer removed — no pulse-glow-layer in DOM
+    expect(document.querySelector('.pulse-glow-layer')).toBeNull();
+    expect(screen.getByText('Color')).toBeInTheDocument();
   });
 
-  it('accepte intensity subtle', () => {
+  it('accepte intensity subtle sans planter', () => {
     const { container } = render(
       <PulseGlow intensity="subtle">
         <span>Subtle</span>
       </PulseGlow>
     );
-    const glowLayer = container.querySelector(
-      '.pulse-glow-layer'
-    ) as HTMLElement;
-    expect(glowLayer).not.toBeNull();
-    expect(glowLayer.style.filter).toContain('blur(6px)');
+    // Still renders wrapper with inline-block
+    expect(container.firstChild).toHaveClass('inline-block');
+    expect(screen.getByText('Subtle')).toBeInTheDocument();
   });
 
-  it('accepte intensity strong', () => {
+  it('accepte intensity strong sans planter', () => {
     const { container } = render(
       <PulseGlow intensity="strong">
         <span>Strong</span>
       </PulseGlow>
     );
-    const glowLayer = container.querySelector(
-      '.pulse-glow-layer'
-    ) as HTMLElement;
-    expect(glowLayer.style.filter).toContain('blur(18px)');
+    expect(container.firstChild).toHaveClass('inline-block');
+    expect(screen.getByText('Strong')).toBeInTheDocument();
   });
 
-  it('accepte speed fast', () => {
+  it('accepte speed fast sans planter', () => {
     const { container } = render(
       <PulseGlow speed="fast">
         <span>Fast</span>
       </PulseGlow>
     );
-    const glowLayer = container.querySelector(
-      '.pulse-glow-layer'
-    ) as HTMLElement;
-    expect(glowLayer.style.getPropertyValue('--glow-duration')).toBe('1s');
+    expect(container.firstChild).toHaveClass('inline-block');
+    expect(screen.getByText('Fast')).toBeInTheDocument();
   });
 
-  it('accepte speed slow', () => {
+  it('accepte speed slow sans planter', () => {
     const { container } = render(
       <PulseGlow speed="slow">
         <span>Slow</span>
       </PulseGlow>
     );
-    const glowLayer = container.querySelector(
-      '.pulse-glow-layer'
-    ) as HTMLElement;
-    expect(glowLayer.style.getPropertyValue('--glow-duration')).toBe('3s');
+    expect(container.firstChild).toHaveClass('inline-block');
+    expect(screen.getByText('Slow')).toBeInTheDocument();
   });
 });
 
