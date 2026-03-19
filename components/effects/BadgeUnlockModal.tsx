@@ -5,11 +5,13 @@
  * ISO/IEC 25010 - Célébration des accomplissements
  */
 
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { useGsapEffects } from '@/hooks/useGsapEffects';
+import Particles from '@tsparticles/react';
+import { useParticlesEngine } from '@/hooks/useParticlesEngine';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { confettiConfig } from '@/lib/animations';
 import { LottieAnimation } from './LottieAnimation';
 import { BadgeIcon, type BadgeId } from './BadgeIcon';
 import { MagicButton } from './MagicButton';
@@ -50,28 +52,8 @@ export function BadgeUnlockModal({
   badge,
 }: BadgeUnlockModalProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const badgeRef = useRef<HTMLDivElement>(null);
-  const { confettiExplosion, badgeUnlock, glowPulse } = useGsapEffects();
+  const engineReady = useParticlesEngine();
   const { shouldAnimate } = useReducedMotion();
-
-  useEffect(() => {
-    if (open && badge && shouldAnimate) {
-      // Lancer confetti
-      if (containerRef.current) {
-        confettiExplosion(containerRef.current, { count: 80 });
-      }
-      // Animation badge
-      if (badgeRef.current) {
-        badgeUnlock(badgeRef.current);
-        const cleanup = glowPulse(badgeRef.current, {
-          color: badge.rarity === 'legendary' ? '#ffd700' : '#ff69b4',
-          intensity: 1.5,
-        });
-        return cleanup;
-      }
-    }
-    return undefined;
-  }, [open, badge, shouldAnimate, confettiExplosion, badgeUnlock, glowPulse]);
 
   if (!badge) return null;
 
@@ -87,7 +69,15 @@ export function BadgeUnlockModal({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-              />
+              >
+                {open && badge && engineReady && shouldAnimate && (
+                  <Particles
+                    id="badge-confetti"
+                    options={confettiConfig}
+                    className="absolute inset-0"
+                  />
+                )}
+              </motion.div>
             </DialogPrimitive.Overlay>
             <DialogPrimitive.Content asChild forceMount>
               <motion.div
@@ -115,12 +105,12 @@ export function BadgeUnlockModal({
 
                 {/* Badge */}
                 <motion.div
-                  ref={badgeRef}
                   className={cn(
                     'mx-auto my-8 w-32 h-32 rounded-full flex items-center justify-center',
                     'bg-gradient-to-br shadow-2xl',
                     rarityColors[badge.rarity],
-                    rarityGlow[badge.rarity]
+                    rarityGlow[badge.rarity],
+                    shouldAnimate && 'animate-answer-pop pulse-glow-layer'
                   )}
                   initial={{ scale: 0, rotate: -180 }}
                   animate={{

@@ -58,12 +58,18 @@ vi.mock('@/hooks/useReducedMotion', () => ({
   }),
 }));
 
-vi.mock('@/hooks/useGsapEffects', () => ({
-  useGsapEffects: () => ({
-    confettiExplosion: vi.fn(),
-    badgeUnlock: vi.fn(),
-    glowPulse: vi.fn(() => () => {}),
-  }),
+vi.mock('@/hooks/useParticlesEngine', () => ({
+  useParticlesEngine: () => true,
+}));
+
+vi.mock('@tsparticles/react', () => ({
+  default: ({ id, className }: { id: string; className?: string }) => (
+    <div data-testid="tsparticles" data-id={id} className={className} />
+  ),
+}));
+
+vi.mock('@/lib/animations', () => ({
+  confettiConfig: {},
 }));
 
 vi.mock('@/components/effects/LottieAnimation', () => ({
