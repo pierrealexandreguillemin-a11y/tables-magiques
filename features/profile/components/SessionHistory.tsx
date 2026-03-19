@@ -70,10 +70,11 @@ export function SessionHistory({ sessions, isLoading }: SessionHistoryProps) {
       </h2>
       <ScrollReveal variant="fade-up" threshold={0.2}>
         <div className="space-y-3">
-          {sessions.map((session) => (
+          {sessions.map((session, index) => (
             <div
               key={session.id}
-              className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700 rounded-xl"
+              className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700 rounded-xl animate-fade-up"
+              style={{ '--delay': `${index * 0.1}s` } as React.CSSProperties}
             >
               <div className="flex items-center gap-3">
                 <span className="text-2xl">{getModeEmoji(session.mode)}</span>

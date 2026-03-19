@@ -59,13 +59,14 @@ export function ProgressChart({ tables, isLoading }: ProgressChartProps) {
 
       <ScrollReveal variant="fade-up" threshold={0.3}>
         <div className="grid grid-cols-5 gap-3">
-          {tables.map((table) => (
+          {tables.map((table, index) => (
             <div
               key={table.table}
-              className={`relative p-3 rounded-xl text-center hover-lift ${getProgressBg(
+              className={`relative p-3 rounded-xl text-center hover-lift animate-fade-scale ${getProgressBg(
                 table.accuracy,
                 table.mastered
               )}`}
+              style={{ '--delay': `${index * 0.05}s` } as React.CSSProperties}
             >
               {/* Badge maitrise */}
               {table.mastered && (
