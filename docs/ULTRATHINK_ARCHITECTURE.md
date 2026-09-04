@@ -1075,10 +1075,10 @@ npm run quality:duplication  # Code duplique
 
 ### B. Sources Documentation
 
-- [EFFECTS_VISUAL_MAP.md](./EFFECTS_VISUAL_MAP.md) - Architecture 42 composants
-- [EFFECTS_SPECIFICATIONS.md](./EFFECTS_SPECIFICATIONS.md) - Specs techniques
+- [EFFECTS_VISUAL_MAP.md](./archive/effects-2025/EFFECTS_VISUAL_MAP.md) - Architecture 42 composants
+- [EFFECTS_SPECIFICATIONS.md](./archive/effects-2025/EFFECTS_SPECIFICATIONS.md) - Specs techniques
 - [KIDS_ANIMATION_BEST_PRACTICES.md](./KIDS_ANIMATION_BEST_PRACTICES.md) - Guidelines UX
-- [EFFECTS_CODE_EXAMPLES.md](./EFFECTS_CODE_EXAMPLES.md) - Code pret a copier
+- [EFFECTS_CODE_EXAMPLES.md](./archive/effects-2025/EFFECTS_CODE_EXAMPLES.md) - Code pret a copier
 - [ICON_LIBRARIES_RESEARCH.md](./ICON_LIBRARIES_RESEARCH.md) - Bibliotheques recommandees
 
 ### C. References Externes
