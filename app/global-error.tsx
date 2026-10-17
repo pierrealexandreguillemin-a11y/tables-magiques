@@ -134,6 +134,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
             </button>
 
             <button
+              // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- hard reload is intended: it discards the client state that crashed
               onClick={() => (window.location.href = '/')}
               style={{
                 padding: '12px 24px',

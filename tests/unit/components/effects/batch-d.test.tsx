@@ -444,7 +444,6 @@ describe('ToastProvider', () => {
   });
 });
 
-/* eslint-disable react-hooks/globals */
 describe('useToastContext', () => {
   afterEach(() => vi.restoreAllMocks());
 

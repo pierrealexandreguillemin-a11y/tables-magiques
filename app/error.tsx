@@ -69,6 +69,7 @@ export default function Error({ error, reset }: ErrorProps) {
           </Button>
           <Button
             variant="outline"
+            // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- hard reload is intended: it discards the client state that crashed
             onClick={() => (window.location.href = '/')}
           >
             Retour a l&apos;accueil
