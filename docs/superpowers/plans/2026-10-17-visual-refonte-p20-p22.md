@@ -120,6 +120,20 @@
 
 ### Task 5 (P22): Replace tsParticles — parity checkpoint first
 
+**Design (2026-10-17, after reading the three uses):** two mechanisms, not three.
+
+| Use                                                 | tsParticles today                                                                                                                                                                                                              | Replacement                                                       |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `FairyBackground` (home, practice)                  | 40 five-point stars, sizes 3-8 px, colours yellow/white/pink/violet, opacity 0.5-1 oscillating, random drift 0.5 px/frame, bounce on edges, twinkle, gold glow (shadow blur 10), fpsLimit 30, pause on blur / outside viewport | one canvas star-field engine, preset `fairy`                      |
+| `ParticlesBackground preset="sparkles"` (challenge) | 30 stars per 600x600 px, sizes 1-3, gold/white/pink, opacity 0-1 oscillating fast, drift 0.3                                                                                                                                   | same engine, preset `sparkles`                                    |
+| `SuccessExplosion`, `BadgeUnlockModal`              | confetti emitter at top, 10 particles / 100 ms, squares + circles, gravity, rotate + tilt, life 3 s                                                                                                                            | `canvas-confetti` 1.9.4 (ISC) fired as a stream from the top band |
+
+Files: `lib/animations/canvas/starField.ts` (pure particle model + render loop, injectable random
+for tests), `lib/animations/canvas/starFieldPresets.ts` (colours from `lib/animations/colors.ts`),
+`components/effects/StarField.tsx` (canvas, DPR, resize, visibility + viewport pause, reduced
+motion = one static frame), `lib/animations/canvas/confettiStream.ts`. Parity checkpoint: both
+builds served side by side in the user's Chrome (iframes), light and dark.
+
 Presets actually used (2026-10-17): `sparkles` (ChallengePage), `FairyBackground` (PracticePage, HomePage), `confetti` via `SuccessExplosion` / `BadgeUnlockModal`. `stars`, `snow`, `bubbles` are unused → deleted.
 
 **Files:**
