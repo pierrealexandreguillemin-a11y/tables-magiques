@@ -7,14 +7,14 @@
  * the gzip size (same method: zlib on the built file) of the scripts the page fetched:
  * loadKB = scripts finished before the load event (critical path), idleKB = all scripts
  * once the network is idle (includes deliberate post-render preloads).
- * --max thresholds apply to loadKB.
+ * --budget: fail (exit 1) when a route exceeds its loadKB or idleKB budget.
  *
  * Usage (after npm run build):
- *   node scripts/measure-first-load.mjs [--max /=300 --max /practice=320]
+ *   node scripts/measure-first-load.mjs [--budget perf-budget.json]
  * The script starts its own `next start` on a free port and stops it, so a stale
  * server can never answer with an older build. --base <url> measures an external server instead.
  *
- * Writes reports/first-load.json. Exit 1 if a --max threshold is exceeded.
+ * Writes reports/first-load.json.
  */
 
 import { chromium } from '@playwright/test';
@@ -23,18 +23,16 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createServer } from 'node:net';
 import { gzipSync } from 'node:zlib';
+import { checkBudget } from './perf-budget.mjs';
 
 const ROUTES = ['/', '/practice', '/challenge', '/profile', '/settings'];
 const STATIC_PREFIX = '/_next/static/';
 
 function parseArgs(argv) {
-  const args = { base: null, max: {} };
+  const args = { base: null, budget: null };
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === '--base') args.base = argv[++i];
-    if (argv[i] === '--max') {
-      const [route, kb] = argv[++i].split('=');
-      args.max[route] = Number(kb);
-    }
+    if (argv[i] === '--budget') args.budget = argv[++i];
   }
   return args;
 }
@@ -87,7 +85,10 @@ async function measureRoute(browser, base, route) {
       .getEntriesByType('resource')
       .filter((e) => new URL(e.name).pathname.startsWith(prefix))
       .filter((e) => e.name.endsWith('.js'))
-      .map((e) => ({ url: e.name, beforeLoad: e.responseEnd <= nav.loadEventStart }));
+      .map((e) => ({
+        url: e.name,
+        beforeLoad: e.responseEnd <= nav.loadEventStart,
+      }));
   }, STATIC_PREFIX);
   await page.close();
   const unique = [...new Map(entries.map((e) => [e.url, e])).values()];
@@ -102,9 +103,10 @@ async function measureRoute(browser, base, route) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  const server = args.base ? { base: args.base, stop: () => {} } : await startServer();
+  const server = args.base
+    ? { base: args.base, stop: () => {} }
+    : await startServer();
   const { base } = server;
-  const { max } = args;
   const browser = await chromium.launch();
   const routes = {};
   try {
@@ -116,21 +118,25 @@ async function main() {
     server.stop();
   }
 
-  const commit = execFileSync('git', ['rev-parse', '--short', 'HEAD']).toString().trim();
+  const commit = execFileSync('git', ['rev-parse', '--short', 'HEAD'])
+    .toString()
+    .trim();
   const report = { date: new Date().toISOString(), commit, routes };
   mkdirSync('reports', { recursive: true });
-  writeFileSync('reports/first-load.json', `${JSON.stringify(report, null, 2)}\n`);
+  writeFileSync(
+    'reports/first-load.json',
+    `${JSON.stringify(report, null, 2)}\n`
+  );
 
   console.log(`First-load JS (gzip) — commit ${commit}`);
   console.table(routes);
 
-  const failures = Object.entries(max).filter(
-    ([route, kb]) => routes[route] && routes[route].loadKB > kb
-  );
-  for (const [route, kb] of failures) {
-    console.error(`❌ ${route}: ${routes[route].loadKB} KB > ${kb} KB`);
-  }
-  process.exit(failures.length > 0 ? 1 : 0);
+  if (!args.budget) return;
+  const budget = JSON.parse(readFileSync(args.budget, 'utf8')).routes;
+  const failures = checkBudget(routes, budget);
+  for (const failure of failures) console.error(`❌ ${failure}`);
+  if (failures.length > 0) process.exit(1);
+  console.log(`✅ within ${args.budget}`);
 }
 
 main().catch((error) => {

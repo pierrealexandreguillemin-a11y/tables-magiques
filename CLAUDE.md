@@ -17,8 +17,8 @@ npm run test:e2e:visual:update # Update visual baselines
 npm run lint         # ESLint
 npm run format:check # Prettier
 npm run quality:circular     # Madge zero circular deps
-npm run quality:bundle-size  # Bundle size guard (560KB threshold, sum of all chunks)
-npm run quality:first-load   # Gzip JS per route, before load / at idle (after build)
+npm run quality:bundle-size  # Sum of all chunks (informative, not a gate)
+npm run quality:first-load   # GATE: gzip JS per route before load / at idle vs perf-budget.json (after build)
 npm run test:e2e:local       # Visual regression vs a LOCAL build (see playwright.local.config.ts)
 ```
 
@@ -28,7 +28,7 @@ npm run test:e2e:local       # Visual regression vs a LOCAL build (see playwrigh
 - `features/` — Modules metier (game, home, settings, auth, onboarding)
 - `components/effects/` — Composants d'animation reutilisables
 - `components/ui/` — Composants UI de base (shadcn)
-- `lib/animations/` — Stack d'animation (Framer Motion, tsParticles, Lottie, CSS)
+- `lib/animations/` — Stack d'animation (motion, tsParticles, Lottie, CSS)
 - `lib/animations/colors.ts` — Palettes de couleurs partagees (source unique)
 - `lib/animations/lazy.tsx` — Dynamic imports des composants lourds (~270KB economises)
 - `styles/animations.css` — Keyframes CSS + classes utilitaires GPU-safe
@@ -50,9 +50,15 @@ npm run test:e2e:local       # Visual regression vs a LOCAL build (see playwrigh
 - **Easings**: `var(--ease-spring)` ou `var(--ease-smooth)` de tokens.css — jamais hardcoder cubic-bezier
 - **GSAP**: supprime completement (Phase 12)
 
-### Framer Motion — usages restants (legitimes)
+### motion (ex-Framer Motion) — usages restants (legitimes)
 
-FM est reserve aux cas ou CSS ne suffit pas :
+Paquet `motion` 14. Rendre `m.*` (`import * as m from 'motion/react-m'`), hooks depuis
+`motion/react`. `app/providers.tsx` : `LazyMotion strict`, features `domMax` chargees en async
+(`lib/animations/framer/loadFeatures.ts`; domMax car Toast utilise `layout`). Importer `motion`
+ou `framer-motion` est refuse par ESLint (gate `tests/unit/lint/motion-imports.test.ts`).
+Mock de test partage : `tests/utils/motionMock.tsx`.
+
+motion est reserve aux cas ou CSS ne suffit pas :
 
 - **AnimatePresence mount/unmount**: modals, toasts, phase transitions (practice/challenge)
 - **useSpring/useTransform**: NumberReveal (compteur anime avec physique spring)
@@ -77,4 +83,5 @@ Tout le reste utilise CSS — voir `styles/animations.css`.
 - `next.config.ts` a le React Compiler active (memoization automatique)
 - 1398 tests (76 fichiers), coverage ~90%
 - Zero dependances circulaires (madge verifie)
-- Bundle size guard: 547 KB gzipped (2026-10-17), threshold 560 KB
+- Budget JS par route (gate CI) : `perf-budget.json`, mesure + 5 %, a n'abaisser qu'avec une
+  mesure. Historique : `docs/perf/first-load-history.md`

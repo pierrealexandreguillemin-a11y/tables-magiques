@@ -44,8 +44,18 @@ jobs:
       - name: Build
         run: npx next build
 
-      - name: Bundle size check
+      # Gate: gzipped JS each route really loads (before load / at idle), see perf-budget.json.
+      # The sum of every emitted chunk grows with code splitting, so it is reported, not gated
+      # (decision 2026-10-17, docs/perf/first-load-history.md).
+      - name: Install Chromium for first-load measurement
+        run: npx playwright install --with-deps chromium
+
+      - name: First-load JS budget per route
+        run: npm run quality:first-load
+
+      - name: Bundle size (informative, sum of all chunks)
         run: bash scripts/check-bundle-size.sh
+        continue-on-error: true
 
   lighthouse:
     name: Lighthouse Audit

@@ -22,7 +22,7 @@
     "test:e2e:local": "playwright test -c playwright.local.config.ts",
     "test:e2e:local:update": "playwright test -c playwright.local.config.ts --update-snapshots",
     "quality:bundle-size": "bash scripts/check-bundle-size.sh",
-    "quality:first-load": "node scripts/measure-first-load.mjs",
+    "quality:first-load": "node scripts/measure-first-load.mjs --budget perf-budget.json",
     "quality:circular": "madge --circular --extensions ts,tsx lib app components features hooks",
     "quality:duplication": "jscpd lib app components --reporters html --output reports/duplication",
     "quality:verify-commits": "bash scripts/verify-commits.sh",
