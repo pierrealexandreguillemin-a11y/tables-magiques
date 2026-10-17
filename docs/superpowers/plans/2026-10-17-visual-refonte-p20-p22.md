@@ -28,9 +28,11 @@ Done:
 
 Waiting on the user:
 
-1. P22 parity verdict (harness on `http://127.0.0.1:8766/index.html`): merge or iterate.
-2. A2 mascot: better than version 1? Open points: curls may read as pool noodles, no muzzle in
-   profile, contrast only partly fixed (product call: darker backdrop or less white body).
+1. P22 parity, **round 2** (harness on `http://127.0.0.1:8766/index.html`). Round 1 (the user's
+   daughter): canvas lost 3 of 4, "less colour". Fixed: per-star opacity speed (real parity gap
+   with tsParticles), even colour spread; see `docs/spikes/particles-parity-2026-10/VERDICT.md`.
+2. Mascot **A3 vs A2** (board on `http://127.0.0.1:8765/board.html`). A2 approved; A3 = hair-like
+   mane as requested. Still open: contrast (product call: darker backdrop or less white body).
 
 Next, in order:
 
