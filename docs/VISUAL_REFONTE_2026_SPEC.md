@@ -91,6 +91,11 @@ cils de l'œil lointain qui dépassent du bord de la tête, bouche décentrée, 
 modelé, crinière en boudins lisses plutôt qu'en boucles, spirale de la corne peu lisible, contraste
 faible (blanc nacré sur fond pastel). Chaque itération repasse devant l'utilisateur.
 
+Suivi (2026-10-17) : A2 corrige les cinq premiers défauts et est validée (« A2 mieux que la
+version 1 ») ; le profil sans museau est accepté (« effet cute »). Le contraste est clos par
+l'utilisateur : « le corps de la licorne validée est ok ». A3 (crinière en mèches) attend son
+verdict face à A2 (`docs/spikes/style-2026-10/VERDICT.md`).
+
 Re-rendu : `"/c/Program Files/Blender Foundation/Blender 5.2/blender.exe" -b --python
 scripts/blender/chibi_unicorn.py -- docs/spikes/style-2026-10/renders` (CPU Ryzen 5 5600H, ~2 min,
 1024 px, 160 échantillons ; `--preview` ≈ 10 s en 512 px).

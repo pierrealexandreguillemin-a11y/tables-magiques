@@ -14,7 +14,8 @@
 3. Body reads as a plain pillar under the head.
 4. Mane and tail are smooth lumps, not curls.
 5. Horn spiral barely readable.
-6. Low contrast: pearl white on a pastel background.
+6. Low contrast: pearl white on a pastel background. **Closed by the user (2026-10-17): "le
+   corps de la licorne validée est ok"** — body colour and contrast stay as in A2/A3.
 
 Next: P23 plan in `docs/VISUAL_REFONTE_2026_SPEC.md` §5.
 
