@@ -54,3 +54,5 @@ tests/e2e/.auth/
 
 # brand screenshots used as style references: copyrighted, never in the public repo
 /docs/spikes/style-2026-10/ref-*.png
+/docs/spikes/style-2026-10/renders/iterations/
+__pycache__/

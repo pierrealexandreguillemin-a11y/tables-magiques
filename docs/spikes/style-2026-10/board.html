@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Choix du style mascotte</title>
+    <style>
+      :root {
+        --bg: #faf7fc;
+        --ink: #2a2233;
+        --muted: #6d6478;
+        --card: #fff;
+        --line: #e8e0ef;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 32px 16px 64px;
+      }
+      h1 {
+        font-size: 28px;
+        margin: 0 0 4px;
+      }
+      h2 {
+        font-size: 20px;
+        margin: 40px 0 8px;
+      }
+      p {
+        color: var(--muted);
+        margin: 0 0 16px;
+        max-width: 70ch;
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      }
+      .duo {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      }
+      figure {
+        margin: 0;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      figure img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      figcaption {
+        padding: 10px 14px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      figcaption b {
+        color: var(--ink);
+        font-size: 18px;
+      }
+      .big figcaption b {
+        font-size: 28px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Mascotte 3D : choix forcé</h1>
+      <p>
+        Deux candidates, sans étiquette d'origine (même lumière, même fond, même
+        caméra). Pour chacune, une seule question :
+        <b>« enfantin et digne de la barre ci-dessous, oui ou non ? »</b> Puis :
+        laquelle des deux ?
+      </p>
+
+      <h2>Les candidates</h2>
+      <div class="duo big">
+        <figure>
+          <img src="renders/A_unicorn_gradient.png" alt="Candidate 1" />
+          <figcaption><b>1</b></figcaption>
+        </figure>
+        <figure>
+          <img src="renders/B_platformer_gradient.png" alt="Candidate 2" />
+          <figcaption><b>2</b></figcaption>
+        </figure>
+      </div>
+
+      <h2>
+        La barre : références « 3D mignonne » (sites officiels, 2026-10-17)
+      </h2>
+      <p>
+        Aucune app éducative vérifiée n'utilise de mascotte 3D : la référence
+        vient des jeux. Captures locales, jamais versionnées (marques déposées).
+      </p>
+      <div class="grid">
+        <figure>
+          <img src="ref-kirby.png" alt="Kirby" />
+          <figcaption>Kirby — sphères, vinyle, fond lilas→rose→cyan</figcaption>
+        </figure>
+        <figure>
+          <img
+            src="ref-hellokitty-island.png"
+            alt="Hello Kitty Island Adventure"
+          />
+          <figcaption>
+            Hello Kitty Island Adventure — peluche/vinyle mat, pastel
+          </figcaption>
+        </figure>
+        <figure>
+          <img src="ref-animalcrossing.png" alt="Animal Crossing" />
+          <figcaption>
+            Animal Crossing NH — chibi 2 têtes, mat « jouet »
+          </figcaption>
+        </figure>
+        <figure>
+          <img src="ref-astrobot.png" alt="Astro Bot" />
+          <figcaption>Astro Bot — vinyle brillant, grosse tête</figcaption>
+        </figure>
+        <figure>
+          <img src="ref-tocaboca.png" alt="Toca Boca" />
+          <figcaption>Toca Boca — carte « I'm a kid » en 3D chibi</figcaption>
+        </figure>
+      </div>
+    </main>
+  </body>
+</html>
