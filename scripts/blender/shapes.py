@@ -302,6 +302,89 @@ def curl_path(start, tangent, arcs, samples_per_turn=64):
     return pts
 
 
+def catmull_rom(points, samples_per_segment=24):
+    """Smooth polyline through every control point (uniform Catmull-Rom, end points repeated)."""
+    p = [Vector(c) for c in points]
+    p = [p[0]] + p + [p[-1]]
+    out = [p[1].copy()]
+    for k in range(1, len(p) - 2):
+        p0, p1, p2, p3 = p[k - 1], p[k], p[k + 1], p[k + 2]
+        for i in range(1, samples_per_segment + 1):
+            s = i / samples_per_segment
+            out.append(0.5 * (2 * p1 + (p2 - p0) * s + (2 * p0 - 5 * p1 + 4 * p2 - p3) * s * s + (3 * p1 - p0 - 3 * p2 + p3) * s**3))
+    return out
+
+
+def follow_frames(points, up, follow=0.3):
+    """Per-point (tangent, normal) along a polyline: the normal is transported with the curve
+    (rotation-minimising, no flips) and nudged towards up(p) projected off the tangent. The sign
+    of up is ignored (it suits symmetric cross-sections)."""
+    n = len(points)
+    frames, u = [], None
+    for i, p in enumerate(points):
+        t = (points[min(i + 1, n - 1)] - points[max(i - 1, 0)]).normalized()
+        hint = Vector(up(p))
+        hint = hint - t * hint.dot(t)
+        if u is None:
+            u = hint.normalized()
+        else:
+            u = (u - t * u.dot(t)).normalized()
+            if hint.length > 1e-4:
+                hint.normalize()
+                if hint.dot(u) < 0:
+                    hint = -hint
+                u = u.lerp(hint, follow).normalized()
+        frames.append((t, u))
+    return frames
+
+
+def sweep(name, points, half_width, half_height, up, twist=None, section=None, tip=1.0, segments=24, parent=None):
+    """Closed tube along `points` with an elliptical cross-section: half_width(t) / half_height(t)
+    at point fraction t (= arc-length fraction for `resample`d points), the height axis following
+    up(p) (see follow_frames), rolled by twist(t) radians. section(theta) -> (x, y) reshapes the
+    unit circle (default: ellipse). Pointed caps at both ends; the tip cone is `tip` x the last
+    radius long. A hair lock is a flattened sweep whose radii shrink towards t = 1."""
+    import bmesh
+
+    pts = [Vector(p) for p in points]
+    n = len(pts)
+    section = section or (lambda th: (math.cos(th), math.sin(th)))
+    rim = [section(2 * math.pi * j / segments) for j in range(segments)]
+    verts = []
+    for i, (p, (t, u)) in enumerate(zip(pts, follow_frames(pts, up))):
+        s = i / (n - 1)
+        a = twist(s) if twist else 0.0
+        b = t.cross(u)
+        b, u = b * math.cos(a) + u * math.sin(a), u * math.cos(a) - b * math.sin(a)
+        w, h = half_width(s), half_height(s)
+        for j in range(segments):
+            cx, cy = rim[j]
+            verts.append(p + b * (w * cx) + u * (h * cy))
+    faces = []
+    for i in range(n - 1):
+        for j in range(segments):
+            a, c = i * segments + j, i * segments + (j + 1) % segments
+            faces.append((a, c, c + segments, a + segments))
+    t0, t1 = (pts[1] - pts[0]).normalized(), (pts[-1] - pts[-2]).normalized()
+    i_root, i_tip = len(verts), len(verts) + 1
+    verts.append(pts[0] - t0 * 0.5 * min(half_width(0.0), half_height(0.0)))
+    verts.append(pts[-1] + t1 * tip * max(half_width(1.0), half_height(1.0), 0.004))
+    last = (n - 1) * segments
+    for j in range(segments):
+        faces.append((i_root, (j + 1) % segments, j))
+        faces.append((i_tip, last + j, last + (j + 1) % segments))
+    me = bpy.data.meshes.new(name)
+    me.from_pydata([tuple(v) for v in verts], [], faces)
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(me)
+    bm.free()
+    obj = bpy.data.objects.new(name, me)
+    link(obj, parent)
+    return set_smooth(obj)
+
+
 def join(objs, name):
     """Merge mesh objects into the first one (renamed `name`); keeps its parent."""
     bpy.ops.object.select_all(action="DESELECT")
