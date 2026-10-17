@@ -44,7 +44,7 @@ Baseline re-mesurée le 2026-10-17 (commit `12ead03`) : `npm run build && bash s
 Le poids au premier chargement par route se mesure à part (plan
 `docs/superpowers/plans/2026-10-17-visual-refonte-p20-p22.md`, tâche 2).
 
-## 3. Esthétique des assets 3D — à trancher
+## 3. Esthétique des assets 3D — tranchée le 2026-10-17
 
 Les rendus de septembre 2026 sur Suzanne (`docs/spikes/blender-2026-09/`) étaient jugés « uncanny ».
 Refaits le 2026-09-04 sur de **vrais assets CC0** (Quaternius, pack _Ultimate Animated Animals_,
@@ -76,7 +76,24 @@ Pistes ouvertes :
 Méthode de décision : 3 à 6 références réelles d'apps enfant choisies par l'utilisateur comme
 barre, puis rendus des candidats sur de vrais assets, présentés dans son navigateur en positions
 permutées, verdict en choix forcé (cf. wiki `topics/llm-tooling/cookbook-frontend-anti-slop-quatre-couches.md`).
-Matériel dans `docs/spikes/style-2026-10/`. **P23 reste bloquée jusqu'à ce verdict.**
+Matériel dans `docs/spikes/style-2026-10/`.
+
+**Verdict utilisateur du 2026-10-17 (choix forcé, `docs/spikes/style-2026-10/board.html`) :**
+« candidat 1 est la bonne piste ». Candidat 1 = **licorne chibi procédurale**, modélisée par script
+Blender à partir de métaballes et de sphères haute résolution (`scripts/blender/chibi_unicorn.py`,
+modèle à nous, aucune licence tierce). Candidat 2 (personnage Quaternius restylé) écarté :
+silhouette humanoïde, facettes. La barre de référence reste celle des jeux (Kirby, Hello Kitty
+Island Adventure, Animal Crossing, Astro Bot), décrite dans `docs/spikes/style-2026-10/RESEARCH.md`.
+
+« Bonne piste » n'est pas « validé tel quel » : défauts relevés sur le rendu
+(`docs/spikes/style-2026-10/renders/A_unicorn_gradient.png`) et à corriger avant production :
+cils de l'œil lointain qui dépassent du bord de la tête, bouche décentrée, corps « pilier » sans
+modelé, crinière en boudins lisses plutôt qu'en boucles, spirale de la corne peu lisible, contraste
+faible (blanc nacré sur fond pastel). Chaque itération repasse devant l'utilisateur.
+
+Re-rendu : `"/c/Program Files/Blender Foundation/Blender 5.2/blender.exe" -b --python
+scripts/blender/chibi_unicorn.py -- docs/spikes/style-2026-10/renders` (CPU Ryzen 5 5600H, ~2 min,
+1024 px, 160 échantillons ; `--preview` ≈ 10 s en 512 px).
 
 Commande rejouable (Blender 5.2 headless, pack décompressé dans `<pack>`) :
 
@@ -129,8 +146,13 @@ relevé.
 
 ### P23 — Pipeline Blender, mascotte, suppression Lottie
 
-- Style tranché en §3. Assets : mascotte (cheval blanc → licorne par ajout d'une corne modélisée,
-  ou renard), badges 3D en spin court.
+- Style tranché en §3 (2026-10-17) : mascotte = licorne chibi procédurale
+  (`scripts/blender/chibi_unicorn.py`). Étapes : (1) corriger les défauts listés en §3 et
+  re-valider avec l'utilisateur ; (2) rig + poses/expressions dont l'app a besoin (attente,
+  réussite, encouragement après erreur, célébration) ; (3) choisir le mode de diffusion :
+  pré-rendu vidéo/AVIF (0 KB de JS) ou three.js temps réel (`A_unicorn.glb`, chargé à la
+  demande ; le SSS ne survit pas à l'export glTF, à reproduire en matériau three.js), par une
+  mesure de poids et un choix forcé visuel ; (4) badges 3D en spin court, même langage de formes.
 - Pipeline : script Blender headless → PNG → ffmpeg AV1/VP9 + poster AVIF. Installer libavif et
   libwebp pour l'alpha Safari **avant** le premier asset livré.
 - Remplacer MagicLoader / BadgeIcon / ChallengePlaying (Lottie) par `<video>` + poster.
