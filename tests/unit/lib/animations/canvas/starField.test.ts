@@ -72,6 +72,28 @@ describe('createParticles', () => {
       expect(Math.hypot(p.vx, p.vy)).toBeLessThanOrEqual(PRESET.speed + 1e-9);
     }
   });
+
+  it('spreads colours evenly across the palette, whatever the random draw', () => {
+    // 2026-10-17 verdict: a 5-star panel drawn almost all yellow read as "less colourful".
+    const palette = { ...PRESET, colors: ['#a', '#b', '#c'] };
+    for (const seed of [1, 2, 3, 4]) {
+      const counts = new Map<string, number>();
+      for (const p of createParticles(palette, 400, 300, 7, seeded(seed))) {
+        counts.set(p.color, (counts.get(p.color) ?? 0) + 1);
+      }
+      expect([...counts.values()].sort()).toEqual([2, 2, 3]);
+    }
+  });
+
+  it('gives each star its own opacity speed, up to the preset maximum (tsParticles: speed x random)', () => {
+    const particles = createParticles(PRESET, 400, 300, 50, seeded(5));
+    const speeds = particles.map((p) => p.opacitySpeed);
+    for (const s of speeds) {
+      expect(s).toBeGreaterThanOrEqual(0);
+      expect(s).toBeLessThanOrEqual(PRESET.opacitySpeed);
+    }
+    expect(new Set(speeds).size).toBeGreaterThan(40);
+  });
 });
 
 describe('stepParticles', () => {

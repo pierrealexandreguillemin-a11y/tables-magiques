@@ -12,7 +12,7 @@ export interface StarFieldPreset {
   /** tsParticles size range in CSS px: valley radius, tips reach 2x */
   sizeRange: readonly [number, number];
   opacityRange: readonly [number, number];
-  /** Full opacity sweeps (min -> max) per second */
+  /** Max full opacity sweeps (min -> max) per second; each star gets a random share of it */
   opacitySpeed: number;
   /** Max drift speed in CSS px per second */
   speed: number;
@@ -34,6 +34,8 @@ export interface Particle {
   color: string;
   opacity: number;
   opacityDirection: 1 | -1;
+  /** This star's opacity sweeps per second (tsParticles: speed x random, not synced) */
+  opacitySpeed: number;
   /** Twinkle flash, 1 = full opacity, decays to 0 */
   twinkle: number;
 }
@@ -53,7 +55,10 @@ export function createParticles(
   count: number,
   random: Random
 ): Particle[] {
-  return Array.from({ length: count }, () => {
+  // Colours go round the palette from a random start: every colour is present in even
+  // shares, so a small field never comes out "all yellow" (verdict of 2026-10-17).
+  const colorOffset = Math.floor(random() * preset.colors.length);
+  return Array.from({ length: count }, (_, index) => {
     const angle = random() * Math.PI * 2;
     const speed = random() * preset.speed;
     return {
@@ -62,9 +67,10 @@ export function createParticles(
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
       size: between(random, preset.sizeRange),
-      color: preset.colors[Math.floor(random() * preset.colors.length)]!,
+      color: preset.colors[(colorOffset + index) % preset.colors.length]!,
       opacity: between(random, preset.opacityRange),
       opacityDirection: random() < 0.5 ? 1 : -1,
+      opacitySpeed: random() * preset.opacitySpeed,
       twinkle: 0,
     };
   });
@@ -86,7 +92,7 @@ export function stepParticles(
   random: Random
 ): void {
   const [minOpacity, maxOpacity] = preset.opacityRange;
-  const opacityStep = preset.opacitySpeed * dt * (maxOpacity - minOpacity);
+  const sweep = dt * (maxOpacity - minOpacity);
   for (const p of particles) {
     const x = bounce(p.x + p.vx * dt, p.vx, width);
     const y = bounce(p.y + p.vy * dt, p.vy, height);
@@ -95,7 +101,7 @@ export function stepParticles(
     p.y = y.position;
     p.vy = y.velocity;
 
-    p.opacity += p.opacityDirection * opacityStep;
+    p.opacity += p.opacityDirection * p.opacitySpeed * sweep;
     if (p.opacity >= maxOpacity || p.opacity <= minOpacity) {
       p.opacity = Math.min(maxOpacity, Math.max(minOpacity, p.opacity));
       p.opacityDirection = p.opacityDirection === 1 ? -1 : 1;
