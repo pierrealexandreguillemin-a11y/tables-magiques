@@ -47,3 +47,7 @@ next-env.d.ts
 test-results/
 playwright-report/
 tests/e2e/.auth/
+
+# local measurements (machine-specific)
+/reports/first-load.json
+/tests/e2e/__local_snapshots__/
