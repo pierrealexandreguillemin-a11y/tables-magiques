@@ -1,6 +1,6 @@
 # Refonte visuelle 2026 — Spécification (phases P20 → P24)
 
-> Statut : **spec v1, 2026-09-04**. Décisions validées par l'utilisateur le 2026-09-03 ; esthétique
+> Statut : **spec v1.1, 2026-10-17** (v1 du 2026-09-04). Décisions validées par l'utilisateur le 2026-09-03 ; esthétique
 > des assets 3D **à trancher** (§3). Rédigée en français car c'est un document de décision produit.
 
 ## 1. Cadre
@@ -33,6 +33,17 @@ bash scripts/check-bundle-size.sh      # attendu : "Bundle size (gzipped JS): ~5
 
 Le lazy-loading annoncé est en trompe-l'œil : les imports sont directs.
 
+**Constat du 2026-10-17** : `app/providers.tsx` enveloppe l'app dans `<LazyMotion features={domAnimation}>`,
+mais les 24 fichiers rendent `motion.*` et non `m.*`. Or `motion.*` embarque tout le jeu de fonctions,
+donc `LazyMotion` n'économise rien aujourd'hui (doc officielle : <https://motion.dev/docs/react-lazy-motion>,
+option `strict`). Vérification : `grep -rnoE "motion\.[a-z]+" --include=*.tsx app components features | wc -l`
+→ non nul ; `grep -rnoE "m\.[a-z]+" --include=*.tsx app components features | wc -l` → 0.
+
+Baseline re-mesurée le 2026-10-17 (commit `12ead03`) : `npm run build && bash scripts/check-bundle-size.sh`
+→ `525 KB`. Ce script additionne **tous** les chunks JS : un chargement différé ne le fait pas baisser.
+Le poids au premier chargement par route se mesure à part (plan
+`docs/superpowers/plans/2026-10-17-visual-refonte-p20-p22.md`, tâche 2).
+
 ## 3. Esthétique des assets 3D — à trancher
 
 Les rendus de septembre 2026 sur Suzanne (`docs/spikes/blender-2026-09/`) étaient jugés « uncanny ».
@@ -47,10 +58,25 @@ licence CC0 1.0 jointe dans `docs/spikes/blender-2026-09/real-assets/QUATERNIUS_
 | **clay** (lissage par angle 60°, mat)           | facettes fondues, doux               | nul                             | look pâte à modeler, très « app enfant 2026 »                              |
 | **toy** (lissage + brillance)                   | reflets plastique                    | nul                             | look figurine vernie                                                       |
 
-Recommandation : **clay**. Il gomme les facettes qui rappellent 2015, garde les couleurs franches
-pour les enfants, et le pipeline reste identique au lowpoly (un paramètre de shading). Le style toy
-ajoute des reflets qui bougent avec la rotation et pèsent plus en vidéo (AV1 compresse mal les
-hautes lumières). **Décision utilisateur attendue avant P23.**
+~~Recommandation : clay.~~ **Caduque.** Verdict utilisateur du 2026-09-04 sur les 6 rendus : aucun ne
+passe, « pas enfantin, pas conforme aux styles mentionnés ». Cause identifiée : clay et toy n'étaient
+qu'un changement de shading sur le même maillage low-poly à facettes, pas de vrais styles. Les
+proportions (animaux adultes, petites têtes) n'ont rien d'enfantin quel que soit le matériau.
+
+Pistes ouvertes :
+
+1. **Autres assets** aux proportions chibi (grosse tête, grands yeux, formes rondes) : packs mignons
+   Quaternius, Kenney, Poly Pizza (CC0 seulement).
+2. **Retravail Blender** des assets existants : remesh voxel + lissage pour arrondir, SSS et lumière
+   studio pastel pour un vrai clay, coat et reflets pour un vrai toy, ombre douce au sol, Cycles.
+   Leçon mesurée : SUBSURF sur du low-poly fait des bulles ; utiliser `shade_smooth_by_angle`.
+3. **Mascotte three.js temps réel** (levier accepté par l'utilisateur le 2026-10-17) : shading
+   toon ou clay, réactive aux réponses, chargée à la demande.
+
+Méthode de décision : 3 à 6 références réelles d'apps enfant choisies par l'utilisateur comme
+barre, puis rendus des candidats sur de vrais assets, présentés dans son navigateur en positions
+permutées, verdict en choix forcé (cf. wiki `topics/llm-tooling/cookbook-frontend-anti-slop-quatre-couches.md`).
+Matériel dans `docs/spikes/style-2026-10/`. **P23 reste bloquée jusqu'à ce verdict.**
 
 Commande rejouable (Blender 5.2 headless, pack décompressé dans `<pack>`) :
 
@@ -119,12 +145,21 @@ relevé.
 
 ## 6. Licences d'assets (règle)
 
-| Source                             | Licence                                                     | Usage        |
-| ---------------------------------- | ----------------------------------------------------------- | ------------ |
-| Quaternius                         | CC0 1.0 (vérifié dans le `License.txt` du pack, 2026-09-04) | oui          |
-| Kenney                             | à vérifier sur kenney.nl au premier téléchargement          | probable oui |
-| Poly Haven, ambientCG              | à vérifier sur le site à l'usage                            | probable oui |
-| Tout asset -NC, -ND, CC-BY-SA, GPL |                                                             | **non**      |
+| Source                             | Licence                                             | Usage                 |
+| ---------------------------------- | --------------------------------------------------- | --------------------- |
+| Quaternius                         | **QAL v1.0** depuis le 2026-08-28 (voir ci-dessous) | oui, rendus seulement |
+| Kenney                             | à vérifier sur kenney.nl au premier téléchargement  | probable oui          |
+| Poly Haven, ambientCG              | à vérifier sur le site à l'usage                    | probable oui          |
+| Tout asset -NC, -ND, CC-BY-SA, GPL |                                                     | **non**               |
+
+**Quaternius, relu à la source le 2026-10-17** (<https://quaternius.com/license.html>) : _Quaternius
+Asset License (QAL) v1.0_, « Last updated: 8/28/2026 ». Usage personnel, éducatif et commercial
+gratuit, « No attribution is required », mais « You may not extract, repackage, sublicense, sell, or
+otherwise redistribute the Assets ». La §7 dit que « the version in effect at the time you obtained
+the Assets governs your use of them ». Le pack _Ultimate Animated Animals_ téléchargé le 2026-09-04
+(donc après le 2026-08-28) contient pourtant un `License.txt` CC0 1.0. Lecture prudente retenue : on
+applique la QAL. Les rendus intégrés à l'app sont permis ; les fichiers 3D bruts ne sont **jamais**
+versionnés (dépôt GitHub). La licence se vérifie pack par pack.
 
 Seule la ligne Quaternius est vérifiée à la source. Les autres restent à confirmer sur le site
 émetteur avant tout téléchargement, et la licence doit être copiée à côté de l'asset.
