@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Parité particules</title>
+    <style>
+      :root {
+        --bg: #faf7fc;
+        --ink: #2a2233;
+        --muted: #6d6478;
+        --line: #e8e0ef;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+      main {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 24px 16px 64px;
+      }
+      h1 {
+        font-size: 26px;
+        margin: 0 0 4px;
+      }
+      h2 {
+        font-size: 19px;
+        margin: 32px 0 8px;
+      }
+      p {
+        color: var(--muted);
+        margin: 0 0 12px;
+        max-width: 80ch;
+      }
+      .bar {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 12px 0;
+      }
+      button {
+        font: inherit;
+        padding: 8px 14px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: #fff;
+        cursor: pointer;
+      }
+      .pair {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      @media (max-width: 700px) {
+        .pair {
+          grid-template-columns: 1fr;
+        }
+      }
+      .cell {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+        background: #fff;
+      }
+      .label {
+        padding: 6px 12px;
+        font-weight: 700;
+        font-size: 20px;
+      }
+      .label small {
+        font-weight: 400;
+        color: var(--muted);
+        font-size: 14px;
+        margin-left: 8px;
+      }
+      .stage {
+        position: relative;
+        height: 380px;
+        overflow: hidden;
+      }
+      iframe {
+        display: block;
+        width: 100%;
+        height: 520px;
+        border: 0;
+      }
+      .fairy {
+        background: linear-gradient(135deg, #fce7f3, #f3e8ff, #e0e7ff);
+      }
+      .dark .fairy {
+        background: linear-gradient(135deg, #0f172a, #3b0764, #1e1b4b);
+      }
+      .challenge {
+        background: linear-gradient(135deg, #f472b6, #f87171, #60a5fa);
+      }
+      .dark .challenge {
+        background: linear-gradient(135deg, #0f172a, #7f1d1d, #312e81);
+      }
+      .confetti {
+        background: rgba(0, 0, 0, 0.8);
+      }
+      .sparkle-layer {
+        position: absolute;
+        inset: 0;
+        opacity: 0.6;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>P22 : parité des particules</h1>
+      <p>
+        Pour chaque rangée, l'un des côtés est <b>tsParticles</b> (l'app
+        actuelle, configs exactes de <code>master</code>), l'autre le
+        <b>nouveau canvas</b>. Le côté est tiré au hasard à chaque chargement.
+        Question : <b>« le nouveau est-il au moins aussi beau ? »</b> Choisis
+        d'abord, puis clique sur Révéler.
+      </p>
+      <div class="bar">
+        <button id="theme">Basculer clair / sombre</button>
+        <button id="again">Relancer les confettis</button>
+        <button id="reveal">Révéler</button>
+      </div>
+
+      <h2>1. Fond féerique (accueil, pratique)</h2>
+      <div class="pair" data-row="fairy"></div>
+
+      <h2>2. Étincelles du mode défi</h2>
+      <div class="pair" data-row="sparkles"></div>
+
+      <h2>3. Confettis de célébration (bonne réponse, badge)</h2>
+      <div class="pair" data-row="confetti"></div>
+
+      <h2>4. L'accueil réel des deux builds</h2>
+      <p>
+        Mêmes pages, servies par les deux builds (<code>master</code> sur le
+        port 3201, branche P22 sur le port 3202).
+      </p>
+      <div class="pair" data-row="app"></div>
+    </main>
+    <script src="old.js"></script>
+    <script src="new.js"></script>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const only = params.get('only');
+      const KINDS = {
+        fairy: 'fairy',
+        sparkles: 'challenge',
+        confetti: 'confetti',
+      };
+      const key = {};
+      const confettiCells = [];
+
+      function cell(label, sideName) {
+        const el = document.createElement('div');
+        el.className = 'cell';
+        el.innerHTML = `<div class="label">${label}<small data-side hidden>${sideName}</small></div>`;
+        return el;
+      }
+
+      for (const row of document.querySelectorAll('.pair')) {
+        const name = row.dataset.row;
+        const oldFirst = Math.random() < 0.5;
+        const order = oldFirst ? ['old', 'new'] : ['new', 'old'];
+        key[name] = order;
+        order.forEach((side, index) => {
+          if (only && side !== only) return;
+          if (name === 'app' && params.has('noapp')) return;
+          const sideName =
+            side === 'old' ? 'tsParticles (actuel)' : 'canvas (nouveau)';
+          const c = cell(index === 0 ? 'A' : 'B', sideName);
+          if (name === 'app') {
+            const port = side === 'old' ? 3201 : 3202;
+            c.insertAdjacentHTML(
+              'beforeend',
+              `<iframe src="http://localhost:${port}/" title="Accueil ${index === 0 ? 'A' : 'B'}"></iframe>`
+            );
+            row.appendChild(c);
+            return;
+          }
+          const stage = document.createElement('div');
+          stage.className = `stage ${KINDS[name]}`;
+          const layer = document.createElement('div');
+          layer.style.cssText = 'position:absolute;inset:0';
+          if (name === 'sparkles') layer.className = 'sparkle-layer';
+          stage.appendChild(layer);
+          c.appendChild(stage);
+          row.appendChild(c);
+          const api = side === 'old' ? window.ParityOld : window.ParityNew;
+          if (name === 'confetti') confettiCells.push({ layer, api });
+          else api[name](layer);
+        });
+      }
+
+      let confettiHandles = [];
+      async function fireConfetti() {
+        for (const handle of confettiHandles) {
+          if (handle && typeof handle.destroy === 'function') handle.destroy();
+          if (handle && typeof handle.stop === 'function') handle.stop();
+        }
+        confettiHandles = [];
+        for (const { layer, api } of confettiCells) {
+          layer.replaceChildren();
+          confettiHandles.push(await api.confetti(layer));
+        }
+      }
+      fireConfetti();
+
+      document.getElementById('again').addEventListener('click', fireConfetti);
+      document
+        .getElementById('theme')
+        .addEventListener('click', () =>
+          document.body.classList.toggle('dark')
+        );
+      document.getElementById('reveal').addEventListener('click', () => {
+        document
+          .querySelectorAll('[data-side]')
+          .forEach((el) => (el.hidden = false));
+      });
+    </script>
+  </body>
+</html>

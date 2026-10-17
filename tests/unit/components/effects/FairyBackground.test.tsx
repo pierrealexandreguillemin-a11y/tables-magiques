@@ -2,39 +2,31 @@
  * Tests FairyBackground - TDD
  * ISO/IEC 29119 - Tests unitaires
  *
- * P0 Component - Fond magique feerie avec tsParticles
+ * P0 Component - Fond magique feerie (StarField canvas + nuages CSS)
  */
 
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { FairyBackground } from '@/components/effects/FairyBackground';
 
-// Mock tsParticles
-vi.mock('@tsparticles/react', () => ({
-  default: ({
-    id,
-    className,
-    'data-testid': testId,
-    options,
+// Mock StarField: the canvas engine is tested in tests/unit/lib/animations/canvas
+vi.mock('@/components/effects/StarField', () => ({
+  StarField: ({
+    preset,
+    baseCount,
+    disableAnimation,
   }: {
-    id: string;
-    className?: string;
-    'data-testid'?: string;
-    options?: { particles?: { number?: { value?: number } } };
+    preset: string;
+    baseCount: number;
+    disableAnimation?: boolean;
   }) => (
-    <div
-      id={id}
-      className={className}
-      data-testid={testId ?? 'particles-container'}
-      data-particle-count={options?.particles?.number?.value?.toString()}
+    <canvas
+      data-testid="particles-container"
+      data-preset={preset}
+      data-particle-count={String(baseCount)}
+      data-animated={String(!disableAnimation)}
     />
   ),
-  initParticlesEngine: vi.fn().mockResolvedValue(undefined),
-}));
-
-// Mock tsParticles slim engine
-vi.mock('@tsparticles/slim', () => ({
-  loadSlim: vi.fn().mockResolvedValue(undefined),
 }));
 
 describe('FairyBackground', () => {
@@ -96,7 +88,7 @@ describe('FairyBackground', () => {
     });
   });
 
-  describe('particles (etoiles tsParticles)', () => {
+  describe('etoiles (StarField)', () => {
     it('rend le conteneur particles apres initialisation', async () => {
       render(<FairyBackground />);
 
@@ -144,11 +136,13 @@ describe('FairyBackground', () => {
   });
 
   describe('reduced motion', () => {
-    it('accepte prop disableAnimation', () => {
+    it('fige les etoiles quand disableAnimation', () => {
       render(<FairyBackground disableAnimation />);
 
-      const container = screen.getByTestId('fairy-background');
-      expect(container).toBeInTheDocument();
+      expect(screen.getByTestId('particles-container')).toHaveAttribute(
+        'data-animated',
+        'false'
+      );
     });
   });
 

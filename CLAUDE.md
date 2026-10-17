@@ -28,12 +28,13 @@ npm run test:e2e:local       # Visual regression vs a LOCAL build (see playwrigh
 - `features/` — Modules metier (game, home, settings, auth, onboarding)
 - `components/effects/` — Composants d'animation reutilisables
 - `components/ui/` — Composants UI de base (shadcn)
-- `lib/animations/` — Stack d'animation (motion, tsParticles, Lottie, CSS)
+- `lib/animations/` — Stack d'animation (motion, canvas maison, Lottie, CSS)
+- `lib/animations/canvas/` — Rendus canvas : etoiles (`starField.ts` + presets), confettis (`confettiScatter.ts`)
 - `lib/animations/colors.ts` — Palettes de couleurs partagees (source unique)
 - `lib/animations/lazy.tsx` — Dynamic imports des composants lourds (~270KB economises)
 - `styles/animations.css` — Keyframes CSS + classes utilitaires GPU-safe
 - `styles/tokens.css` — Design tokens (couleurs, easings, timings, shadows)
-- `hooks/` — Hooks partages (useReducedMotion, useParticlesEngine, useRestartableAnimation, etc.)
+- `hooks/` — Hooks partages (useReducedMotion, useRestartableAnimation, etc.)
 - `types/` — Types TypeScript centralises
 
 ## Conventions animation
@@ -45,8 +46,8 @@ npm run test:e2e:local       # Visual regression vs a LOCAL build (see playwrigh
 - **Icon transitions**: CSS `.icon-rotate` (theme toggle, state changes)
 - **Progress bars**: CSS `.progress-fill` (transition: width)
 - **Animation triggers**: `useRestartableAnimation` hook (CSS class toggle via rAF)
-- **Particules etoiles**: tsParticles (canvas GPU, fpsLimit 30, pauseOnBlur: true)
-- **Celebrations**: tsParticles `confettiConfig` (remplace GSAP)
+- **Particules etoiles**: `StarField` (canvas maison, 30 fps, pause onglet cache / hors ecran, image fixe en mouvement reduit)
+- **Celebrations**: `ConfettiBurst` (canvas-confetti 1.9.4). tsParticles supprime le 2026-10-17 (P22)
 - **Easings**: `var(--ease-spring)` ou `var(--ease-smooth)` de tokens.css — jamais hardcoder cubic-bezier
 - **GSAP**: supprime completement (Phase 12)
 

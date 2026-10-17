@@ -27,21 +27,8 @@ vi.mock('@/hooks/useReducedMotion', () => ({
   }),
 }));
 
-vi.mock('@/hooks/useParticlesEngine', () => ({
-  useParticlesEngine: () => true,
-}));
-
-vi.mock('@tsparticles/react', () => ({
-  default: ({ id, className }: { id: string; className?: string }) => (
-    <div data-testid="tsparticles" data-id={id} className={className} />
-  ),
-}));
-
-vi.mock('@/lib/animations/particles/configs', async (importOriginal) => ({
-  ...(await importOriginal<
-    typeof import('@/lib/animations/particles/configs')
-  >()),
-  confettiConfig: {},
+vi.mock('@/components/effects/ConfettiBurst', () => ({
+  ConfettiBurst: () => <div data-testid="confetti-burst" />,
 }));
 
 vi.mock('@/components/effects/LottieAnimation', () => ({
@@ -329,6 +316,13 @@ describe('BadgeUnlockModal', () => {
       <BadgeUnlockModal open={true} onOpenChange={vi.fn()} badge={mockBadge} />
     );
     expect(screen.getByText('Premier Badge')).toBeInTheDocument();
+  });
+
+  it('lance les confettis a l ouverture', () => {
+    render(
+      <BadgeUnlockModal open={true} onOpenChange={vi.fn()} badge={mockBadge} />
+    );
+    expect(screen.getByTestId('confetti-burst')).toBeInTheDocument();
   });
 
   it('affiche la description du badge', () => {

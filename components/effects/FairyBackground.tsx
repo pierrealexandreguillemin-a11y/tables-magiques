@@ -3,17 +3,15 @@
  * ISO/IEC 25010 - Utilisabilite, Performance
  *
  * P0 Component - Ambiance magique essentielle
- * tsParticles pour etoiles (performance) + CSS keyframes pour nuages
+ * StarField canvas pour etoiles (performance) + CSS keyframes pour nuages
  */
 
 'use client';
 
-import { memo, useCallback, useMemo, useState } from 'react';
-import Particles from '@tsparticles/react';
-import type { ISourceOptions } from '@tsparticles/engine';
+import { memo } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { useParticlesEngine } from '@/hooks/useParticlesEngine';
 import { cn } from '@/lib/utils';
+import { StarField } from './StarField';
 import type { AnimatedComponentProps } from '@/types/effects';
 
 /**
@@ -114,90 +112,10 @@ const CLOUDS: CloudConfig[] = [
 ];
 
 /**
- * Generer la configuration tsParticles pour les etoiles
- */
-function createStarParticlesConfig(
-  starCount: number,
-  animate: boolean
-): ISourceOptions {
-  return {
-    fullScreen: false,
-    fpsLimit: 30,
-    pauseOnBlur: true,
-    pauseOnOutsideViewport: true,
-    particles: {
-      number: {
-        value: starCount * 2, // Plus d'etoiles
-        density: {
-          enable: true,
-        },
-      },
-      color: {
-        // Couleurs vives pour visibilite dark mode
-        value: [
-          '#fef08a',
-          '#fde047',
-          '#facc15',
-          '#ffffff',
-          '#f472b6',
-          '#c084fc',
-        ],
-      },
-      shape: {
-        type: 'star', // Forme etoile
-        options: {
-          star: {
-            sides: 5,
-          },
-        },
-      },
-      opacity: {
-        value: { min: 0.5, max: 1 }, // Plus opaque
-        animation: animate
-          ? {
-              enable: true,
-              speed: 1,
-              sync: false,
-            }
-          : { enable: false },
-      },
-      size: {
-        value: { min: 3, max: 8 }, // Plus gros
-        animation: { enable: false }, // Static size - perf: avoids per-particle recalc
-      },
-      move: {
-        enable: animate,
-        speed: 0.5, // Plus rapide
-        direction: 'none',
-        random: true,
-        straight: false,
-        outModes: {
-          default: 'bounce',
-        },
-      },
-      twinkle: {
-        particles: {
-          enable: animate,
-          frequency: 0.08, // Scintillement plus frequent
-          opacity: 1,
-        },
-      },
-      // Effet glow
-      shadow: {
-        enable: true,
-        color: '#fbbf24',
-        blur: 10,
-      },
-    },
-    detectRetina: true,
-  };
-}
-
-/**
  * FairyBackground Component
  *
  * Cree une ambiance feerique avec des nuages pastel flottants
- * et des etoiles scintillantes via tsParticles (60fps GPU).
+ * et des etoiles (StarField canvas, 30 fps, pause hors ecran).
  *
  * @example
  * ```tsx
@@ -213,24 +131,9 @@ export const FairyBackground = memo(function FairyBackground({
 }: FairyBackgroundProps) {
   const { shouldAnimate } = useReducedMotion();
   const animate = shouldAnimate && !disableAnimation;
-  const engineReady = useParticlesEngine();
-  const [particlesReady, setParticlesReady] = useState(false);
-
-  // Callback when particles container is loaded
-  const particlesLoaded = useCallback(async () => {
-    setParticlesReady(true);
-  }, []);
-
-  // Memoize particles config
-  const particlesConfig = useMemo(
-    () => createStarParticlesConfig(starCount, animate),
-    [starCount, animate]
-  );
-
   return (
     <div
       data-testid="fairy-background"
-      data-particles-ready={particlesReady.toString()}
       role="presentation"
       aria-hidden="true"
       className={cn(
@@ -243,16 +146,13 @@ export const FairyBackground = memo(function FairyBackground({
         className
       )}
     >
-      {/* Etoiles scintillantes via tsParticles (GPU accelere) */}
-      {engineReady && (
-        <Particles
-          id="fairy-stars"
-          data-testid="particles-container"
-          className="absolute inset-0 gpu-accelerated"
-          particlesLoaded={particlesLoaded}
-          options={particlesConfig}
-        />
-      )}
+      {/* Etoiles (canvas, voir lib/animations/canvas/starField.ts) */}
+      <StarField
+        preset="fairy"
+        baseCount={starCount * 2}
+        disableAnimation={!animate}
+        className="gpu-accelerated"
+      />
 
       {/* Nuages colores (CSS keyframes — GPU compositor) */}
       {CLOUDS.map((cloud) => (

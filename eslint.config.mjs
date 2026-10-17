@@ -37,6 +37,8 @@ const eslintConfig = defineConfig([
     // Generated reports + coverage
     'reports/**',
     'coverage/**',
+    // Spikes: throwaway harnesses built against other checkouts
+    'docs/spikes/**',
   ]),
 ]);
 

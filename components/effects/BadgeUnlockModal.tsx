@@ -9,10 +9,8 @@ import { useRef } from 'react';
 import * as m from 'motion/react-m';
 import { AnimatePresence } from 'motion/react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import Particles from '@tsparticles/react';
-import { useParticlesEngine } from '@/hooks/useParticlesEngine';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { confettiConfig } from '@/lib/animations/particles/configs';
+import { ConfettiBurst } from './ConfettiBurst';
 import { LottieAnimation } from './LottieAnimation';
 import { BadgeIcon, type BadgeId } from './BadgeIcon';
 import { MagicButton } from './MagicButton';
@@ -53,7 +51,6 @@ export function BadgeUnlockModal({
   badge,
 }: BadgeUnlockModalProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const engineReady = useParticlesEngine();
   const { shouldAnimate } = useReducedMotion();
 
   if (!badge) return null;
@@ -71,13 +68,7 @@ export function BadgeUnlockModal({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                {open && badge && engineReady && shouldAnimate && (
-                  <Particles
-                    id="badge-confetti"
-                    options={confettiConfig}
-                    className="absolute inset-0"
-                  />
-                )}
+                {open && badge && <ConfettiBurst />}
               </m.div>
             </DialogPrimitive.Overlay>
             <DialogPrimitive.Content asChild forceMount>

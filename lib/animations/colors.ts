@@ -2,17 +2,8 @@
  * Animation Color Palettes - Tables Magiques
  * ISO/IEC 25010 - DRY: Source unique pour couleurs d'animation
  *
- * Utilisé par tsParticles configs et CSS animations.
+ * Utilisé par les rendus canvas (étoiles, confettis) et les animations CSS.
  */
-
-/** Couleurs féériques (particules fond, effets ambiance) */
-export const FAIRY_COLORS = [
-  '#ff69b4', // Hot pink
-  '#ba55d3', // Medium orchid
-  '#ffd700', // Gold
-  '#87ceeb', // Sky blue
-  '#dda0dd', // Plum
-];
 
 /** Couleurs confetti (celebrations) */
 export const CONFETTI_COLORS = [
@@ -23,17 +14,21 @@ export const CONFETTI_COLORS = [
   '#ff6b6b', // Coral
 ];
 
-/** Couleurs feux d'artifice */
-export const FIREWORKS_COLORS = [
-  '#ff69b4', // Hot pink
-  '#ffd700', // Gold
-  '#00ff00', // Lime
-  '#00ffff', // Cyan
-  '#ba55d3', // Medium orchid
+/** Etoiles du fond féerique (FairyBackground) */
+export const FAIRY_STAR_COLORS = [
+  '#fef08a', // Yellow 200
+  '#fde047', // Yellow 300
+  '#facc15', // Yellow 400
+  '#ffffff', // White
+  '#f472b6', // Pink 400
+  '#c084fc', // Purple 400
 ];
 
-/** Couleurs étoiles */
-export const STAR_COLORS = ['#ffd700', '#ffffff', '#fffacd'];
+/** Halo doré des étoiles du fond féerique */
+export const FAIRY_STAR_GLOW = '#fbbf24';
+
+/** Etincelles du mode défi */
+export const SPARKLE_COLORS = ['#ffd700', '#ffffff', '#ff69b4'];
 
 /** Theme gradient colors for GradientBorder */
 export const THEME_GRADIENTS: Record<string, string> = {
