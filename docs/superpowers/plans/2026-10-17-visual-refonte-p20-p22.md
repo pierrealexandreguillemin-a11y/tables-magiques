@@ -10,17 +10,39 @@
 
 **Spec:** `docs/VISUAL_REFONTE_2026_SPEC.md`
 
-## Status (2026-10-17, end of session 1)
+## Status (updated 2026-10-17, evening)
 
-- Task 1 done (spec v1.1). Task 2 done, plus a finding outside the plan: the effects barrels shipped
-  Lottie and tsParticles before `load` (home 432 -> 288 KB, commit `4fff10c`).
-- Task 3 done with two deviations: `domMax` instead of `domAnimation` (Toast uses `layout`), and
-  the CI gate is now the per-route budget `perf-budget.json` (user decision, total chunk sum
-  informative). Home before load 264 KB, idle 473 KB.
-- Task 6: references + candidates A/B rendered, waiting for the forced-choice verdict
-  (`docs/spikes/style-2026-10/board.html`).
-- Next: Task 5 (tsParticles, still 39 KB in home's critical path via the direct
-  `FairyBackground` import), Task 4 (CSS native).
+Done:
+
+- Task 1 (spec v1.1), Task 2 (latest stables, per-route measurement), plus the barrels finding
+  (home 432 -> 288 KB before load).
+- Task 3 (motion 14, `m.*`, async strict LazyMotion with domMax): home 288 -> 264 KB. CI gate =
+  per-route budget `perf-budget.json` (user decision). Slow-device check (Lighthouse, real
+  throttling): no measurable regression (`docs/perf/first-load-history.md`).
+- npm audit: production 0 vulnerabilities; dev residuals documented (braces, no patched release).
+- Task 6: mascot verdict = candidate 1, procedural chibi unicorn; A2 iteration committed and shown
+  on the board (`docs/spikes/style-2026-10/board.html`).
+- Task 5 (P22) **implemented on branch `refonte/p22-particles`, not merged**: home 264 -> 226 KB
+  before load, idle -30 to -38 KB per route, main thread -25 to -35 %. Waiting for the user's blind
+  parity verdict (`docs/spikes/particles-parity-2026-10/`).
+
+Waiting on the user:
+
+1. P22 parity verdict (harness on `http://127.0.0.1:8766/index.html`): merge or iterate.
+2. A2 mascot: better than version 1? Open points: curls may read as pool noodles, no muzzle in
+   profile, contrast only partly fixed (product call: darker backdrop or less white body).
+
+Next, in order:
+
+1. Merge P22 after the verdict; lower `perf-budget.json` to the new measurement + 5 %.
+2. **LCP 6.4-7.4 s on /practice and /challenge** (throttled mobile, Lighthouse): find the LCP
+   element and what delays it (fonts, Lottie, auth gate) — new task, measured before/after.
+3. Task 4 (P20, CSS native): checkpoint list of one-shot `m.*` entries -> `@starting-style`;
+   View Transitions prototype on one route, shown to the user.
+4. P23 once A2 is approved: rig + poses (idle, success, encouragement, celebration), delivery mode
+   decided by measurement (pre-rendered video/AVIF vs three.js GLB), then retire Lottie (-78 KB JS,
+   -868 KB `unicorn.json`).
+5. Push: nothing pushed yet; the new CI step (Chromium + per-route budget) has never run on GitHub.
 
 ## Global Constraints
 
