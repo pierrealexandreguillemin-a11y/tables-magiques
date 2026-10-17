@@ -39,7 +39,10 @@ Next, in order:
 1. Merge P22 after the verdict; lower `perf-budget.json` to the new measurement + 5 %.
 2. **LCP 6.4-7.4 s on /practice and /challenge**: diagnosed (`docs/perf/first-load-history.md`,
    last section): the LCP is the guest auth dialog (render delay 7.0 s); home spends 3.5 s in
-   style and layout. Next: performance trace, then a measured fix proposal shown to the user.
+   style and layout. Guest timeline measured 2026-10-18 (`scripts/probe-guest-gate.mjs`): ~70 %
+   of the wait is JavaScript before hydration, the session check ~180 ms. Options A (CSS entry),
+   B (session-aware server render, pages become dynamic), C (defer Lottie) **await the user's
+   choice**; none applied. Home style/layout cost: performance trace still to do.
 3. Task 4 (P20, CSS native): checkpoint list of one-shot `m.*` entries -> `@starting-style`;
    View Transitions prototype on one route, shown to the user.
 4. P23 once A2 is approved: rig + poses (idle, success, encouragement, celebration), delivery mode
