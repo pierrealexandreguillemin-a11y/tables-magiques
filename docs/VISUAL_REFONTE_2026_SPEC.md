@@ -37,7 +37,7 @@ Le lazy-loading annoncé est en trompe-l'œil : les imports sont directs.
 mais les 24 fichiers rendent `motion.*` et non `m.*`. Or `motion.*` embarque tout le jeu de fonctions,
 donc `LazyMotion` n'économise rien aujourd'hui (doc officielle : <https://motion.dev/docs/react-lazy-motion>,
 option `strict`). Vérification : `grep -rnoE "motion\.[a-z]+" --include=*.tsx app components features | wc -l`
-→ non nul ; `grep -rnoE "m\.[a-z]+" --include=*.tsx app components features | wc -l` → 0.
+→ `92` ; `grep -rnoE "m\.[a-z]+" --include=*.tsx app components features | wc -l` → `0`.
 
 Baseline re-mesurée le 2026-10-17 (commit `12ead03`) : `npm run build && bash scripts/check-bundle-size.sh`
 → `525 KB`. Ce script additionne **tous** les chunks JS : un chargement différé ne le fait pas baisser.
