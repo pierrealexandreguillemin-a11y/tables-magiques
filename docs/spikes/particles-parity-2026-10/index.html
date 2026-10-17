@@ -112,6 +112,49 @@
         inset: 0;
         opacity: 0.6;
       }
+      .verdict {
+        margin: 10px 0 0;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 20px;
+        align-items: center;
+      }
+      .verdict legend {
+        font-weight: 700;
+        padding: 0 4px;
+      }
+      .verdict label {
+        display: inline-flex;
+        gap: 6px;
+        align-items: center;
+        cursor: pointer;
+      }
+      .verdict input[type='text'] {
+        flex: 1 1 280px;
+        font: inherit;
+        padding: 6px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+      #out {
+        width: 100%;
+        min-height: 190px;
+        font:
+          14px/1.5 ui-monospace,
+          monospace;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+      }
+      .copied {
+        color: #15803d;
+        font-weight: 700;
+        margin-left: 8px;
+      }
     </style>
   </head>
   <body>
@@ -121,8 +164,10 @@
         Pour chaque rangée, l'un des côtés est <b>tsParticles</b> (l'app
         actuelle, configs exactes de <code>master</code>), l'autre le
         <b>nouveau canvas</b>. Le côté est tiré au hasard à chaque chargement.
-        Question : <b>« le nouveau est-il au moins aussi beau ? »</b> Choisis
-        d'abord, puis clique sur Révéler.
+        Coche ton choix sous chaque rangée (commentaire facultatif), puis copie
+        le verdict en bas de page et colle-le dans la conversation. Pas besoin
+        de révéler : le texte copié contient un code qui me dit quel côté était
+        lequel.
       </p>
       <div class="bar">
         <button id="theme">Basculer clair / sombre</button>
@@ -145,6 +190,16 @@
         port 3201, branche P22 sur le port 3202).
       </p>
       <div class="pair" data-row="app"></div>
+      <h2>Ton verdict à copier</h2>
+      <p>
+        Se remplit tout seul quand tu coches. « Copier » puis colle dans la
+        conversation.
+      </p>
+      <textarea id="out" readonly></textarea>
+      <div class="bar">
+        <button id="copy">Copier le verdict</button
+        ><span id="copied" class="copied" hidden>Copié !</span>
+      </div>
     </main>
     <script src="old.js"></script>
     <script src="new.js"></script>
@@ -213,6 +268,88 @@
         }
       }
       fireConfetti();
+
+      const TITLES = {
+        fairy: 'Fond féerique',
+        sparkles: 'Étincelles du défi',
+        confetti: 'Confettis',
+        app: 'Accueil réel',
+      };
+      const CHOICES = [
+        ['A', 'A plus beau'],
+        ['B', 'B plus beau'],
+        ['=', 'Identiques à mes yeux'],
+      ];
+      for (const row of document.querySelectorAll('.pair')) {
+        const name = row.dataset.row;
+        const box = document.createElement('fieldset');
+        box.className = 'verdict';
+        box.innerHTML =
+          '<legend>Ton choix : ' +
+          TITLES[name] +
+          '</legend>' +
+          CHOICES.map(
+            ([v, t]) =>
+              '<label><input type="radio" name="v-' +
+              name +
+              '" value="' +
+              v +
+              '"> ' +
+              t +
+              '</label>'
+          ).join('') +
+          '<input type="text" data-comment="' +
+          name +
+          '" placeholder="Commentaire (facultatif)">';
+        row.after(box);
+      }
+      function verdictText() {
+        const lines = ['VERDICT P22 parité particules'];
+        const code = [];
+        Object.keys(TITLES).forEach((name, i) => {
+          const picked = document.querySelector(
+            'input[name="v-' + name + '"]:checked'
+          );
+          const comment = document
+            .querySelector('[data-comment="' + name + '"]')
+            .value.trim();
+          const label = picked
+            ? CHOICES.find(([v]) => v === picked.value)[1]
+            : '(pas encore choisi)';
+          lines.push(
+            i +
+              1 +
+              '. ' +
+              TITLES[name] +
+              ' : ' +
+              label +
+              (comment ? ' — ' + comment : '')
+          );
+          code.push(
+            name[0] + (key[name] && key[name][0] === 'old' ? 'o' : 'n')
+          );
+        });
+        lines.push('code : ' + code.join('.'));
+        return lines.join('\n');
+      }
+      const out = document.getElementById('out');
+      const refresh = () => {
+        out.value = verdictText();
+      };
+      document.addEventListener('input', refresh);
+      document.addEventListener('change', refresh);
+      refresh();
+      document.getElementById('copy').addEventListener('click', async () => {
+        out.select();
+        try {
+          await navigator.clipboard.writeText(out.value);
+        } catch {
+          document.execCommand('copy');
+        }
+        const done = document.getElementById('copied');
+        done.hidden = false;
+        setTimeout(() => (done.hidden = true), 2000);
+      });
 
       document.getElementById('again').addEventListener('click', fireConfetti);
       document
