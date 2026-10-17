@@ -35,8 +35,9 @@ Waiting on the user:
 Next, in order:
 
 1. Merge P22 after the verdict; lower `perf-budget.json` to the new measurement + 5 %.
-2. **LCP 6.4-7.4 s on /practice and /challenge** (throttled mobile, Lighthouse): find the LCP
-   element and what delays it (fonts, Lottie, auth gate) — new task, measured before/after.
+2. **LCP 6.4-7.4 s on /practice and /challenge**: diagnosed (`docs/perf/first-load-history.md`,
+   last section): the LCP is the guest auth dialog (render delay 7.0 s); home spends 3.5 s in
+   style and layout. Next: performance trace, then a measured fix proposal shown to the user.
 3. Task 4 (P20, CSS native): checkpoint list of one-shot `m.*` entries -> `@starting-style`;
    View Transitions prototype on one route, shown to the user.
 4. P23 once A2 is approved: rig + poses (idle, success, encouragement, celebration), delivery mode

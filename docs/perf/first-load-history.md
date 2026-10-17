@@ -91,3 +91,29 @@ CPU). Side finding to work on: **LCP 6.4-7.4 s on practice/challenge** on a thro
 Home before `load` 264 -> 226 KB (`FairyBackground` imported tsParticles eagerly), idle -38 KB on
 home, -30 to -38 KB on the other routes. Main-thread cost of the effects and the visual parity
 method: `docs/spikes/particles-parity-2026-10/README.md`.
+
+## 2026-10-17 — LCP diagnosis on a throttled mobile (findings only, no change yet)
+
+Lighthouse 13.5.0, mobile, devtools throttling, branch `refonte/p22-particles` build, one run per
+route (reports kept outside the repo). Audits read: `lcp-breakdown-insight`,
+`mainthread-work-breakdown`, `bootup-time`, `long-tasks`.
+
+| Route       | LCP     | LCP element                                                            | Breakdown                        |
+| ----------- | ------- | ---------------------------------------------------------------------- | -------------------------------- |
+| `/practice` | 7018 ms | `AuthGate` dialog text "Connecte-toi pour sauvegarder tes scores ! 🦄" | TTFB 20 ms, render delay 6998 ms |
+| `/`         | 2174 ms | the 🦄 logo emoji (`data-tour="logo"`, CSS drop-shadow)                | TTFB 8 ms, render delay 2165 ms  |
+
+Main thread, `/`: Other 5066 ms, Style & Layout 3499 ms, Script Evaluation 1569 ms, Rendering
+1188 ms (4x CPU throttling). `/practice`: Other 2343, Script Evaluation 1995, Rendering 1152,
+Style & Layout 1036. Long tasks on `/practice` include the Lottie chunk (279 ms) although the
+guest only sees the auth dialog.
+
+Reading (hypotheses to verify, not conclusions):
+
+1. `/practice` for a guest: the largest element is a client-only dialog that waits for hydration,
+   the session check and its motion entry animation. Candidates: render the guest gate on the
+   server, or make the gate text visible without waiting for the animation feature bundle.
+2. `/`: 3.5 s of style and layout under throttling points at CSS cost (four clouds with
+   `filter: blur(50-80px)` animated, drop-shadows, `bg-drift`). To profile with a performance
+   trace before touching anything; the rule "optimise HOW, never WHAT" applies.
+3. Lottie loads on `/practice` for guests who never see it: deferrable until the game starts.
