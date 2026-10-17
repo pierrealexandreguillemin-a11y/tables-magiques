@@ -10,6 +10,18 @@
 
 **Spec:** `docs/VISUAL_REFONTE_2026_SPEC.md`
 
+## Status (2026-10-17, end of session 1)
+
+- Task 1 done (spec v1.1). Task 2 done, plus a finding outside the plan: the effects barrels shipped
+  Lottie and tsParticles before `load` (home 432 -> 288 KB, commit `4fff10c`).
+- Task 3 done with two deviations: `domMax` instead of `domAnimation` (Toast uses `layout`), and
+  the CI gate is now the per-route budget `perf-budget.json` (user decision, total chunk sum
+  informative). Home before load 264 KB, idle 473 KB.
+- Task 6: references + candidates A/B rendered, waiting for the forced-choice verdict
+  (`docs/spikes/style-2026-10/board.html`).
+- Next: Task 5 (tsParticles, still 39 KB in home's critical path via the direct
+  `FairyBackground` import), Task 4 (CSS native).
+
 ## Global Constraints
 
 - Never degrade visuals for perf without asking: optimize HOW, not WHAT (CLAUDE.md rule + memory `no_visual_downgrade`).
