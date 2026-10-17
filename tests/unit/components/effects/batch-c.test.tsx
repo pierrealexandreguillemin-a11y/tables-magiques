@@ -68,7 +68,10 @@ vi.mock('@tsparticles/react', () => ({
   ),
 }));
 
-vi.mock('@/lib/animations', () => ({
+vi.mock('@/lib/animations/particles/configs', async (importOriginal) => ({
+  ...(await importOriginal<
+    typeof import('@/lib/animations/particles/configs')
+  >()),
   confettiConfig: {},
 }));
 

@@ -91,7 +91,10 @@ vi.mock('@/hooks/useParticlesEngine', () => ({
   useParticlesEngine: vi.fn(() => true),
 }));
 
-vi.mock('@/lib/animations', () => ({
+vi.mock('@/lib/animations/particles/configs', async (importOriginal) => ({
+  ...(await importOriginal<
+    typeof import('@/lib/animations/particles/configs')
+  >()),
   getParticleConfig: vi.fn(() => ({ fullScreen: false })),
 }));
 

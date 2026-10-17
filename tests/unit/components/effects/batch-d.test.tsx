@@ -86,7 +86,10 @@ vi.mock('lottie-react', () => ({
     }),
 }));
 
-vi.mock('@/lib/animations', () => ({
+vi.mock('@/lib/animations/lottie/animations', async (importOriginal) => ({
+  ...(await importOriginal<
+    typeof import('@/lib/animations/lottie/animations')
+  >()),
   getAnimationData: (_id: string) => ({ v: '5.0.0', layers: [] }),
   getAnimationFallback: (id: string) => {
     const map: Record<string, string> = {
@@ -100,6 +103,11 @@ vi.mock('@/lib/animations', () => ({
     };
     return map[id] ?? '✨';
   },
+}));
+vi.mock('@/lib/animations/particles/configs', async (importOriginal) => ({
+  ...(await importOriginal<
+    typeof import('@/lib/animations/particles/configs')
+  >()),
   confettiConfig: { fullScreen: false, particles: {} },
 }));
 
