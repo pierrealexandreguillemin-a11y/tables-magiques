@@ -199,8 +199,9 @@ def lathe(name, profile, axis_rot, loc, segments=96, twist=None, parent=None):
     return set_smooth(obj)
 
 
-def spiral_horn(name, base, axis, length, base_radius, turns=2.5, ridge=0.16, parent=None):
-    """Unicorn horn: tapered cone with a twisted ridge, rounded (hemispherical) tip."""
+def spiral_horn(name, base, axis, length, base_radius, turns=2.5, ridge=0.16, sharp=1.0, lobes=2, parent=None):
+    """Unicorn horn: tapered cone with `lobes` twisted ridges, rounded (hemispherical) tip.
+    sharp < 1 widens the ridges and pinches the grooves (a readable spiral); 1 = plain cosine."""
     rings = 120
     tip_r = base_radius * 0.16
     profile = []
@@ -217,18 +218,20 @@ def spiral_horn(name, base, axis, length, base_radius, turns=2.5, ridge=0.16, pa
     def twist(t, th):
         tt = min(1.0, t * n / rings)
         fade = (1 - tt) ** 0.6 * min(1.0, tt * 12 + 0.25)
-        return 1.0 + ridge * fade * math.cos(th * 2 - tt * turns * 2 * math.pi)
+        wave = (math.cos(th * lobes - tt * turns * 2 * math.pi) + 1) / 2
+        return 1.0 + ridge * fade * (2 * wave**sharp - 1)
 
     rot = Vector((0, 0, 1)).rotation_difference(Vector(axis).normalized())
     return lathe(name, profile, rot.to_matrix(), base, twist=twist, parent=parent)
 
 
-def tube(name, points, radius, parent=None, taper=None):
-    """Bevelled poly-curve converted to a mesh (e.g. a smile)."""
+def tube(name, points, radius, parent=None, taper=None, bevel_resolution=8):
+    """Bevelled poly-curve converted to a mesh (e.g. a smile). taper(t) scales the radius, t = point
+    index fraction (= arc-length fraction for `resample`d points)."""
     cu = bpy.data.curves.new(name + "_cu", "CURVE")
     cu.dimensions = "3D"
     cu.bevel_depth = radius
-    cu.bevel_resolution = 8
+    cu.bevel_resolution = bevel_resolution
     cu.use_fill_caps = True
     sp = cu.splines.new("POLY")
     sp.points.add(len(points) - 1)
@@ -247,3 +250,64 @@ def tube(name, points, radius, parent=None, taper=None):
     obj = bpy.data.objects.new(name, me)
     link(obj, parent)
     return set_smooth(obj)
+
+
+def resample(points, n):
+    """Copy of a polyline with `n` points evenly spaced along its arc length."""
+    pts = [Vector(p) for p in points]
+    cum = [0.0]
+    for a, b in zip(pts, pts[1:]):
+        cum.append(cum[-1] + (b - a).length)
+    out, j = [], 0
+    for i in range(n):
+        s = cum[-1] * i / (n - 1)
+        while j < len(cum) - 2 and cum[j + 1] < s:
+            j += 1
+        seg = cum[j + 1] - cum[j]
+        out.append(pts[j].lerp(pts[j + 1], 0.0 if seg == 0 else (s - cum[j]) / seg))
+    return out
+
+
+def _spiral_arc(start, tangent, bend, radius, turns, shrink, drift, samples):
+    """One arc of a curl: leaves `start` along `tangent`, rolls towards `bend` with a radius that
+    shrinks linearly to radius * (1 - shrink) and drifts `drift` sideways (tangent x bend) so that
+    successive turns never touch. Returns (points, end tangent)."""
+    t = tangent.normalized()
+    b = (bend - t * bend.dot(t)).normalized()
+    w = t.cross(b)
+    c = start + b * radius
+    total = 2 * math.pi * turns
+    dr = -radius * shrink / total  # d(radius)/d(angle)
+    pts = []
+    for i in range(1, samples + 1):
+        a = total * i / samples
+        r = radius + dr * a
+        pts.append(c - b * (r * math.cos(a)) + t * (r * math.sin(a)) + w * (drift * a / total))
+    a = total
+    r = radius + dr * a
+    end_t = -b * (dr * math.cos(a) - r * math.sin(a)) + t * (dr * math.sin(a) + r * math.cos(a)) + w * (drift / total)
+    return pts, end_t.normalized()
+
+
+def curl_path(start, tangent, arcs, samples_per_turn=64):
+    """Smooth lock of hair as a chain of spiral arcs (turtle style). Each arc is a dict with
+    bend (world vector the path turns towards), radius, turns, and optional shrink (0 = circle
+    arc, 0.7 = tight curl end) and drift. A circle arc around a sphere centre (bend = towards the
+    centre, radius = distance) follows that sphere's surface."""
+    pts, t = [Vector(start)], Vector(tangent)
+    for arc in arcs:
+        n = max(4, int(samples_per_turn * arc["turns"]))
+        seg, t = _spiral_arc(pts[-1], t, Vector(arc["bend"]), arc["radius"], arc["turns"], arc.get("shrink", 0.0), arc.get("drift", 0.0), n)
+        pts += seg
+    return pts
+
+
+def join(objs, name):
+    """Merge mesh objects into the first one (renamed `name`); keeps its parent."""
+    bpy.ops.object.select_all(action="DESELECT")
+    for o in objs:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = objs[0]
+    bpy.ops.object.join()
+    objs[0].name = objs[0].data.name = name
+    return objs[0]

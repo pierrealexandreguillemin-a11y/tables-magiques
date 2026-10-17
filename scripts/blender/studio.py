@@ -28,6 +28,10 @@ PALETTE = {
 MASCOT = {
     "pearl": "#fffbff",
     "pearl_low": "#f3e8ff",
+    # Body tint (contrast against the pastel background): warm ivory where the key/top light
+    # lands, cool lilac on surfaces facing down. Subtle on purpose - never grey.
+    "pearl_warm": "#fff6ec",
+    "pearl_cool": "#e4d6ff",
     "muzzle": "#ffdeee",
     "hoof": "#c4a8ff",
     "blush": "#ff8cc8",
@@ -41,9 +45,17 @@ MANE_STOPS = ((0.0, PALETTE["hot_pink"]), (0.45, "#c88bf2"), (1.0, "#8fd6ff"))
 
 # Background gradient stops (sRGB hex, position 0..1 along the diagonal), lilac -> pink -> cyan.
 BG_STOPS = ((0.0, "#e3d4ff"), (0.5, "#ffd6ec"), (1.0, "#c9f1ff"))
+# Strength of the soft white glow behind the character (0 = none). Was 0.35: it brightened the
+# background exactly where the pearl silhouette sits (measure_contrast.py).
+BG_GLOW = 0.15
 
 RENDER_RES = 1024
 RENDER_SAMPLES = 160
+# Rim lights (lilac-white, cyan-white), light-linked to the character: they outline the pearl
+# body against the pastel background. Only a faint tint: a saturated lilac/cyan rim pulls the edge
+# towards the background's own hues (measured with measure_contrast.py).
+RIM_ENERGY = (2200, 5000)
+RIM_COLORS = ("#c9a2ff", "#9fe8ff")
 
 
 # ----------------------------------------------------------------------------- colour helpers
@@ -189,10 +201,11 @@ def setup_lights(scene, target, character_objs, scale=1.0):
 
     energy = s * s
     _add_area(scene, "Key", at(-3.2, -4.0, 3.6), target, 1100 * energy, 4.0 * s, "#fff6f0")
-    _add_area(scene, "Top", at(0.0, 0.5, 5.0), target, 250 * energy, 3.0 * s, "#ffffff")
+    # Small, strong top light (was 250 W-equivalent, 3.0 wide) = a denser contact shadow under the hooves.
+    _add_area(scene, "Top", at(0.0, 0.5, 5.0), target, 450 * energy, 1.6 * s, "#ffffff")
     _add_area(scene, "Fill", at(4.2, -2.6, 0.8), target, 240 * energy, 5.0 * s, "#d2a8ff", rx)
-    _add_area(scene, "RimLilac", at(-3.4, 3.6, 2.2), target, 2200 * energy, 2.2 * s, "#c9a2ff", rx)
-    _add_area(scene, "RimCyan", at(3.6, 3.0, 1.6), target, 1800 * energy, 2.2 * s, "#9fe8ff", rx)
+    _add_area(scene, "RimLilac", at(-3.4, 3.6, 2.2), target, RIM_ENERGY[0] * energy, 2.2 * s, RIM_COLORS[0], rx)
+    _add_area(scene, "RimCyan", at(3.6, 3.0, 1.6), target, RIM_ENERGY[1] * energy, 2.2 * s, RIM_COLORS[1], rx)
 
 
 def add_shadow_catcher(scene, z=0.0, size=40.0):
@@ -257,6 +270,9 @@ def vinyl_material(
     emission=0.0,
     vertex_color=None,
     thin_film=0.0,
+    coat_tint=None,
+    sheen=0.0,
+    sheen_tint="#ffffff",
 ):
     """Satin 'vinyl toy' Principled BSDF. vertex_color = name of a colour attribute to drive the
     base colour (exported to glTF as COLOR_0); otherwise flat `color_hex`."""
@@ -272,6 +288,11 @@ def vinyl_material(
     b.inputs["Subsurface Radius"].default_value = (1.0, 0.55, 0.65)
     b.inputs["Subsurface Scale"].default_value = 0.05
     b.inputs["Thin Film Thickness"].default_value = thin_film
+    if coat_tint:  # absorbed more at grazing angles: tints and deepens the silhouette edge
+        b.inputs["Coat Tint"].default_value = hex_linear(coat_tint)
+    if sheen > 0:
+        b.inputs["Sheen Weight"].default_value = sheen
+        b.inputs["Sheen Tint"].default_value = hex_linear(sheen_tint)
     if emission > 0:
         b.inputs["Emission Color"].default_value = col
         b.inputs["Emission Strength"].default_value = emission
@@ -283,8 +304,10 @@ def vinyl_material(
 
 
 # Presets shared by both candidates (one definition each - no per-script copies).
-def pearl_material(name="PearlVinyl", color_hex=MASCOT["pearl"], vertex_color="Col"):
-    return vinyl_material(name, color_hex, roughness=0.45, coat=0.3, coat_roughness=0.2, subsurface=0.2, vertex_color=vertex_color)
+def pearl_material(name="PearlVinyl", color_hex=MASCOT["pearl"], vertex_color="Col", **overrides):
+    """`overrides`: any vinyl_material keyword (e.g. coat / coat_tint for silhouette contrast)."""
+    params = {"roughness": 0.45, "coat": 0.3, "coat_roughness": 0.2, "subsurface": 0.2, **overrides}
+    return vinyl_material(name, color_hex, vertex_color=vertex_color, **params)
 
 
 def mane_material():
@@ -295,8 +318,8 @@ def line_material():
     return vinyl_material("Line", MASCOT["line"], roughness=0.4, coat=0.3, subsurface=0.0)
 
 
-def gold_material():
-    return vinyl_material("GoldVinyl", "#ffbb29", roughness=0.22, coat=0.8, coat_roughness=0.06, metallic=0.5, subsurface=0.0)
+def gold_material(color_hex="#ffbb29", metallic=0.5):
+    return vinyl_material("GoldVinyl", color_hex, roughness=0.22, coat=0.8, coat_roughness=0.06, metallic=metallic, subsurface=0.0)
 
 
 def eye_material(vertex_color="Col", color_hex="#2e1a55"):
@@ -307,8 +330,9 @@ def highlight_material():
     return vinyl_material("EyeHighlight", "#ffffff", roughness=0.3, coat=0.0, subsurface=0.0, emission=3.0)
 
 
-def blush_material():
-    return vinyl_material("Blush", roughness=0.45, coat=0.3, subsurface=0.1, vertex_color="Col")
+def blush_material(**overrides):
+    """`overrides`: match the skin's coat (pearl_material overrides) so the lens edge blends in."""
+    return vinyl_material("Blush", vertex_color="Col", **{"roughness": 0.45, "coat": 0.3, "subsurface": 0.1, **overrides})
 
 
 def assign(obj, mat):
@@ -342,7 +366,7 @@ def _gradient_bg(w, h, stops=BG_STOPS):
     rgb = np.stack([np.interp(t, pos, cols[:, i]) for i in range(3)], axis=-1)
     cx, cy = (w - 1) / 2, (h - 1) * 0.55
     r = np.sqrt(((xs - cx) / w) ** 2 + ((ys - cy) / h) ** 2)
-    glow = np.clip(1.0 - r / 0.55, 0, 1) ** 2 * 0.35
+    glow = np.clip(1.0 - r / 0.55, 0, 1) ** 2 * BG_GLOW
     rgb = rgb + (1.0 - rgb) * glow[..., None]
     return rgb
 
@@ -369,6 +393,8 @@ def composite_on_gradient(src_png, dst_png, stops=BG_STOPS):
 
 # One camera framing for both candidates so the forced choice compares like with like.
 CAMERA = {"azimuth_deg": 34.0, "elevation_deg": -3.0, "fill": 0.84, "aim_z": 0.5}
+# Extra angles to judge proportions (same framing rule, camera swung around the character).
+VIEWS = {"3q": CAMERA, "front": {**CAMERA, "azimuth_deg": 0.0}, "side": {**CAMERA, "azimuth_deg": 90.0}}
 
 
 def begin(preview):
@@ -381,13 +407,14 @@ def begin(preview):
     return scene
 
 
-def stage(scene, parts, ground_z=0.0, frame_objs=None):
+def stage(scene, parts, ground_z=0.0, frame_objs=None, view="3q"):
     """Lights + shadow catcher + camera around the character meshes `parts` (also the light-link
-    receivers). `frame_objs` overrides what is used for bounds (e.g. posed snapshots)."""
+    receivers). `frame_objs` overrides what is used for bounds (e.g. posed snapshots).
+    `view` = key of VIEWS (lights stay put, only the camera moves)."""
     lo, hi = world_bbox(frame_objs or parts)
     setup_lights(scene, (lo + hi) / 2, parts, scale=(hi.z - lo.z) / 2)
     add_shadow_catcher(scene, z=ground_z)
-    return setup_camera(scene, frame_objs or parts, **CAMERA)
+    return setup_camera(scene, frame_objs or parts, **VIEWS[view])
 
 
 def finish(scene, out_dir, tag):

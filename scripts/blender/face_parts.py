@@ -35,15 +35,18 @@ def eye_highlights(centre, rot, radii, material, name, parent=None, surface=None
     projected onto that mesh instead of the analytic ellipsoid (for imported eyes)."""
     rx, ry, rz = radii
     out = []
+    up = rot @ Vector((0, 1, 0))
     for k, (fx, fy, fr) in enumerate(((-0.28, 0.36, 0.3), (0.31, -0.4, 0.14))):
         lx, ly, r = fx * rx, fy * ry, fr * rx
         if surface is not None:
-            hit, _ = shapes.surface_hit(surface, centre + rot @ Vector((lx, ly, 1.0)), -(rot @ Vector((0, 0, 1))))
-            loc = hit - (rot @ Vector((0, 0, 1))) * 0.06 * r
+            hit, n = shapes.surface_hit(surface, centre + rot @ Vector((lx, ly, 1.0)), -(rot @ Vector((0, 0, 1))))
         else:
             z = rz * math.sqrt(max(0.0, 1 - (lx / rx) ** 2 - (ly / ry) ** 2))
-            loc = centre + rot @ Vector((lx, ly, z - 0.06 * r))
-        hl = shapes.uv_ellipsoid(f"{name}.{k}", loc, (r, r * 1.15, r * 0.35), rot=rot, segments=48, rings=24, parent=parent)
+            hit = centre + rot @ Vector((lx, ly, z))
+            n = (rot @ Vector((lx / rx**2, ly / ry**2, z / rz**2))).normalized()
+        # Flat lens tangent to the eye where it sits: never stands off the eye at grazing angles.
+        loc = hit - n * 0.06 * r
+        hl = shapes.uv_ellipsoid(f"{name}.{k}", loc, (r, r * 1.15, r * 0.35), rot=shapes.frame_from_normal(n, up), segments=48, rings=24, parent=parent)
         out.append(studio.assign(hl, material))
     return out
 
@@ -64,9 +67,11 @@ def blush(obj, center, direction, radii, material, blush_col, skin_col, name, pa
     return lens
 
 
-def horn(obj, center, direction, length, base_radius, material, parent=None, sink=0.05):
-    """Golden spiral horn rooted on the surface of `obj`, leaning slightly up from the normal."""
+def horn(obj, center, direction, length, base_radius, material, parent=None, sink=0.05, turns=2.6, ridge=0.16, sharp=1.0):
+    """Golden spiral horn rooted on the surface of `obj`, leaning slightly up from the normal.
+    turns / ridge / sharp: see shapes.spiral_horn."""
     hit, n = shapes.surface_dir(obj, center, direction)
     axis = (n + Vector((0, -0.05, 0.6))).normalized()
-    h = shapes.spiral_horn("Horn", hit - axis * sink * length / 0.62, axis, length, base_radius, turns=2.6, parent=parent)
+    base = hit - axis * sink * length / 0.62
+    h = shapes.spiral_horn("Horn", base, axis, length, base_radius, turns=turns, ridge=ridge, sharp=sharp, parent=parent)
     return studio.assign(h, material)
