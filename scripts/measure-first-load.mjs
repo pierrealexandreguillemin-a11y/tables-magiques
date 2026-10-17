@@ -18,14 +18,13 @@
  */
 
 import { chromium } from '@playwright/test';
-import { execFileSync, spawn } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { createServer } from 'node:net';
 import { gzipSync } from 'node:zlib';
+import { ROUTES, serverFor } from './lib/next-server.mjs';
 import { checkBudget } from './perf-budget.mjs';
 
-const ROUTES = ['/', '/practice', '/challenge', '/profile', '/settings'];
 const STATIC_PREFIX = '/_next/static/';
 
 function parseArgs(argv) {
@@ -41,38 +40,6 @@ function gzipBytesOf(url) {
   const { pathname } = new URL(url);
   const relative = pathname.slice(STATIC_PREFIX.length);
   return gzipSync(readFileSync(join('.next', 'static', relative))).length;
-}
-
-function freePort() {
-  return new Promise((resolve, reject) => {
-    const server = createServer();
-    server.once('error', reject);
-    server.listen(0, () => {
-      const { port } = server.address();
-      server.close(() => resolve(port));
-    });
-  });
-}
-
-async function startServer() {
-  const port = await freePort();
-  const child = spawn(
-    process.execPath,
-    ['node_modules/next/dist/bin/next', 'start', '-p', String(port)],
-    { stdio: 'ignore' }
-  );
-  const base = `http://localhost:${port}`;
-  for (let attempt = 0; attempt < 120; attempt += 1) {
-    try {
-      const response = await fetch(base);
-      if (response.ok) return { base, stop: () => child.kill() };
-    } catch {
-      // server not listening yet
-    }
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  }
-  child.kill();
-  throw new Error(`next start did not answer on ${base} within 60 s`);
 }
 
 async function measureRoute(browser, base, route) {
@@ -103,9 +70,7 @@ async function measureRoute(browser, base, route) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  const server = args.base
-    ? { base: args.base, stop: () => {} }
-    : await startServer();
+  const server = await serverFor(args.base);
   const { base } = server;
   const browser = await chromium.launch();
   const routes = {};
