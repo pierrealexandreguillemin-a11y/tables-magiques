@@ -16,7 +16,10 @@ import Lottie from 'lottie-react';
 import type { LottieRefCurrentProps } from 'lottie-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
-import { getAnimationData, getAnimationFallback } from '@/lib/animations';
+import {
+  getAnimationData,
+  getAnimationFallback,
+} from '@/lib/animations/lottie/animations';
 import type { LottieAnimationProps } from '@/types/effects';
 
 /**

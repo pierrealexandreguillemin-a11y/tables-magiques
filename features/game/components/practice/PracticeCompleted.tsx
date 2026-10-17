@@ -7,13 +7,11 @@
 
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import {
-  LottieAnimation,
-  NumberReveal,
-  MagicCard,
-  MagicButton,
-  TextReveal,
-} from '@/components/effects';
+import { LottieAnimation } from '@/components/effects/LottieAnimation';
+import { NumberReveal } from '@/components/effects/NumberReveal';
+import { MagicCard } from '@/components/effects/MagicCard';
+import { MagicButton } from '@/components/effects/MagicButton';
+import { TextReveal } from '@/components/effects/TextReveal';
 import { useSaveScore } from '../../hooks/useSaveScore';
 import type { PracticeResult } from '@/types/game';
 

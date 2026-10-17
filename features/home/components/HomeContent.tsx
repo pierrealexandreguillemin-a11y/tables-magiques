@@ -7,8 +7,9 @@
 'use client';
 
 import Link from 'next/link';
-import { GradientText, GradientBorder } from '@/components/effects';
-import { LazyKawaiiMascot } from '@/lib/animations';
+import { GradientText } from '@/components/effects/GradientText';
+import { GradientBorder } from '@/components/effects/GradientBorder';
+import { LazyKawaiiMascot } from '@/lib/animations/lazy';
 import { UnicornHero } from './UnicornHero';
 
 export function HomeContent() {

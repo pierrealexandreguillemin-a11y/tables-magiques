@@ -6,7 +6,7 @@
 'use client';
 
 import { useRef, useEffect, useState, useCallback } from 'react';
-import { useToastContext } from '@/components/effects';
+import { useToastContext } from '@/components/effects/ToastProvider';
 import { useAnnouncer } from '@/hooks/useAnnouncer';
 import { useSound } from '@/hooks/useSound';
 

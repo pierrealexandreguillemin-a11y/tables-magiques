@@ -8,11 +8,9 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  GentleShake,
-  LottieAnimation,
-  CrownProgress,
-} from '@/components/effects';
+import { GentleShake } from '@/components/effects/GentleShake';
+import { LottieAnimation } from '@/components/effects/LottieAnimation';
+import { CrownProgress } from '@/components/effects/CrownProgress';
 import { QuestionDisplay } from '../QuestionDisplay';
 import { NumberPad } from '../NumberPad';
 import type { Question, PracticeState } from '@/types/game';

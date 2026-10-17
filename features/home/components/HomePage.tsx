@@ -5,7 +5,7 @@
 
 'use client';
 
-import { FairyBackground } from '@/components/effects';
+import { FairyBackground } from '@/components/effects/FairyBackground';
 import { OnboardingTour } from '@/features/onboarding';
 import { useParticles } from '../hooks/useParticles';
 import { HomeHeader } from './HomeHeader';

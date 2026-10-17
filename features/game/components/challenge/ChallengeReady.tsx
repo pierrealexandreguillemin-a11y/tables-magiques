@@ -7,7 +7,8 @@
 
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { GradientText, TextReveal } from '@/components/effects';
+import { GradientText } from '@/components/effects/GradientText';
+import { TextReveal } from '@/components/effects/TextReveal';
 
 interface Props {
   onStart: () => void;

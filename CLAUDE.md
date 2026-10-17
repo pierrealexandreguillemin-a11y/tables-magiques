@@ -17,7 +17,9 @@ npm run test:e2e:visual:update # Update visual baselines
 npm run lint         # ESLint
 npm run format:check # Prettier
 npm run quality:circular     # Madge zero circular deps
-npm run quality:bundle-size  # Bundle size guard (560KB threshold)
+npm run quality:bundle-size  # Bundle size guard (560KB threshold, sum of all chunks)
+npm run quality:first-load   # Gzip JS per route, before load / at idle (after build)
+npm run test:e2e:local       # Visual regression vs a LOCAL build (see playwright.local.config.ts)
 ```
 
 ## Architecture
@@ -68,6 +70,9 @@ Tout le reste utilise CSS — voir `styles/animations.css`.
 - Tout nouveau composant avec animation doit supporter `prefers-reduced-motion`
 - Les composants couteux (45+ elements, SVG complexes) doivent etre wrapes dans `memo()`
 - Les barrel exports utilisent des exports nommes explicites, pas `export *`
+- Pas de barrel pour `components/effects` ni `lib/animations` : importer un nom d'un barrel tirait
+  tout (Lottie, tsParticles, kawaii) avant `load`. Importer le fichier direct. Mesure :
+  `docs/perf/first-load-history.md` (accueil 432 → 288 KB gz)
 - Les couleurs d'animation passent par `lib/animations/colors.ts`
 - `next.config.ts` a le React Compiler active (memoization automatique)
 - 1398 tests (76 fichiers), coverage ~90%

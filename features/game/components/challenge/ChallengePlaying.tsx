@@ -6,7 +6,8 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { GentleShake, LottieAnimation } from '@/components/effects';
+import { GentleShake } from '@/components/effects/GentleShake';
+import { LottieAnimation } from '@/components/effects/LottieAnimation';
 import { QuestionDisplay } from '../QuestionDisplay';
 import { NumberPad } from '../NumberPad';
 import { QuestionTimer } from '../QuestionTimer';

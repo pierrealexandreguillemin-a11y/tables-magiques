@@ -11,7 +11,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import Particles from '@tsparticles/react';
 import { useParticlesEngine } from '@/hooks/useParticlesEngine';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { confettiConfig } from '@/lib/animations';
+import { confettiConfig } from '@/lib/animations/particles/configs';
 import { LottieAnimation } from './LottieAnimation';
 import { BadgeIcon, type BadgeId } from './BadgeIcon';
 import { MagicButton } from './MagicButton';

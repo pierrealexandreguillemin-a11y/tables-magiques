@@ -5,7 +5,7 @@
  * Re-render à chaque navigation pour AnimatePresence
  */
 
-import { PageTransition } from '@/components/effects';
+import { PageTransition } from '@/components/effects/PageTransition';
 
 export default function Template({ children }: { children: React.ReactNode }) {
   return <PageTransition>{children}</PageTransition>;

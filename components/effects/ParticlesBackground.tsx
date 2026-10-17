@@ -9,7 +9,10 @@ import { useCallback, useMemo } from 'react';
 import Particles from '@tsparticles/react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useParticlesEngine } from '@/hooks/useParticlesEngine';
-import { getParticleConfig, type ParticlePreset } from '@/lib/animations';
+import {
+  getParticleConfig,
+  type ParticlePreset,
+} from '@/lib/animations/particles/configs';
 import { cn } from '@/lib/utils';
 
 interface ParticlesBackgroundProps {

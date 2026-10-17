@@ -12,7 +12,7 @@
 import { useMemo } from 'react';
 import Lottie from 'lottie-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { getAnimationData } from '@/lib/animations';
+import { getAnimationData } from '@/lib/animations/lottie/animations';
 import { cn } from '@/lib/utils';
 import type { BadgeId, BadgeIconProps } from '@/types/effects';
 

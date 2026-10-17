@@ -11,7 +11,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LazyMotion, domAnimation } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { ToastProvider } from '@/components/effects';
+import { ToastProvider } from '@/components/effects/ToastProvider';
 import { initErrorReporter } from '@/lib/errorReporter';
 import { useAnimationSpeed } from '@/hooks/useAnimationSpeed';
 

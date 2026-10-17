@@ -9,11 +9,9 @@ import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import {
-  LottieAnimation,
-  NumberReveal,
-  TextReveal,
-} from '@/components/effects';
+import { LottieAnimation } from '@/components/effects/LottieAnimation';
+import { NumberReveal } from '@/components/effects/NumberReveal';
+import { TextReveal } from '@/components/effects/TextReveal';
 import { useSaveScore } from '../../hooks/useSaveScore';
 import type { ChallengeResult } from '@/types/game';
 

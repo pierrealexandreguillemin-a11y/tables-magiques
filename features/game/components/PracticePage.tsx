@@ -11,7 +11,7 @@ import {
   LazyFairyBackground,
   LazySuccessExplosion,
   preloadHeavyComponents,
-} from '@/lib/animations';
+} from '@/lib/animations/lazy';
 import { AuthGate } from '@/features/auth';
 import { usePractice } from '../hooks/usePractice';
 import { usePracticeUI } from '../hooks/usePracticeUI';

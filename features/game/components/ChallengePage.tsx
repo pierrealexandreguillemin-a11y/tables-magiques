@@ -9,7 +9,7 @@ import { AnimatePresence } from 'framer-motion';
 import {
   LazyParticlesBackground,
   LazySuccessExplosion,
-} from '@/lib/animations';
+} from '@/lib/animations/lazy';
 import { AuthGate } from '@/features/auth';
 import { useChallenge } from '../hooks/useChallenge';
 import { useChallengeUI } from '../hooks/useChallengeUI';

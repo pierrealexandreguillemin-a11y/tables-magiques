@@ -6,13 +6,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import {
-  GradientText,
-  TextReveal,
-  StaggerList,
-  MagicCard,
-  MagicButton,
-} from '@/components/effects';
+import { GradientText } from '@/components/effects/GradientText';
+import { TextReveal } from '@/components/effects/TextReveal';
+import { StaggerList } from '@/components/effects/StaggerList';
+import { MagicCard } from '@/components/effects/MagicCard';
+import { MagicButton } from '@/components/effects/MagicButton';
 
 interface Props {
   onSelectTable: (table: number | null) => void;

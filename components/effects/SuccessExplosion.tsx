@@ -11,7 +11,7 @@ import Particles from '@tsparticles/react';
 import { useParticlesEngine } from '@/hooks/useParticlesEngine';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { LottieAnimation } from './LottieAnimation';
-import { confettiConfig } from '@/lib/animations';
+import { confettiConfig } from '@/lib/animations/particles/configs';
 import { cn } from '@/lib/utils';
 
 interface SuccessExplosionProps {
