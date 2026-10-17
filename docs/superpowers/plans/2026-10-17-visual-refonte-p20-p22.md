@@ -32,7 +32,7 @@ Waiting on the user:
    daughter): canvas lost 3 of 4, "less colour". Fixed: per-star opacity speed (real parity gap
    with tsParticles), even colour spread; see `docs/spikes/particles-parity-2026-10/VERDICT.md`.
 2. Mascot **A3 vs A2** (board on `http://127.0.0.1:8765/board.html`). A2 approved; A3 = hair-like
-   mane as requested. Still open: contrast (product call: darker backdrop or less white body).
+   mane as requested. Body contrast: closed, approved as is by the user (2026-10-17).
 
 Next, in order:
 
