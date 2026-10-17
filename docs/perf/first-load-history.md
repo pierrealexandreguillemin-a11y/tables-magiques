@@ -117,3 +117,30 @@ Reading (hypotheses to verify, not conclusions):
    `filter: blur(50-80px)` animated, drop-shadows, `bg-drift`). To profile with a performance
    trace before touching anything; the rule "optimise HOW, never WHAT" applies.
 3. Lottie loads on `/practice` for guests who never see it: deferrable until the game starts.
+
+## 2026-10-18 — guest gate on `/practice`: where the time goes
+
+`npm run build && MSYS_NO_PATHCONV=1 node scripts/probe-guest-gate.mjs --runs 3` (branch
+`refonte/p22-particles`, 4x CPU, 150 ms RTT, 1.6 Mbps, 412x823 viewport, median of 3, ms from
+navigation start):
+
+| Mark                            | ms          | Step                                         |
+| ------------------------------- | ----------- | -------------------------------------------- |
+| HTML received                   | 185         | static page, served instantly                |
+| DOM interactive                 | 690         | the HTML only shows "Chargement..."          |
+| `load` event                    | 2852        | ~2.2 s downloading and running JS            |
+| `/api/auth/me` start / end      | 3016 / 3196 | session check after hydration (~180 ms)      |
+| dialog text in the DOM          | 3756        | ~560 ms of React work under 4x CPU           |
+| dialog text visible (opacity 1) | 4024        | ~270 ms waiting for motion + entry animation |
+| LCP reported by the browser     | 3820        |                                              |
+
+The Lighthouse run of 2026-10-17 measured 7.0 s with its own throttling profile; this probe is
+lighter, the shape is the same. **~70 % of the wait is the JavaScript before hydration**; the
+session check is cheap. Options, to decide with the user (not applied):
+
+- **A. CSS entry for the dialog** (fits P20): removes the ~270 ms motion wait. Small, HOW-only.
+- **B. Session-aware server render of `/practice` and `/challenge`**: read the session cookie on
+  the server and render the gate state in the HTML, so a guest sees the dialog at first paint
+  (~0.7 s instead of ~4 s here). Turns two static pages into dynamic ones (per-request render +
+  one Redis lookup); the PWA offline behaviour of these routes must be checked first.
+- **C. Defer Lottie on `/practice` until the game starts**: less JS before hydration.
