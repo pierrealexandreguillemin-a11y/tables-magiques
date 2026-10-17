@@ -12,7 +12,7 @@
  */
 
 import { memo } from 'react';
-import { motion } from 'framer-motion';
+import * as m from 'motion/react-m';
 import { Planet, Cat, Ghost, IceCream, Backpack } from 'react-kawaii';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
@@ -113,7 +113,7 @@ export const KawaiiMascot = memo(function KawaiiMascot({
   const kawaiiMood: ReactKawaiiMood = isValidMood(mood) ? mood : 'happy';
 
   return (
-    <motion.div
+    <m.div
       className={cn(
         'inline-flex items-center justify-center cursor-pointer select-none',
         className
@@ -126,7 +126,7 @@ export const KawaiiMascot = memo(function KawaiiMascot({
       aria-label={`Mascotte ${character} avec humeur ${mood}`}
     >
       <KawaiiComponent size={size} mood={kawaiiMood} color={finalColor} />
-    </motion.div>
+    </m.div>
   );
 });
 

@@ -27,43 +27,15 @@ vi.mock('@/hooks/useReducedMotion', () => ({
   useReducedMotion: vi.fn(() => ({ shouldAnimate: true })),
 }));
 
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      className,
-      'data-testid': testId,
-      ...rest
-    }: React.HTMLAttributes<HTMLDivElement> & { 'data-testid'?: string }) => (
-      <div className={className} data-testid={testId} {...rest}>
-        {children}
-      </div>
-    ),
-    section: ({
-      children,
-      className,
-      'data-testid': testId,
-      ...rest
-    }: React.HTMLAttributes<HTMLElement> & { 'data-testid'?: string }) => (
-      <section className={className} data-testid={testId} {...rest}>
-        {children}
-      </section>
-    ),
-    span: ({
-      children,
-      className,
-      ...rest
-    }: React.HTMLAttributes<HTMLSpanElement>) => (
-      <span className={className} {...rest}>
-        {children}
-      </span>
-    ),
-    path: (props: React.SVGProps<SVGPathElement>) => <path {...props} />,
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
-  ),
-}));
+// motion: shared mocks (tests/utils/motionMock.tsx)
+vi.mock(
+  'motion/react-m',
+  async () => (await import('@/tests/utils/motionMock')).motionReactM
+);
+vi.mock(
+  'motion/react',
+  async () => (await import('@/tests/utils/motionMock')).motionReact
+);
 
 vi.mock('@/hooks/useNotifications', () => ({
   useNotifications: vi.fn(() => ({

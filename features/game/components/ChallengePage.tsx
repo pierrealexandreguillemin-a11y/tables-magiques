@@ -5,7 +5,7 @@
 
 'use client';
 
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'motion/react';
 import {
   LazyParticlesBackground,
   LazySuccessExplosion,

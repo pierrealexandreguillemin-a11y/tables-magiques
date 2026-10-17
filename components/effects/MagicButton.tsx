@@ -8,7 +8,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import * as m from 'motion/react-m';
+import { AnimatePresence } from 'motion/react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useRipple } from '@/hooks/useRipple';
 import { useHaptic } from '@/hooks/useHaptic';
@@ -165,7 +166,7 @@ export function MagicButton({
         {showSparkles && animate && sparklePositions.length > 0 && (
           <div className="absolute inset-0 pointer-events-none">
             {sparklePositions.map((pos, i) => (
-              <motion.span
+              <m.span
                 key={i}
                 data-testid="sparkle-particle"
                 className="absolute w-2 h-2 bg-yellow-200 rounded-full"

@@ -6,7 +6,8 @@
  */
 
 import { useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import * as m from 'motion/react-m';
+import { AnimatePresence } from 'motion/react';
 import Particles from '@tsparticles/react';
 import { useParticlesEngine } from '@/hooks/useParticlesEngine';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -51,7 +52,7 @@ export function SuccessExplosion({
   return (
     <AnimatePresence>
       {show && (
-        <motion.div
+        <m.div
           ref={containerRef}
           className={cn(
             'fixed inset-0 z-50 pointer-events-none flex items-center justify-center',
@@ -68,7 +69,7 @@ export function SuccessExplosion({
               className="absolute inset-0"
             />
           )}
-          <motion.div
+          <m.div
             initial={{ scale: 0, rotate: -20 }}
             animate={{
               scale: [0, 1.2, 1],
@@ -90,8 +91,8 @@ export function SuccessExplosion({
               size={dimensions.lottie}
               autoplay
             />
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

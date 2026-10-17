@@ -5,50 +5,19 @@
  * P0 Component - Bouton avec effet paillettes
  */
 
-import React from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MagicButton } from '@/components/effects/MagicButton';
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// Mock framer-motion (still used for AnimatePresence + motion.span sparkles)
-vi.mock('framer-motion', () => {
-  const motion: Record<
-    string,
-    React.FC<React.HTMLAttributes<HTMLElement> & Record<string, unknown>>
-  > = {};
-
-  const tags = ['span'];
-  tags.forEach((tag) => {
-    motion[tag] = ({
-      children,
-      ...rest
-    }: React.PropsWithChildren<Record<string, unknown>>) => {
-      // Strip framer-motion-only props so React doesn't warn
-      const {
-        animate: _a,
-        initial: _i,
-        exit: _e,
-        transition: _t,
-        variants: _v,
-        ...domProps
-      } = rest;
-      return React.createElement(
-        tag,
-        domProps as React.HTMLAttributes<HTMLElement>,
-        children
-      );
-    };
-  });
-
-  return {
-    motion,
-    AnimatePresence: ({ children }: React.PropsWithChildren<unknown>) => (
-      <>{children}</>
-    ),
-  };
-});
-/* eslint-enable @typescript-eslint/no-unused-vars */
+// motion: shared mocks (tests/utils/motionMock.tsx)
+vi.mock(
+  'motion/react-m',
+  async () => (await import('@/tests/utils/motionMock')).motionReactM
+);
+vi.mock(
+  'motion/react',
+  async () => (await import('@/tests/utils/motionMock')).motionReact
+);
 
 describe('MagicButton', () => {
   afterEach(() => {

@@ -6,7 +6,8 @@
  */
 
 import { useEffect, useRef, useState, useMemo } from 'react';
-import { motion, useSpring, useTransform } from 'framer-motion';
+import * as m from 'motion/react-m';
+import { useSpring, useTransform } from 'motion/react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 
@@ -76,7 +77,7 @@ export function NumberReveal({
   }
 
   return (
-    <motion.span
+    <m.span
       ref={ref}
       className={cn('inline-block tabular-nums', className)}
       initial={{ opacity: 0, scale: 0.5, y: 20 }}
@@ -84,16 +85,16 @@ export function NumberReveal({
       transition={{ type: 'spring', stiffness: 200, damping: 15 }}
     >
       {prefix}
-      <motion.span
+      <m.span
         key={displayValue}
         initial={{ rotateX: -90 }}
         animate={{ rotateX: 0 }}
         transition={{ type: 'spring', stiffness: 300 }}
       >
         {displayValue}
-      </motion.span>
+      </m.span>
       {suffix}
-    </motion.span>
+    </m.span>
   );
 }
 

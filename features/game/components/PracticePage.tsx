@@ -6,7 +6,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'motion/react';
 import {
   LazyFairyBackground,
   LazySuccessExplosion,

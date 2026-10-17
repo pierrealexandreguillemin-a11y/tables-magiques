@@ -9,7 +9,8 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import * as m from 'motion/react-m';
+import { AnimatePresence } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import {
   Dialog,
@@ -112,7 +113,7 @@ export function AuthGateModal({
       >
         <DialogHeader>
           <DialogTitle className="text-2xl text-center">
-            <motion.span
+            <m.span
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               className="inline-flex items-center gap-2"
@@ -121,7 +122,7 @@ export function AuthGateModal({
               {mode === 'choice' && 'Bienvenue !'}
               {mode === 'login' && '🦄 Connexion'}
               {mode === 'register' && '✨ Inscription'}
-            </motion.span>
+            </m.span>
           </DialogTitle>
           <DialogDescription className="text-center text-base">
             {mode === 'choice' && message}
@@ -135,7 +136,7 @@ export function AuthGateModal({
         <AnimatePresence mode="wait">
           {/* Écran de choix */}
           {mode === 'choice' && (
-            <motion.div
+            <m.div
               key="choice"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -177,12 +178,12 @@ export function AuthGateModal({
               >
                 ← Retour à l&apos;accueil
               </Button>
-            </motion.div>
+            </m.div>
           )}
 
           {/* Formulaire Login/Register */}
           {(mode === 'login' || mode === 'register') && (
-            <motion.form
+            <m.form
               key="form"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -192,14 +193,14 @@ export function AuthGateModal({
             >
               <AnimatePresence mode="wait">
                 {displayError && (
-                  <motion.div
+                  <m.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
                     className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-4 py-2 rounded-lg text-sm"
                   >
                     {displayError}
-                  </motion.div>
+                  </m.div>
                 )}
               </AnimatePresence>
 
@@ -235,7 +236,7 @@ export function AuthGateModal({
 
               <AnimatePresence mode="wait">
                 {mode === 'register' && (
-                  <motion.div
+                  <m.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
@@ -254,7 +255,7 @@ export function AuthGateModal({
                       autoComplete="new-password"
                       error={!!displayError}
                     />
-                  </motion.div>
+                  </m.div>
                 )}
               </AnimatePresence>
 
@@ -264,7 +265,7 @@ export function AuthGateModal({
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <motion.span
+                  <m.span
                     animate={{ rotate: 360 }}
                     transition={{
                       duration: 1,
@@ -274,7 +275,7 @@ export function AuthGateModal({
                     className="inline-block"
                   >
                     🌀
-                  </motion.span>
+                  </m.span>
                 ) : mode === 'login' ? (
                   "C'est parti ! 🚀"
                 ) : (
@@ -307,7 +308,7 @@ export function AuthGateModal({
                     : 'Déjà un compte ? Connecte-toi !'}
                 </button>
               </div>
-            </motion.form>
+            </m.form>
           )}
         </AnimatePresence>
       </DialogContent>

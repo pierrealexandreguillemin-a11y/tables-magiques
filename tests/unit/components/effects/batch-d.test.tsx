@@ -13,41 +13,15 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 // Shared mocks — declared before any component import
 // ---------------------------------------------------------------------------
 
-vi.mock('framer-motion', () => {
-  const tags = ['div', 'section', 'span', 'button', 'path'];
-  const motion: Record<
-    string,
-    React.FC<React.HTMLAttributes<HTMLElement> & Record<string, unknown>>
-  > = {};
-
-  tags.forEach((tag) => {
-    motion[tag] = ({
-      children,
-      animate: _a,
-      initial: _i,
-      exit: _e,
-      transition: _t,
-      variants: _v,
-      whileTap: _wt,
-      whileHover: _wh,
-      layout: _l,
-      layoutId: _lid,
-      ...rest
-    }: React.PropsWithChildren<Record<string, unknown>>) =>
-      React.createElement(
-        tag,
-        rest as React.HTMLAttributes<HTMLElement>,
-        children
-      );
-  });
-
-  return {
-    motion,
-    AnimatePresence: ({ children }: React.PropsWithChildren<unknown>) => (
-      <>{children}</>
-    ),
-  };
-});
+// motion: shared mocks (tests/utils/motionMock.tsx)
+vi.mock(
+  'motion/react-m',
+  async () => (await import('@/tests/utils/motionMock')).motionReactM
+);
+vi.mock(
+  'motion/react',
+  async () => (await import('@/tests/utils/motionMock')).motionReact
+);
 
 vi.mock('@/hooks/useParticlesEngine', () => ({
   useParticlesEngine: () => true,

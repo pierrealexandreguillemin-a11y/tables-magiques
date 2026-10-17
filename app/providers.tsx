@@ -2,14 +2,15 @@
  * Providers - Tables Magiques
  * ISO/IEC 25010 - React Query + Context providers + Effects + Error Monitoring
  *
- * LazyMotion: Reduce Framer Motion bundle by ~70kb
- * https://www.framer.com/motion/lazy-motion/
+ * LazyMotion strict + async features: m.* components only, feature bundle
+ * loaded after hydration. https://motion.dev/docs/react-lazy-motion
  */
 
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { LazyMotion, domAnimation } from 'framer-motion';
+import { LazyMotion } from 'motion/react';
+import { loadMotionFeatures } from '@/lib/animations/framer/loadFeatures';
 import { useState, useEffect } from 'react';
 import { ToastProvider } from '@/components/effects/ToastProvider';
 import { initErrorReporter } from '@/lib/errorReporter';
@@ -46,7 +47,7 @@ export function Providers({ children }: ProvidersProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LazyMotion features={domAnimation}>
+      <LazyMotion features={loadMotionFeatures} strict>
         <ToastProvider>{children}</ToastProvider>
       </LazyMotion>
     </QueryClientProvider>

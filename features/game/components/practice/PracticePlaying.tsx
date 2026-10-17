@@ -5,7 +5,8 @@
 
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import * as m from 'motion/react-m';
+import { AnimatePresence } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { GentleShake } from '@/components/effects/GentleShake';
@@ -37,7 +38,7 @@ export function PracticePlaying({
   onSubmit,
 }: Props) {
   return (
-    <motion.div
+    <m.div
       key="playing"
       exit={{ opacity: 0, scale: 0.9 }}
       className="text-center animate-fade-scale"
@@ -93,7 +94,7 @@ export function PracticePlaying({
 
       <AnimatePresence>
         {state.showFeedback && (
-          <motion.div
+          <m.div
             exit={{ opacity: 0, scale: 0 }}
             className="fixed inset-0 pointer-events-none flex items-center justify-center z-50 animate-fade-scale"
           >
@@ -102,7 +103,7 @@ export function PracticePlaying({
               size={200}
               autoplay
             />
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
@@ -119,6 +120,6 @@ export function PracticePlaying({
           <span className="text-yellow-300">Série de {state.streak} !</span>
         </div>
       )}
-    </motion.div>
+    </m.div>
   );
 }

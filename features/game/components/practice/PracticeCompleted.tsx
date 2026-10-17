@@ -6,7 +6,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import * as m from 'motion/react-m';
 import { LottieAnimation } from '@/components/effects/LottieAnimation';
 import { NumberReveal } from '@/components/effects/NumberReveal';
 import { MagicCard } from '@/components/effects/MagicCard';
@@ -41,7 +41,7 @@ export function PracticeCompleted({
   }, [saveScore, result, selectedTable]);
 
   return (
-    <motion.div key="completed" className="text-center animate-fade-scale">
+    <m.div key="completed" className="text-center animate-fade-scale">
       <div className="mb-6">
         <LottieAnimation
           type={result.isPerfect ? 'crown' : 'celebration'}
@@ -94,6 +94,6 @@ export function PracticeCompleted({
           ✨ Rejouer
         </MagicButton>
       </div>
-    </motion.div>
+    </m.div>
   );
 }

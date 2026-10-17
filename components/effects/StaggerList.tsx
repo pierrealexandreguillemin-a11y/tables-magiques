@@ -5,7 +5,7 @@
  * ISO/IEC 25010 - Révélation progressive des éléments
  */
 
-import { motion } from 'framer-motion';
+import * as m from 'motion/react-m';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface StaggerListProps<T> {
@@ -52,7 +52,7 @@ export function StaggerList<T>({
   return (
     <div className={className}>
       {items.map((item, index) => (
-        <motion.div
+        <m.div
           key={keyExtractor(item, index)}
           className={itemClassName}
           initial={variants.initial}
@@ -65,7 +65,7 @@ export function StaggerList<T>({
           }}
         >
           {renderItem(item, index)}
-        </motion.div>
+        </m.div>
       ))}
     </div>
   );

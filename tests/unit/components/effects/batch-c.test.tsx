@@ -10,46 +10,15 @@ import { render, screen, fireEvent } from '@testing-library/react';
 // Shared mocks
 // ---------------------------------------------------------------------------
 
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      className,
-      onClick,
-      ref,
-      ...props
-    }: React.ComponentProps<'div'>) => (
-      <div className={className} onClick={onClick} ref={ref} {...props}>
-        {children}
-      </div>
-    ),
-    button: ({
-      children,
-      className,
-      onClick,
-      disabled,
-      ...props
-    }: React.ComponentProps<'button'>) => (
-      <button
-        className={className}
-        onClick={onClick}
-        disabled={disabled}
-        {...props}
-      >
-        {children}
-      </button>
-    ),
-    span: ({ children, className, ...props }: React.ComponentProps<'span'>) => (
-      <span className={className} {...props}>
-        {children}
-      </span>
-    ),
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
-  ),
-  useInView: () => true,
-}));
+// motion: shared mocks (tests/utils/motionMock.tsx)
+vi.mock(
+  'motion/react-m',
+  async () => (await import('@/tests/utils/motionMock')).motionReactM
+);
+vi.mock(
+  'motion/react',
+  async () => (await import('@/tests/utils/motionMock')).motionReact
+);
 
 vi.mock('@/hooks/useReducedMotion', () => ({
   useReducedMotion: () => ({

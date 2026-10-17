@@ -6,7 +6,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import * as m from 'motion/react-m';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { LottieAnimation } from '@/components/effects/LottieAnimation';
@@ -33,7 +33,7 @@ export function ChallengeGameOver({ result, onReplay }: Props) {
   }, [saveScore, result]);
 
   return (
-    <motion.div key="game_over" className="text-center animate-fade-scale">
+    <m.div key="game_over" className="text-center animate-fade-scale">
       <div className="mb-6">
         <LottieAnimation
           type={
@@ -112,6 +112,6 @@ export function ChallengeGameOver({ result, onReplay }: Props) {
           </Button>
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 }

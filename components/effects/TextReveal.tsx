@@ -11,7 +11,8 @@
  */
 
 import { useMemo } from 'react';
-import { motion, type Variants } from 'framer-motion';
+import * as m from 'motion/react-m';
+import { type Variants } from 'motion/react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 import type { TextRevealProps } from '@/types/effects';
@@ -86,7 +87,7 @@ export function TextReveal({
   }
 
   return (
-    <motion.span
+    <m.span
       className={cn('inline-block', className)}
       variants={containerVariants}
       initial="hidden"
@@ -95,7 +96,7 @@ export function TextReveal({
       style={{ display: 'inline-block' }}
     >
       {characters.map(({ char, key }) => (
-        <motion.span
+        <m.span
           key={key}
           className="inline-block"
           variants={charVariants}
@@ -107,9 +108,9 @@ export function TextReveal({
           style={{ whiteSpace: char === ' ' ? 'pre' : 'normal' }}
         >
           {char === ' ' ? '\u00A0' : char}
-        </motion.span>
+        </m.span>
       ))}
-    </motion.span>
+    </m.span>
   );
 }
 
@@ -141,7 +142,7 @@ export function WordReveal({
   }
 
   return (
-    <motion.span
+    <m.span
       className={cn('inline-block', className)}
       variants={containerVariants}
       initial="hidden"
@@ -149,7 +150,7 @@ export function WordReveal({
       onAnimationComplete={onComplete}
     >
       {words.map(({ word, key }, index) => (
-        <motion.span
+        <m.span
           key={key}
           className="inline-block mr-[0.25em]"
           variants={charVariants}
@@ -160,9 +161,9 @@ export function WordReveal({
           }}
         >
           {word}
-        </motion.span>
+        </m.span>
       ))}
-    </motion.span>
+    </m.span>
   );
 }
 

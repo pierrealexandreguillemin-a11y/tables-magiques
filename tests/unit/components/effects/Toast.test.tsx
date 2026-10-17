@@ -10,60 +10,15 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { ToastContainer } from '@/components/effects/Toast';
 import type { Toast } from '@/types/effects';
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      className,
-      role,
-      'aria-live': ariaLive,
-      'aria-atomic': ariaAtomic,
-      tabIndex,
-      onClick,
-      onMouseEnter,
-      onMouseLeave,
-      onFocus,
-      onBlur,
-      ...props
-    }: React.ComponentProps<'div'> & {
-      'aria-live'?: string;
-      'aria-atomic'?: string;
-    }) => (
-      <div
-        className={className}
-        role={role}
-        aria-live={ariaLive}
-        aria-atomic={ariaAtomic}
-        tabIndex={tabIndex}
-        onClick={onClick}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        {...props}
-      >
-        {children}
-      </div>
-    ),
-    p: ({
-      children,
-      className,
-      role,
-      'aria-live': ariaLive,
-    }: React.ComponentProps<'p'> & { 'aria-live'?: string }) => (
-      <p className={className} role={role} aria-live={ariaLive}>
-        {children}
-      </p>
-    ),
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
-  ),
-  useAnimationControls: () => ({
-    start: vi.fn().mockResolvedValue(undefined),
-  }),
-}));
+// motion: shared mocks (tests/utils/motionMock.tsx)
+vi.mock(
+  'motion/react-m',
+  async () => (await import('@/tests/utils/motionMock')).motionReactM
+);
+vi.mock(
+  'motion/react',
+  async () => (await import('@/tests/utils/motionMock')).motionReact
+);
 
 // Mock useReducedMotion
 vi.mock('@/hooks/useReducedMotion', () => ({

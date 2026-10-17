@@ -13,7 +13,8 @@
  */
 
 import { useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import * as m from 'motion/react-m';
+import { AnimatePresence } from 'motion/react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 import type { Toast, ToastType } from '@/types/effects';
@@ -90,7 +91,7 @@ function ToastItem({
   const handleBlur = useCallback(() => onPauseChange(false), [onPauseChange]);
 
   return (
-    <motion.div
+    <m.div
       layout
       role="alert"
       aria-live="polite"
@@ -162,7 +163,7 @@ function ToastItem({
       {/* Progress bar (WCAG: visual timer indicator) */}
       {toast.duration && (
         <div className="absolute bottom-0 left-0 right-0 h-1 rounded-b-xl overflow-hidden">
-          <motion.div
+          <m.div
             className={cn(
               'h-full',
               toast.type === 'success' && 'bg-green-400',
@@ -181,7 +182,7 @@ function ToastItem({
           />
         </div>
       )}
-    </motion.div>
+    </m.div>
   );
 }
 

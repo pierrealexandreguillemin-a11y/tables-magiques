@@ -12,7 +12,8 @@
  */
 
 import { useRef } from 'react';
-import { motion, useInView, type Variants } from 'framer-motion';
+import * as m from 'motion/react-m';
+import { useInView, type Variants } from 'motion/react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import type { ScrollRevealProps } from '@/types/effects';
 
@@ -89,7 +90,7 @@ export function ScrollReveal({
   }
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       className={className}
       initial="hidden"
@@ -98,7 +99,7 @@ export function ScrollReveal({
       transition={{ delay, duration }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -139,11 +140,11 @@ export function ScrollRevealList({
     return <div className={className}>{children}</div>;
   }
 
-  // Wrapper children dans motion.div
+  // Wrapper children dans m.div
   const items = Array.isArray(children) ? children : [children];
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       className={className}
       initial="hidden"
@@ -151,15 +152,11 @@ export function ScrollRevealList({
       variants={containerVariants}
     >
       {items.map((child, index) => (
-        <motion.div
-          key={index}
-          className={itemClassName}
-          variants={itemVariants}
-        >
+        <m.div key={index} className={itemClassName} variants={itemVariants}>
           {child}
-        </motion.div>
+        </m.div>
       ))}
-    </motion.div>
+    </m.div>
   );
 }
 

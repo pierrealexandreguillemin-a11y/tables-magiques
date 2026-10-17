@@ -15,26 +15,15 @@ vi.mock('@/hooks/useReducedMotion', () => ({
   })),
 }));
 
-// Mock framer-motion avec composants testables
-vi.mock('framer-motion', () => ({
-  motion: {
-    span: ({
-      children,
-      className,
-      style,
-      ...props
-    }: React.HTMLAttributes<HTMLSpanElement>) => (
-      <span
-        className={className}
-        style={style}
-        data-testid="motion-span"
-        {...props}
-      >
-        {children}
-      </span>
-    ),
-  },
-}));
+// motion: shared mocks (tests/utils/motionMock.tsx)
+vi.mock(
+  'motion/react-m',
+  async () => (await import('@/tests/utils/motionMock')).motionReactM
+);
+vi.mock(
+  'motion/react',
+  async () => (await import('@/tests/utils/motionMock')).motionReact
+);
 
 describe('TextReveal', () => {
   describe('Character splitting', () => {

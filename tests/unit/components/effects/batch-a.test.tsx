@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * batch-a.test.tsx
  * Unit tests for effect components with 0% coverage:
@@ -7,7 +6,6 @@
  *   - NumberReveal
  */
 
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
@@ -15,58 +13,15 @@ import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 // Module mocks — declared before any imports that use them
 // ---------------------------------------------------------------------------
 
-vi.mock('framer-motion', () => {
-  const motion: Record<
-    string,
-    React.FC<React.HTMLAttributes<HTMLElement> & Record<string, unknown>>
-  > = {};
-
-  const tags = ['button', 'span', 'div', 'p', 'section', 'article'];
-  tags.forEach((tag) => {
-    motion[tag] = ({
-      children,
-      ...rest
-    }: React.PropsWithChildren<Record<string, unknown>>) => {
-      // Strip framer-motion-only props so React doesn't warn
-      const {
-        animate: _a,
-        initial: _i,
-        exit: _e,
-        transition: _t,
-        variants: _v,
-        whileTap: _wt,
-        whileHover: _wh,
-        whileFocus: _wf,
-        whileInView: _wiv,
-        layout: _l,
-        layoutId: _lid,
-        ...domProps
-      } = rest;
-      return React.createElement(
-        tag,
-        domProps as React.HTMLAttributes<HTMLElement>,
-        children
-      );
-    };
-  });
-
-  return {
-    motion,
-    AnimatePresence: ({ children }: React.PropsWithChildren<unknown>) => (
-      <>{children}</>
-    ),
-    useSpring: () => ({
-      set: vi.fn(),
-      on: vi.fn(() => vi.fn()),
-    }),
-    useTransform: (_spring: unknown, fn: (v: number) => number) => ({
-      on: vi.fn((event: string, cb: (v: number) => void) => {
-        if (event === 'change') cb(fn(0));
-        return vi.fn();
-      }),
-    }),
-  };
-});
+// motion: shared mocks (tests/utils/motionMock.tsx)
+vi.mock(
+  'motion/react-m',
+  async () => (await import('@/tests/utils/motionMock')).motionReactM
+);
+vi.mock(
+  'motion/react',
+  async () => (await import('@/tests/utils/motionMock')).motionReact
+);
 
 vi.mock('@tsparticles/react', () => ({
   default: ({ id, className }: { id?: string; className?: string }) => (

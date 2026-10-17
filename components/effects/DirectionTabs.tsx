@@ -6,7 +6,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import * as m from 'motion/react-m';
+import { AnimatePresence } from 'motion/react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 import type { ThemeVariant } from '@/types/effects';
@@ -112,7 +113,7 @@ export function DirectionTabs({
         aria-label="Navigation onglets"
       >
         {/* Sliding indicator */}
-        <motion.div
+        <m.div
           className={cn(
             'absolute top-1 bottom-1 rounded-lg',
             VARIANT_COLORS[variant]
@@ -231,7 +232,7 @@ export function DirectionTabPanel({
   return (
     <AnimatePresence mode="wait" custom={direction}>
       {isActive && (
-        <motion.div
+        <m.div
           key={tabId}
           id={`tabpanel-${tabId}`}
           role="tabpanel"
@@ -249,7 +250,7 @@ export function DirectionTabPanel({
           className={className}
         >
           {children}
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

@@ -9,53 +9,15 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { CrownProgress } from '@/components/effects/CrownProgress';
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    svg: ({
-      children,
-      className,
-      'data-testid': testId,
-      ...props
-    }: React.ComponentProps<'svg'> & { 'data-testid'?: string }) => (
-      <svg className={className} data-testid={testId} {...props}>
-        {children}
-      </svg>
-    ),
-    path: ({
-      className,
-      d: pathD,
-      fill,
-      'data-testid': testId,
-      ...props
-    }: React.ComponentProps<'path'> & { 'data-testid'?: string }) => (
-      <path
-        className={className}
-        d={pathD}
-        fill={fill}
-        data-testid={testId}
-        {...props}
-      />
-    ),
-    circle: ({
-      className,
-      cx,
-      cy,
-      r,
-      fill,
-      ...props
-    }: React.ComponentProps<'circle'>) => (
-      <circle
-        className={className}
-        cx={cx}
-        cy={cy}
-        r={r}
-        fill={fill}
-        {...props}
-      />
-    ),
-  },
-}));
+// motion: shared mocks (tests/utils/motionMock.tsx)
+vi.mock(
+  'motion/react-m',
+  async () => (await import('@/tests/utils/motionMock')).motionReactM
+);
+vi.mock(
+  'motion/react',
+  async () => (await import('@/tests/utils/motionMock')).motionReact
+);
 
 // Mock useReducedMotion
 vi.mock('@/hooks/useReducedMotion', () => ({

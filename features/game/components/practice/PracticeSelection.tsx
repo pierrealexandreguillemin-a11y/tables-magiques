@@ -5,7 +5,7 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
+import * as m from 'motion/react-m';
 import { GradientText } from '@/components/effects/GradientText';
 import { TextReveal } from '@/components/effects/TextReveal';
 import { StaggerList } from '@/components/effects/StaggerList';
@@ -18,7 +18,7 @@ interface Props {
 
 export function PracticeSelection({ onSelectTable }: Props) {
   return (
-    <motion.div
+    <m.div
       key="selection"
       exit={{ opacity: 0, y: -20 }}
       className="text-center animate-fade-up"
@@ -64,6 +64,6 @@ export function PracticeSelection({ onSelectTable }: Props) {
       >
         🌈 Toutes les tables
       </MagicButton>
-    </motion.div>
+    </m.div>
   );
 }

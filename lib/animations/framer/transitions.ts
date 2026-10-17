@@ -5,7 +5,7 @@
  * A utiliser avec AnimatePresence dans layout
  */
 
-import type { Variants, Transition } from 'framer-motion';
+import type { Variants, Transition } from 'motion/react';
 
 // =============================================================================
 // TYPES

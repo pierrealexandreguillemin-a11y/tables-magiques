@@ -5,7 +5,7 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
+import * as m from 'motion/react-m';
 import { Button } from '@/components/ui/button';
 import { GradientText } from '@/components/effects/GradientText';
 import { TextReveal } from '@/components/effects/TextReveal';
@@ -16,7 +16,7 @@ interface Props {
 
 export function ChallengeReady({ onStart }: Props) {
   return (
-    <motion.div
+    <m.div
       key="ready"
       exit={{ opacity: 0, y: -20 }}
       className="text-center animate-fade-up"
@@ -49,6 +49,6 @@ export function ChallengeReady({ onStart }: Props) {
           Commencer
         </Button>
       </div>
-    </motion.div>
+    </m.div>
   );
 }

@@ -6,7 +6,8 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import * as m from 'motion/react-m';
+import { AnimatePresence } from 'motion/react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 import { THEME_OVERLAYS } from '@/lib/animations/colors';
@@ -143,7 +144,7 @@ export function MorphingOverlay({
   return (
     <AnimatePresence>
       {isAnimating && (
-        <motion.div
+        <m.div
           key="morphing-overlay"
           className={cn(
             'fixed inset-0 z-[9999] pointer-events-none',

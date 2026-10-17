@@ -7,7 +7,8 @@
 
 import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { motion, AnimatePresence } from 'framer-motion';
+import * as m from 'motion/react-m';
+import { AnimatePresence } from 'motion/react';
 import { XIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -76,7 +77,7 @@ export function AnimatedDialogContent({
     <AnimatePresence>
       <DialogPrimitive.Portal forceMount>
         <DialogPrimitive.Overlay asChild forceMount>
-          <motion.div
+          <m.div
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
             variants={shouldAnimate ? overlayVariants : undefined}
             initial="initial"
@@ -85,7 +86,7 @@ export function AnimatedDialogContent({
           />
         </DialogPrimitive.Overlay>
         <DialogPrimitive.Content asChild forceMount>
-          <motion.div
+          <m.div
             className={cn(
               'fixed top-1/2 left-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2',
               'bg-background rounded-2xl border-2 border-primary/20 p-6 shadow-2xl',
@@ -104,7 +105,7 @@ export function AnimatedDialogContent({
                 <span className="sr-only">Fermer</span>
               </DialogPrimitive.Close>
             )}
-          </motion.div>
+          </m.div>
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </AnimatePresence>

@@ -5,7 +5,8 @@
 
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import * as m from 'motion/react-m';
+import { AnimatePresence } from 'motion/react';
 import { GentleShake } from '@/components/effects/GentleShake';
 import { LottieAnimation } from '@/components/effects/LottieAnimation';
 import { QuestionDisplay } from '../QuestionDisplay';
@@ -39,7 +40,7 @@ export function ChallengePlaying({
   onSubmit,
 }: Props) {
   return (
-    <motion.div
+    <m.div
       key="playing"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -63,7 +64,7 @@ export function ChallengePlaying({
 
       <AnimatePresence>
         {feedback.show && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0 }}
@@ -74,7 +75,7 @@ export function ChallengePlaying({
               size={150}
               autoplay
             />
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
@@ -86,14 +87,14 @@ export function ChallengePlaying({
       />
 
       {streak >= 3 && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mt-6 text-xl font-bold"
         >
           <span className="text-yellow-300">Série de {streak} !</span>
-        </motion.div>
+        </m.div>
       )}
-    </motion.div>
+    </m.div>
   );
 }

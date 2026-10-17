@@ -6,7 +6,8 @@
  */
 
 import { useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import * as m from 'motion/react-m';
+import { AnimatePresence } from 'motion/react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import Particles from '@tsparticles/react';
 import { useParticlesEngine } from '@/hooks/useParticlesEngine';
@@ -63,7 +64,7 @@ export function BadgeUnlockModal({
         <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
           <DialogPrimitive.Portal forceMount>
             <DialogPrimitive.Overlay asChild forceMount>
-              <motion.div
+              <m.div
                 ref={containerRef}
                 className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md"
                 initial={{ opacity: 0 }}
@@ -77,10 +78,10 @@ export function BadgeUnlockModal({
                     className="absolute inset-0"
                   />
                 )}
-              </motion.div>
+              </m.div>
             </DialogPrimitive.Overlay>
             <DialogPrimitive.Content asChild forceMount>
-              <motion.div
+              <m.div
                 className="fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 text-center"
                 initial={{ opacity: 0, scale: 0.5, y: 50 }}
                 animate={{
@@ -92,7 +93,7 @@ export function BadgeUnlockModal({
                 exit={{ opacity: 0, scale: 0.8, y: 30 }}
               >
                 {/* Titre */}
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
@@ -101,10 +102,10 @@ export function BadgeUnlockModal({
                   <h2 className="text-2xl font-bold text-white mt-2">
                     Nouveau Badge !
                   </h2>
-                </motion.div>
+                </m.div>
 
                 {/* Badge */}
-                <motion.div
+                <m.div
                   className={cn(
                     'mx-auto my-8 w-32 h-32 rounded-full flex items-center justify-center',
                     'bg-gradient-to-br shadow-2xl',
@@ -124,10 +125,10 @@ export function BadgeUnlockModal({
                     size={64}
                     animate={true}
                   />
-                </motion.div>
+                </m.div>
 
                 {/* Nom et description */}
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
@@ -148,10 +149,10 @@ export function BadgeUnlockModal({
                     {badge.rarity.charAt(0).toUpperCase() +
                       badge.rarity.slice(1)}
                   </span>
-                </motion.div>
+                </m.div>
 
                 {/* Bouton */}
-                <motion.div
+                <m.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.8 }}
@@ -160,8 +161,8 @@ export function BadgeUnlockModal({
                   <MagicButton onClick={() => onOpenChange(false)}>
                     Continuer
                   </MagicButton>
-                </motion.div>
-              </motion.div>
+                </m.div>
+              </m.div>
             </DialogPrimitive.Content>
           </DialogPrimitive.Portal>
         </DialogPrimitive.Root>

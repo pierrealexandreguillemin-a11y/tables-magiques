@@ -6,7 +6,8 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import * as m from 'motion/react-m';
+import { AnimatePresence } from 'motion/react';
 import {
   Dialog,
   DialogContent,
@@ -97,7 +98,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
       <DialogContent className="sm:max-w-md bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900 dark:to-pink-900">
         <DialogHeader>
           <DialogTitle className="text-2xl text-center">
-            <motion.span
+            <m.span
               key={mode}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -105,7 +106,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
               className="inline-block"
             >
               {mode === 'login' ? '🦄 Connexion' : '✨ Inscription'}
-            </motion.span>
+            </m.span>
           </DialogTitle>
           <DialogDescription className="text-center">
             {mode === 'login'
@@ -117,14 +118,14 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <AnimatePresence mode="wait">
             {displayError && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-4 py-2 rounded-lg text-sm"
               >
                 {displayError}
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
 
@@ -160,7 +161,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
 
           <AnimatePresence mode="wait">
             {mode === 'register' && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
@@ -179,7 +180,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                   autoComplete="new-password"
                   error={!!displayError}
                 />
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
 
@@ -189,13 +190,13 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
             disabled={isLoading}
           >
             {isLoading ? (
-              <motion.span
+              <m.span
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                 className="inline-block"
               >
                 🌀
-              </motion.span>
+              </m.span>
             ) : mode === 'login' ? (
               "C'est parti ! 🚀"
             ) : (

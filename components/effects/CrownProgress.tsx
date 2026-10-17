@@ -8,7 +8,7 @@
 'use client';
 
 import { memo } from 'react';
-import { motion } from 'framer-motion';
+import * as m from 'motion/react-m';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 import type { ThemeVariant } from '@/types/effects';
@@ -119,7 +119,7 @@ export const CrownProgress = memo(function CrownProgress({
   const clipY = 100 - normalizedProgress;
 
   return (
-    <motion.svg
+    <m.svg
       data-testid="crown-progress"
       data-progress={normalizedProgress.toString()}
       data-animate={animate ? 'true' : 'false'}
@@ -221,7 +221,7 @@ export const CrownProgress = memo(function CrownProgress({
       />
 
       {/* Filled crown with gradient (clipped) */}
-      <motion.path
+      <m.path
         data-testid="crown-fill"
         d={CROWN_PATH}
         fill={`url(#${FILL_GRADIENT_IDS[variant]})`}
@@ -247,7 +247,7 @@ export const CrownProgress = memo(function CrownProgress({
 
       {/* Joyaux scintillants */}
       {JEWEL_POSITIONS.map((jewel, i) => (
-        <motion.circle
+        <m.circle
           key={i}
           cx={jewel.cx}
           cy={jewel.cy}
@@ -283,7 +283,7 @@ export const CrownProgress = memo(function CrownProgress({
           {normalizedProgress}%
         </text>
       )}
-    </motion.svg>
+    </m.svg>
   );
 });
 

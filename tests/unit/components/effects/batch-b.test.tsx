@@ -11,68 +11,18 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import React from 'react';
 
 // ---------------------------------------------------------------------------
-// Shared helpers
-// ---------------------------------------------------------------------------
-
-/** Strip framer-motion-specific props before spreading onto a real DOM element */
-function filterMotionProps<T extends Record<string, unknown>>(props: T) {
-  const {
-    initial,
-    animate,
-    exit,
-    variants,
-    transition,
-    whileHover,
-    whileTap,
-    whileFocus,
-    whileInView,
-    layout,
-    layoutId,
-    custom,
-    onAnimationStart,
-    onAnimationComplete,
-    style,
-    ...rest
-  } = props as Record<string, unknown>;
-  void initial;
-  void animate;
-  void exit;
-  void variants;
-  void transition;
-  void whileHover;
-  void whileTap;
-  void whileFocus;
-  void whileInView;
-  void layout;
-  void layoutId;
-  void custom;
-  void onAnimationStart;
-  void onAnimationComplete;
-  // Keep style so snapshot tests don't lose it
-  return { ...rest, style } as unknown as Partial<T>;
-}
-
-// ---------------------------------------------------------------------------
 // Global mocks (apply to ALL describe blocks in this file)
 // ---------------------------------------------------------------------------
 
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: (props: React.ComponentProps<'div'> & Record<string, unknown>) => {
-      const clean = filterMotionProps(props);
-      return <div {...clean}>{props.children}</div>;
-    },
-    span: (props: React.ComponentProps<'span'> & Record<string, unknown>) => {
-      const clean = filterMotionProps(props);
-      return <span {...clean}>{props.children}</span>;
-    },
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
-  ),
-  useAnimationControls: () => ({ start: vi.fn() }),
-  useInView: () => true,
-}));
+// motion: shared mocks (tests/utils/motionMock.tsx)
+vi.mock(
+  'motion/react-m',
+  async () => (await import('@/tests/utils/motionMock')).motionReactM
+);
+vi.mock(
+  'motion/react',
+  async () => (await import('@/tests/utils/motionMock')).motionReact
+);
 
 vi.mock('@/hooks/useReducedMotion', () => ({
   useReducedMotion: vi.fn(() => ({
