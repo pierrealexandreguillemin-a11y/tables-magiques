@@ -77,4 +77,4 @@ Tout le reste utilise CSS — voir `styles/animations.css`.
 - `next.config.ts` a le React Compiler active (memoization automatique)
 - 1398 tests (76 fichiers), coverage ~90%
 - Zero dependances circulaires (madge verifie)
-- Bundle size guard: 525 KB gzipped, threshold 560 KB
+- Bundle size guard: 547 KB gzipped (2026-10-17), threshold 560 KB

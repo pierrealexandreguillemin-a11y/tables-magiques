@@ -51,3 +51,6 @@ tests/e2e/.auth/
 # local measurements (machine-specific)
 /reports/first-load.json
 /tests/e2e/__local_snapshots__/
+
+# brand screenshots used as style references: copyrighted, never in the public repo
+/docs/spikes/style-2026-10/ref-*.png
