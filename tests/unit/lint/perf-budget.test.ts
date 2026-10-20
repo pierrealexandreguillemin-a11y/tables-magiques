@@ -1,7 +1,7 @@
 /**
  * Calibration of the per-route JS budget gate (scripts/perf-budget.mjs):
  * red on the known-bad 2026-10-17 baseline (barrels shipped Lottie and tsParticles
- * before load), green on the measured state the budget was set from.
+ * before load) and on the pre-P22 state, green on the measured state the budget was set from.
  */
 
 import { readFileSync } from 'node:fs';
@@ -19,8 +19,8 @@ const KNOWN_BAD = {
   '/settings': { loadKB: 416, idleKB: 446 },
 };
 
-// docs/perf/first-load-history.md, row the budget was set from
-const MEASURED = {
+// docs/perf/first-load-history.md, row "motion 14" (state before P22, 2026-10-17)
+const PRE_P22 = {
   '/': { loadKB: 264, idleKB: 473 },
   '/practice': { loadKB: 352, idleKB: 445 },
   '/challenge': { loadKB: 352, idleKB: 443 },
@@ -28,11 +28,27 @@ const MEASURED = {
   '/settings': { loadKB: 195, idleKB: 314 },
 };
 
+// docs/perf/first-load-history.md, row "P22", re-measured on master 142333c (2026-10-20):
+// the row the budget was set from
+const MEASURED = {
+  '/': { loadKB: 226, idleKB: 435 },
+  '/practice': { loadKB: 352, idleKB: 415 },
+  '/challenge': { loadKB: 352, idleKB: 409 },
+  '/profile': { loadKB: 226, idleKB: 435 },
+  '/settings': { loadKB: 195, idleKB: 276 },
+};
+
 describe('per-route JS budget', () => {
   it('fails on the known-bad baseline', () => {
     const failures = checkBudget(KNOWN_BAD, budget);
-    expect(failures).toContain('/: loadKB 432 KB > budget 278 KB');
+    expect(failures).toContain('/: loadKB 432 KB > budget 238 KB');
     expect(failures.length).toBeGreaterThanOrEqual(5);
+  });
+
+  it('fails when tsParticles weight comes back (pre-P22 state)', () => {
+    expect(checkBudget(PRE_P22, budget)).toContain(
+      '/: loadKB 264 KB > budget 238 KB'
+    );
   });
 
   it('passes on the state the budget was measured from', () => {
