@@ -34,6 +34,10 @@ Waiting on the user:
 2. Mascot **A3 vs A2** (board on `http://127.0.0.1:8765/board.html`). A2 approved; A3 = hair-like
    mane as requested. Body contrast: closed, approved as is by the user (2026-10-17).
 
+Before the next vote (round 2 and A3 vs A2): apply `docs/VISUAL_VALIDATION_PROTOCOL.md`
+(R1 frozen seeds for measurements, R2 mascot at display sizes, R3 rejection criteria written first).
+Rules written 2026-10-20, not applied yet.
+
 Next, in order:
 
 1. Merge P22 after the verdict; lower `perf-budget.json` to the new measurement + 5 %.
