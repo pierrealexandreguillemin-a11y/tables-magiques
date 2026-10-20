@@ -1,10 +1,10 @@
 {
-  "description": "Max gzipped JS per route (KB). loadKB = before the load event, idleKB = at network idle. Set 2026-10-17 from measured values + 5 % (docs/perf/first-load-history.md). Lower only with a new measurement.",
+  "description": "Max gzipped JS per route (KB). loadKB = before the load event, idleKB = at network idle. Set 2026-10-20 after the P22 merge from measured values + 5 %, rounded up (docs/perf/first-load-history.md). Lower only with a new measurement.",
   "routes": {
-    "/": { "loadKB": 278, "idleKB": 497 },
-    "/practice": { "loadKB": 370, "idleKB": 468 },
-    "/challenge": { "loadKB": 370, "idleKB": 466 },
-    "/profile": { "loadKB": 278, "idleKB": 497 },
-    "/settings": { "loadKB": 205, "idleKB": 330 }
+    "/": { "loadKB": 238, "idleKB": 457 },
+    "/practice": { "loadKB": 370, "idleKB": 436 },
+    "/challenge": { "loadKB": 370, "idleKB": 430 },
+    "/profile": { "loadKB": 238, "idleKB": 457 },
+    "/settings": { "loadKB": 205, "idleKB": 290 }
   }
 }

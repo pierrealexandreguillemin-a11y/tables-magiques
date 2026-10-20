@@ -88,6 +88,11 @@ CPU). Side finding to work on: **LCP 6.4-7.4 s on practice/challenge** on a thro
 
 ## 2026-10-17 — P22: tsParticles removed
 
+Merged into master on 2026-10-20 (`1ffc432`, before parity round 2, user decision). Re-measured on
+master `142333c` with `npm run build && node scripts/measure-first-load.mjs`: identical to the
+branch row above (home 226 / 435). `perf-budget.json` lowered to measured + 5 %, rounded up
+(home 278 -> 238 before load, 497 -> 457 idle; /practice and /challenge before load unchanged at 370).
+
 Home before `load` 264 -> 226 KB (`FairyBackground` imported tsParticles eagerly), idle -38 KB on
 home, -30 to -38 KB on the other routes. Main-thread cost of the effects and the visual parity
 method: `docs/spikes/particles-parity-2026-10/README.md`.
