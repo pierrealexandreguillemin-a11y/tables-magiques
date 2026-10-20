@@ -22,25 +22,23 @@ Done:
 - npm audit: production 0 vulnerabilities; dev residuals documented (braces, no patched release).
 - Task 6: mascot verdict = candidate 1, procedural chibi unicorn; A2 iteration committed and shown
   on the board (`docs/spikes/style-2026-10/board.html`).
-- Task 5 (P22) **implemented on branch `refonte/p22-particles`, not merged**: home 264 -> 226 KB
-  before load, idle -30 to -38 KB per route, main thread -25 to -35 %. Waiting for the user's blind
-  parity verdict (`docs/spikes/particles-parity-2026-10/`).
+- Task 5 (P22) **merged into master 2026-10-20 (1ffc432), on the user's decision, before parity
+  round 2**: home 264 -> 226 KB before load, idle -30 to -38 KB per route, main thread -25 to -35 %.
+  Round 1 fixes are in; round 2 was not voted (`docs/spikes/particles-parity-2026-10/`).
 
 Waiting on the user:
 
-1. P22 parity, **round 2** (harness on `http://127.0.0.1:8766/index.html`). Round 1 (the user's
-   daughter): canvas lost 3 of 4, "less colour". Fixed: per-star opacity speed (real parity gap
-   with tsParticles), even colour spread; see `docs/spikes/particles-parity-2026-10/VERDICT.md`.
-2. Mascot **A3 vs A2** (board on `http://127.0.0.1:8765/board.html`). A2 approved; A3 = hair-like
+1. Mascot **A3 vs A2** (board on `http://127.0.0.1:8765/board.html`). A2 approved; A3 = hair-like
    mane as requested. Body contrast: closed, approved as is by the user (2026-10-17).
 
-Before the next vote (round 2 and A3 vs A2): apply `docs/VISUAL_VALIDATION_PROTOCOL.md`
+Before the next vote (A3 vs A2): apply `docs/VISUAL_VALIDATION_PROTOCOL.md`
 (R1 frozen seeds for measurements, R2 mascot at display sizes, R3 rejection criteria written first).
 Rules written 2026-10-20, not applied yet.
 
 Next, in order:
 
-1. Merge P22 after the verdict; lower `perf-budget.json` to the new measurement + 5 %.
+1. Lower `perf-budget.json` to the post-P22 measurement + 5 % (needs `npm ci`, a build and
+   `npm run quality:first-load`; run when the machine is free).
 2. **LCP 6.4-7.4 s on /practice and /challenge**: diagnosed (`docs/perf/first-load-history.md`,
    last section): the LCP is the guest auth dialog (render delay 7.0 s); home spends 3.5 s in
    style and layout. Guest timeline measured 2026-10-18 (`scripts/probe-guest-gate.mjs`): ~70 %
