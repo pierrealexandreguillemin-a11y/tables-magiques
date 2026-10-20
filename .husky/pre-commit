@@ -173,17 +173,25 @@ fi
 echo ""
 echo "📘 Compilation TypeScript..."
 
-npx tsc --noEmit > /tmp/tsc-output.txt 2>&1
-TSC_EXIT=$?
+# Only files that can change the type check: sources, tsconfig*, package manifests.
+# A docs-only commit (Markdown, images) skips the full-project tsc.
+STAGED_TYPE_INPUTS=$(git diff --cached --name-only --diff-filter=ACMRD | grep -E "(\.(ts|tsx|mts|cts|js|jsx|mjs|cjs)$|(^|/)tsconfig[^/]*\.json$|(^|/)package(-lock)?\.json$)" || true)
 
-if [ $TSC_EXIT -ne 0 ]; then
-  echo ""
-  echo "❌ COMMIT BLOQUÉ: Erreurs TypeScript"
-  cat /tmp/tsc-output.txt
-  exit 1
+if [ -z "$STAGED_TYPE_INPUTS" ]; then
+  echo "  ℹ️  Aucun fichier de code staged, tsc ignoré"
+else
+  npx tsc --noEmit > /tmp/tsc-output.txt 2>&1
+  TSC_EXIT=$?
+
+  if [ $TSC_EXIT -ne 0 ]; then
+    echo ""
+    echo "❌ COMMIT BLOQUÉ: Erreurs TypeScript"
+    cat /tmp/tsc-output.txt
+    exit 1
+  fi
+
+  echo "  ✅ TypeScript: 0 erreur"
 fi
-
-echo "  ✅ TypeScript: 0 erreur"
 
 # ============================================
 # RÉSUMÉ
