@@ -61,3 +61,26 @@ A candidate is **rejected regardless of preference** if any of these fails, in e
 Only candidates passing C1–C3 are compared by preference. If both fail a criterion, neither is
 chosen and the failing criterion becomes the next iteration's target. A2 and A3 differ only in
 the mane and tail, so C1 and C3 are the discriminating ones.
+
+## A3 vs A2 — verdict (2026-10-20)
+
+Pasted from `vote-a3-a2.html` (the user's daughter voted):
+
+```
+1. Dans l'appli, thème clair : Gauche
+2. Dans l'appli, thème sombre : Gauche
+3. Petites tailles : Gauche
+4. En grand : Gauche
+Gauche (rangée 3) éliminée par : rien
+Droite (rangée 3) éliminée par : rien
+code : c3.s3.t3.g3
+```
+
+Code = row initial + candidate shown on the left, so the left side was A3 in all four rows.
+
+- **A3 chosen over A2**, 4 rows out of 4. Neither candidate failed C1, C2 or C3.
+- **User remark after the vote:** the mane must be finer, the strands more visible and more
+  detailed — "on dirait une licorne avec des dreadlocks". Cause in the model: each A3 lock is a
+  single thick sweep (half-width 0.17–0.20, rounded tip floor), so 13 chunky tubes read as
+  dreadlocks. Next iteration (A4): same layout, each lock split into thinner strands with sharp
+  tips.
