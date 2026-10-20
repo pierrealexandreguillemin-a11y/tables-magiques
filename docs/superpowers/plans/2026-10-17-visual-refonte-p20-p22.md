@@ -10,17 +10,49 @@
 
 **Spec:** `docs/VISUAL_REFONTE_2026_SPEC.md`
 
-## Status (2026-10-17, end of session 1)
+## Status (updated 2026-10-17, evening)
 
-- Task 1 done (spec v1.1). Task 2 done, plus a finding outside the plan: the effects barrels shipped
-  Lottie and tsParticles before `load` (home 432 -> 288 KB, commit `4fff10c`).
-- Task 3 done with two deviations: `domMax` instead of `domAnimation` (Toast uses `layout`), and
-  the CI gate is now the per-route budget `perf-budget.json` (user decision, total chunk sum
-  informative). Home before load 264 KB, idle 473 KB.
-- Task 6: references + candidates A/B rendered, waiting for the forced-choice verdict
-  (`docs/spikes/style-2026-10/board.html`).
-- Next: Task 5 (tsParticles, still 39 KB in home's critical path via the direct
-  `FairyBackground` import), Task 4 (CSS native).
+Done:
+
+- Task 1 (spec v1.1), Task 2 (latest stables, per-route measurement), plus the barrels finding
+  (home 432 -> 288 KB before load).
+- Task 3 (motion 14, `m.*`, async strict LazyMotion with domMax): home 288 -> 264 KB. CI gate =
+  per-route budget `perf-budget.json` (user decision). Slow-device check (Lighthouse, real
+  throttling): no measurable regression (`docs/perf/first-load-history.md`).
+- npm audit: production 0 vulnerabilities; dev residuals documented (braces, no patched release).
+- Task 6: mascot verdict = candidate 1, procedural chibi unicorn; A2 iteration committed and shown
+  on the board (`docs/spikes/style-2026-10/board.html`).
+- Task 5 (P22) **implemented on branch `refonte/p22-particles`, not merged**: home 264 -> 226 KB
+  before load, idle -30 to -38 KB per route, main thread -25 to -35 %. Waiting for the user's blind
+  parity verdict (`docs/spikes/particles-parity-2026-10/`).
+
+Waiting on the user:
+
+1. P22 parity, **round 2** (harness on `http://127.0.0.1:8766/index.html`). Round 1 (the user's
+   daughter): canvas lost 3 of 4, "less colour". Fixed: per-star opacity speed (real parity gap
+   with tsParticles), even colour spread; see `docs/spikes/particles-parity-2026-10/VERDICT.md`.
+2. Mascot **A3 vs A2** (board on `http://127.0.0.1:8765/board.html`). A2 approved; A3 = hair-like
+   mane as requested. Body contrast: closed, approved as is by the user (2026-10-17).
+
+Before the next vote (round 2 and A3 vs A2): apply `docs/VISUAL_VALIDATION_PROTOCOL.md`
+(R1 frozen seeds for measurements, R2 mascot at display sizes, R3 rejection criteria written first).
+Rules written 2026-10-20, not applied yet.
+
+Next, in order:
+
+1. Merge P22 after the verdict; lower `perf-budget.json` to the new measurement + 5 %.
+2. **LCP 6.4-7.4 s on /practice and /challenge**: diagnosed (`docs/perf/first-load-history.md`,
+   last section): the LCP is the guest auth dialog (render delay 7.0 s); home spends 3.5 s in
+   style and layout. Guest timeline measured 2026-10-18 (`scripts/probe-guest-gate.mjs`): ~70 %
+   of the wait is JavaScript before hydration, the session check ~180 ms. Options A (CSS entry),
+   B (session-aware server render, pages become dynamic), C (defer Lottie) **await the user's
+   choice**; none applied. Home style/layout cost: performance trace still to do.
+3. Task 4 (P20, CSS native): checkpoint list of one-shot `m.*` entries -> `@starting-style`;
+   View Transitions prototype on one route, shown to the user.
+4. P23 once A2 is approved: rig + poses (idle, success, encouragement, celebration), delivery mode
+   decided by measurement (pre-rendered video/AVIF vs three.js GLB), then retire Lottie (-78 KB JS,
+   -868 KB `unicorn.json`).
+5. Push: nothing pushed yet; the new CI step (Chromium + per-route budget) has never run on GitHub.
 
 ## Global Constraints
 
@@ -119,6 +151,20 @@
 - [ ] **Step 4:** Commit per component group: `refactor(anim): replace one-shot motion entries with @starting-style`.
 
 ### Task 5 (P22): Replace tsParticles — parity checkpoint first
+
+**Design (2026-10-17, after reading the three uses):** two mechanisms, not three.
+
+| Use                                                 | tsParticles today                                                                                                                                                                                                              | Replacement                                                       |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `FairyBackground` (home, practice)                  | 40 five-point stars, sizes 3-8 px, colours yellow/white/pink/violet, opacity 0.5-1 oscillating, random drift 0.5 px/frame, bounce on edges, twinkle, gold glow (shadow blur 10), fpsLimit 30, pause on blur / outside viewport | one canvas star-field engine, preset `fairy`                      |
+| `ParticlesBackground preset="sparkles"` (challenge) | 30 stars per 600x600 px, sizes 1-3, gold/white/pink, opacity 0-1 oscillating fast, drift 0.3                                                                                                                                   | same engine, preset `sparkles`                                    |
+| `SuccessExplosion`, `BadgeUnlockModal`              | confetti emitter at top, 10 particles / 100 ms, squares + circles, gravity, rotate + tilt, life 3 s                                                                                                                            | `canvas-confetti` 1.9.4 (ISC) fired as a stream from the top band |
+
+Files: `lib/animations/canvas/starField.ts` (pure particle model + render loop, injectable random
+for tests), `lib/animations/canvas/starFieldPresets.ts` (colours from `lib/animations/colors.ts`),
+`components/effects/StarField.tsx` (canvas, DPR, resize, visibility + viewport pause, reduced
+motion = one static frame), `lib/animations/canvas/confettiStream.ts`. Parity checkpoint: both
+builds served side by side in the user's Chrome (iframes), light and dark.
 
 Presets actually used (2026-10-17): `sparkles` (ChallengePage), `FairyBackground` (PracticePage, HomePage), `confetti` via `SuccessExplosion` / `BadgeUnlockModal`. `stars`, `snow`, `bubbles` are unused → deleted.
 

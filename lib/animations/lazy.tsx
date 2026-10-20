@@ -15,8 +15,7 @@ import dynamic from 'next/dynamic';
 // =============================================================================
 
 /**
- * ParticlesBackground - Chargé à la demande
- * Poids: ~80KB (tsParticles engine)
+ * ParticlesBackground - Chargé à la demande (StarField canvas)
  */
 export const LazyParticlesBackground = dynamic(
   () =>
@@ -52,8 +51,7 @@ export const LazyLottieAnimation = dynamic(
 );
 
 /**
- * SuccessExplosion - Chargé à la demande
- * Poids: ~20KB (tsParticles confetti)
+ * SuccessExplosion - Chargé à la demande (canvas-confetti + Lottie)
  */
 export const LazySuccessExplosion = dynamic(
   () =>
@@ -82,8 +80,7 @@ export const LazyBadgeUnlockModal = dynamic(
 );
 
 /**
- * FairyBackground - Chargé à la demande
- * Poids: ~80KB (tsParticles)
+ * FairyBackground - Chargé à la demande (StarField canvas)
  */
 export const LazyFairyBackground = dynamic(
   () =>

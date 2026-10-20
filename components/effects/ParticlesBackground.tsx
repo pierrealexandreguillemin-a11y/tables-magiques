@@ -1,49 +1,33 @@
-'use client';
-
 /**
- * ParticlesBackground - Fond avec particules tsParticles
- * ISO/IEC 25010 - Ambiance visuelle immersive
+ * ParticlesBackground - Fond d'etincelles (mode defi)
+ * ISO/IEC 25010 - Performance: StarField canvas (remplace tsParticles)
  */
 
-import { useCallback, useMemo } from 'react';
-import Particles from '@tsparticles/react';
+'use client';
+
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { useParticlesEngine } from '@/hooks/useParticlesEngine';
 import {
-  getParticleConfig,
-  type ParticlePreset,
-} from '@/lib/animations/particles/configs';
+  BASE_COUNT,
+  type StarFieldPresetName,
+} from '@/lib/animations/canvas/starFieldPresets';
 import { cn } from '@/lib/utils';
+import { StarField } from './StarField';
 
 interface ParticlesBackgroundProps {
-  preset?: ParticlePreset;
+  preset?: StarFieldPresetName;
   className?: string;
   opacity?: number;
 }
 
 export function ParticlesBackground({
-  preset = 'fairy',
+  preset = 'sparkles',
   className,
   opacity = 1,
 }: ParticlesBackgroundProps) {
   const { shouldAnimate } = useReducedMotion();
-  const engineReady = useParticlesEngine();
 
-  const particlesLoaded = useCallback(async () => {
-    // Particles loaded
-  }, []);
-
-  const options = useMemo(() => {
-    const config = getParticleConfig(preset);
-    return {
-      ...config,
-      fullScreen: false,
-    };
-  }, [preset]);
-
-  if (!shouldAnimate || !engineReady) {
-    return null;
-  }
+  // Decorative only: nothing at all under reduced motion (unchanged behaviour).
+  if (!shouldAnimate) return null;
 
   return (
     <div
@@ -53,11 +37,10 @@ export function ParticlesBackground({
       )}
       style={{ opacity }}
     >
-      <Particles
-        id={`particles-${preset}`}
-        particlesLoaded={particlesLoaded}
-        options={options}
-        className="absolute inset-0 gpu-accelerated"
+      <StarField
+        preset={preset}
+        baseCount={BASE_COUNT[preset]}
+        className="gpu-accelerated"
       />
     </div>
   );

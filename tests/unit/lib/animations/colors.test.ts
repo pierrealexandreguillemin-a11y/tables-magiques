@@ -5,10 +5,10 @@
 
 import { describe, it, expect } from 'vitest';
 import {
-  FAIRY_COLORS,
   CONFETTI_COLORS,
-  FIREWORKS_COLORS,
-  STAR_COLORS,
+  FAIRY_STAR_COLORS,
+  FAIRY_STAR_GLOW,
+  SPARKLE_COLORS,
   THEME_GRADIENTS,
   THEME_GLOWS,
   THEME_OVERLAYS,
@@ -19,18 +19,6 @@ import {
 const HEX_REGEX = /^#[0-9a-fA-F]{6}$/;
 
 describe('Animation Color Palettes', () => {
-  describe('FAIRY_COLORS', () => {
-    it('has 5 colors', () => {
-      expect(FAIRY_COLORS).toHaveLength(5);
-    });
-
-    it('all colors are valid hex', () => {
-      FAIRY_COLORS.forEach((color) => {
-        expect(color).toMatch(HEX_REGEX);
-      });
-    });
-  });
-
   describe('CONFETTI_COLORS', () => {
     it('has 5 colors', () => {
       expect(CONFETTI_COLORS).toHaveLength(5);
@@ -40,28 +28,6 @@ describe('Animation Color Palettes', () => {
       CONFETTI_COLORS.forEach((color) => {
         expect(color).toMatch(HEX_REGEX);
       });
-    });
-  });
-
-  describe('FIREWORKS_COLORS', () => {
-    it('has 5 colors', () => {
-      expect(FIREWORKS_COLORS).toHaveLength(5);
-    });
-
-    it('all colors are valid hex', () => {
-      FIREWORKS_COLORS.forEach((color) => {
-        expect(color).toMatch(HEX_REGEX);
-      });
-    });
-  });
-
-  describe('STAR_COLORS', () => {
-    it('has 3 colors', () => {
-      expect(STAR_COLORS).toHaveLength(3);
-    });
-
-    it('includes gold', () => {
-      expect(STAR_COLORS).toContain('#ffd700');
     });
   });
 
@@ -108,6 +74,17 @@ describe('Animation Color Palettes', () => {
 
     it('ACCENT_ORANGE is valid hex', () => {
       expect(ACCENT_ORANGE).toMatch(HEX_REGEX);
+    });
+  });
+  describe('canvas palettes', () => {
+    it('are valid hex colours', () => {
+      for (const color of [
+        ...FAIRY_STAR_COLORS,
+        ...SPARKLE_COLORS,
+        FAIRY_STAR_GLOW,
+      ]) {
+        expect(color).toMatch(HEX_REGEX);
+      }
     });
   });
 });

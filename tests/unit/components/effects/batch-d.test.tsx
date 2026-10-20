@@ -23,17 +23,9 @@ vi.mock(
   async () => (await import('@/tests/utils/motionMock')).motionReact
 );
 
-vi.mock('@/hooks/useParticlesEngine', () => ({
-  useParticlesEngine: () => true,
-}));
-
-vi.mock('@tsparticles/react', () => ({
-  default: ({ id, className }: { id: string; className?: string }) =>
-    React.createElement('div', {
-      'data-testid': 'tsparticles',
-      'data-id': id,
-      className,
-    }),
+vi.mock('@/components/effects/ConfettiBurst', () => ({
+  ConfettiBurst: () =>
+    React.createElement('div', { 'data-testid': 'confetti-burst' }),
 }));
 
 const mockReducedMotionState = {
@@ -77,12 +69,6 @@ vi.mock('@/lib/animations/lottie/animations', async (importOriginal) => ({
     };
     return map[id] ?? '✨';
   },
-}));
-vi.mock('@/lib/animations/particles/configs', async (importOriginal) => ({
-  ...(await importOriginal<
-    typeof import('@/lib/animations/particles/configs')
-  >()),
-  confettiConfig: { fullScreen: false, particles: {} },
 }));
 
 // AnimatedCheckbox stub used by SettingsToggle
@@ -206,33 +192,9 @@ describe('SuccessExplosion', () => {
     expect(el).not.toBeNull();
   });
 
-  it('rend les particules tsParticles quand show=true', () => {
+  it('rend les confettis quand show=true', () => {
     render(<SuccessExplosion show={true} />);
-    expect(screen.getByTestId('tsparticles')).toBeInTheDocument();
-  });
-
-  it('utilise id celebration-confetti par defaut', () => {
-    render(<SuccessExplosion show={true} />);
-    expect(screen.getByTestId('tsparticles')).toHaveAttribute(
-      'data-id',
-      'celebration-confetti'
-    );
-  });
-
-  it('utilise id celebration-fireworks quand type=fireworks', () => {
-    render(<SuccessExplosion show={true} type="fireworks" />);
-    expect(screen.getByTestId('tsparticles')).toHaveAttribute(
-      'data-id',
-      'celebration-fireworks'
-    );
-  });
-
-  it('utilise id celebration-celebration quand type=celebration', () => {
-    render(<SuccessExplosion show={true} type="celebration" />);
-    expect(screen.getByTestId('tsparticles')).toHaveAttribute(
-      'data-id',
-      'celebration-celebration'
-    );
+    expect(screen.getByTestId('confetti-burst')).toBeInTheDocument();
   });
 
   it('appelle onComplete apres 2500ms', () => {
@@ -250,9 +212,11 @@ describe('SuccessExplosion', () => {
     expect(onComplete).not.toHaveBeenCalled();
   });
 
-  it('ne rend pas les particules quand show=false', () => {
+  it('ne rend pas les confettis quand show=false', () => {
     const { container } = render(<SuccessExplosion show={false} />);
-    expect(container.querySelector('[data-testid="tsparticles"]')).toBeNull();
+    expect(
+      container.querySelector('[data-testid="confetti-burst"]')
+    ).toBeNull();
   });
 });
 

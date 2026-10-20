@@ -56,3 +56,7 @@ tests/e2e/.auth/
 /docs/spikes/style-2026-10/ref-*.png
 /docs/spikes/style-2026-10/renders/iterations/
 __pycache__/
+
+# particle parity harness bundles (rebuilt from the entries)
+/docs/spikes/particles-parity-2026-10/*.js
+!/docs/spikes/particles-parity-2026-10/perf-parity.mjs

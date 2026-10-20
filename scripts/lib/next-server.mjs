@@ -20,13 +20,16 @@ function freePort() {
   });
 }
 
-/** @returns {Promise<{ base: string, stop: () => void }>} */
-export async function startNextServer() {
+/**
+ * @param {{ cwd?: string }} [options] cwd: checkout whose `.next` build to serve (default: this one)
+ * @returns {Promise<{ base: string, stop: () => void }>}
+ */
+export async function startNextServer({ cwd } = {}) {
   const port = await freePort();
   const child = spawn(
     process.execPath,
     ['node_modules/next/dist/bin/next', 'start', '-p', String(port)],
-    { stdio: 'ignore' }
+    { stdio: 'ignore', cwd }
   );
   const base = `http://localhost:${port}`;
   for (let attempt = 0; attempt < 120; attempt += 1) {

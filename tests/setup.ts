@@ -28,7 +28,7 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-// Mock pour ResizeObserver (tsParticles, etc.)
+// Mock pour ResizeObserver (StarField, etc.)
 class MockResizeObserver {
   observe = vi.fn();
   unobserve = vi.fn();

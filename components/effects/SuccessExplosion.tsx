@@ -8,11 +8,8 @@
 import { useEffect, useRef } from 'react';
 import * as m from 'motion/react-m';
 import { AnimatePresence } from 'motion/react';
-import Particles from '@tsparticles/react';
-import { useParticlesEngine } from '@/hooks/useParticlesEngine';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { LottieAnimation } from './LottieAnimation';
-import { confettiConfig } from '@/lib/animations/particles/configs';
+import { ConfettiBurst } from './ConfettiBurst';
 import { cn } from '@/lib/utils';
 
 interface SuccessExplosionProps {
@@ -20,7 +17,6 @@ interface SuccessExplosionProps {
   onComplete?: () => void;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
-  type?: 'confetti' | 'fireworks' | 'celebration';
 }
 
 const sizeMap = {
@@ -34,11 +30,8 @@ export function SuccessExplosion({
   onComplete,
   size = 'md',
   className,
-  type = 'confetti',
 }: SuccessExplosionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const engineReady = useParticlesEngine();
-  const { shouldAnimate } = useReducedMotion();
   const dimensions = sizeMap[size];
 
   useEffect(() => {
@@ -62,13 +55,7 @@ export function SuccessExplosion({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          {show && engineReady && shouldAnimate && (
-            <Particles
-              id={`celebration-${type}`}
-              options={confettiConfig}
-              className="absolute inset-0"
-            />
-          )}
+          {show && <ConfettiBurst />}
           <m.div
             initial={{ scale: 0, rotate: -20 }}
             animate={{

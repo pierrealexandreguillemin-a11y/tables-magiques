@@ -54,7 +54,7 @@ export function PracticePage() {
   const content = (
     <div className="bg-drift min-h-screen flex items-center justify-center overflow-hidden relative">
       <LazyFairyBackground />
-      <LazySuccessExplosion show={explosionVisible} type="confetti" size="lg" />
+      <LazySuccessExplosion show={explosionVisible} size="lg" />
       <div className="w-full max-w-4xl mx-auto px-4 py-8 relative z-10">
         <PracticeHeader
           isPlaying={isPlaying}

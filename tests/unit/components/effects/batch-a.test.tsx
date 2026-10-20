@@ -23,15 +23,14 @@ vi.mock(
   async () => (await import('@/tests/utils/motionMock')).motionReact
 );
 
-vi.mock('@tsparticles/react', () => ({
-  default: ({ id, className }: { id?: string; className?: string }) => (
-    <div
-      data-testid="tsparticles"
-      data-particles-id={id}
-      className={className}
+vi.mock('@/components/effects/StarField', () => ({
+  StarField: ({ preset, baseCount }: { preset: string; baseCount: number }) => (
+    <canvas
+      data-testid="star-field"
+      data-preset={preset}
+      data-base-count={baseCount}
     />
   ),
-  initParticlesEngine: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('@/hooks/useReducedMotion', () => ({
@@ -42,17 +41,6 @@ vi.mock('@/hooks/useReducedMotion', () => ({
   default: vi.fn(() => ({ shouldAnimate: true, prefersReducedMotion: false })),
 }));
 
-vi.mock('@/hooks/useParticlesEngine', () => ({
-  useParticlesEngine: vi.fn(() => true),
-}));
-
-vi.mock('@/lib/animations/particles/configs', async (importOriginal) => ({
-  ...(await importOriginal<
-    typeof import('@/lib/animations/particles/configs')
-  >()),
-  getParticleConfig: vi.fn(() => ({ fullScreen: false })),
-}));
-
 // ---------------------------------------------------------------------------
 // Component imports (after mocks)
 // ---------------------------------------------------------------------------
@@ -61,7 +49,7 @@ import { ParticlesBackground } from '@/components/effects/ParticlesBackground';
 import { ConsoleBanner } from '@/components/effects/console-banner';
 import { NumberReveal } from '@/components/effects/NumberReveal';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { useParticlesEngine } from '@/hooks/useParticlesEngine';
+import { BASE_COUNT } from '@/lib/animations/canvas/starFieldPresets';
 
 // ---------------------------------------------------------------------------
 // ParticlesBackground
@@ -93,15 +81,18 @@ describe('ParticlesBackground', () => {
     expect(wrapper.style.opacity).toBe('0.5');
   });
 
-  it('renders tsParticles component inside wrapper', () => {
+  it('renders the star field inside the wrapper', () => {
     render(<ParticlesBackground />);
-    expect(screen.getByTestId('tsparticles')).toBeTruthy();
+    expect(screen.getByTestId('star-field')).toBeTruthy();
   });
 
-  it('passes preset-based id to Particles', () => {
-    render(<ParticlesBackground preset="stars" />);
-    const particles = screen.getByTestId('tsparticles');
-    expect(particles.getAttribute('data-particles-id')).toBe('particles-stars');
+  it('passes the preset and its base count to the star field', () => {
+    render(<ParticlesBackground preset="fairy" />);
+    const field = screen.getByTestId('star-field');
+    expect(field.getAttribute('data-preset')).toBe('fairy');
+    expect(field.getAttribute('data-base-count')).toBe(
+      String(BASE_COUNT.fairy)
+    );
   });
 
   it('returns null when shouldAnimate is false', () => {
@@ -113,16 +104,11 @@ describe('ParticlesBackground', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('returns null when engine is not ready', () => {
-    vi.mocked(useParticlesEngine).mockReturnValueOnce(false);
-    const { container } = render(<ParticlesBackground />);
-    expect(container.firstChild).toBeNull();
-  });
-
-  it('renders with fairy preset by default', () => {
+  it('renders the sparkles preset by default (its only use: challenge page)', () => {
     render(<ParticlesBackground />);
-    const particles = screen.getByTestId('tsparticles');
-    expect(particles.getAttribute('data-particles-id')).toBe('particles-fairy');
+    expect(screen.getByTestId('star-field').getAttribute('data-preset')).toBe(
+      'sparkles'
+    );
   });
 });
 
