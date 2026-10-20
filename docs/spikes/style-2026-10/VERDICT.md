@@ -41,3 +41,23 @@ Next: P23 plan in `docs/VISUAL_REFONTE_2026_SPEC.md` §5.
   ```
 
   `A3_front_preview.png` / `A3_side_preview.png` = copies of the `*_gradient.png` previews.
+
+## A3 vs A2 — rejection criteria (written 2026-10-20, BEFORE the vote)
+
+Protocol: `docs/VISUAL_VALIDATION_PROTOCOL.md` (R2 display sizes, R3 criteria first). Vote page:
+`vote-a3-a2.html` (blind: left/right drawn at random per row, the copied code reveals the sides).
+
+Display sizes come from the slots the mascot will replace, measured on production
+(`capture-app-context.mjs` → `context/slots.json`, phone 412×823): home hero emoji 🦄
+(≈141×109 px box) and the kawaii mascot (100 px); Lottie 60/80/120 px; MagicLoader 48/64/96/128 px.
+The ladder shows 48, 64, 80, 100 and 128 px, on the real home background, light and dark.
+
+A candidate is **rejected regardless of preference** if any of these fails, in either theme:
+
+- **C1 — silhouette at 48 px:** horn and mane are recognisable; it does not read as a blob.
+- **C2 — face at 64 px:** both eyes are visible.
+- **C3 — edge on the app background:** the mane does not dissolve into the purple background.
+
+Only candidates passing C1–C3 are compared by preference. If both fail a criterion, neither is
+chosen and the failing criterion becomes the next iteration's target. A2 and A3 differ only in
+the mane and tail, so C1 and C3 are the discriminating ones.

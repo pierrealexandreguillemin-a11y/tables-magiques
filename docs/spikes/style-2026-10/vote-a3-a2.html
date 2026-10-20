@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Licorne A3 ou A2</title>
+    <style>
+      :root {
+        --bg: #faf7fc;
+        --ink: #2a2233;
+        --muted: #6d6478;
+        --line: #e8e0ef;
+        --pick: #8b5cf6;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 16px 64px;
+      }
+      h1 {
+        font-size: 26px;
+        margin: 0 0 4px;
+      }
+      h2 {
+        font-size: 19px;
+        margin: 36px 0 8px;
+      }
+      p,
+      li {
+        color: var(--muted);
+        max-width: 80ch;
+      }
+      .criteria {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px 16px;
+      }
+      .criteria b {
+        color: var(--ink);
+      }
+      .pair {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .side {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px;
+        min-width: 0;
+      }
+      .side > .label {
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .side small {
+        color: var(--pick);
+        margin-left: 8px;
+      }
+      .phone {
+        position: relative;
+        width: 100%;
+        max-width: 412px;
+        margin: 0 auto;
+        border-radius: 20px;
+        overflow: hidden;
+        aspect-ratio: 412 / 823;
+      }
+      .phone > img.bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top;
+      }
+      .phone > img.mascot {
+        position: absolute;
+        height: auto;
+      }
+      .ladder {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        gap: 8px;
+        padding: 14px 8px 6px;
+        border-radius: 12px;
+        /* empty area around the (hidden) kawaii slot, y ≈ 580-740 of 823 */
+        background-size: cover;
+        background-position: center 85%;
+        margin-bottom: 8px;
+      }
+      .ladder figure {
+        margin: 0;
+        text-align: center;
+        color: #fff;
+        font-size: 12px;
+        text-shadow: 0 1px 2px #0008;
+      }
+      .ladder img {
+        display: block;
+        margin: 0 auto 4px;
+      }
+      .big img {
+        display: block;
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto;
+        border-radius: 12px;
+      }
+      .vote {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 16px;
+        margin: 10px 0 0;
+        align-items: center;
+      }
+      .vote input[type='text'] {
+        flex: 1 1 260px;
+        font: inherit;
+        padding: 6px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+      .rejects {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px 16px;
+        margin-top: 8px;
+        font-size: 14px;
+      }
+      textarea {
+        width: 100%;
+        min-height: 190px;
+        font: 14px/1.4 ui-monospace, monospace;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+      }
+      button {
+        font: inherit;
+        padding: 8px 14px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: #fff;
+        cursor: pointer;
+      }
+      .copied {
+        color: var(--pick);
+        margin-left: 8px;
+      }
+      @media (max-width: 720px) {
+        .pair,
+        .rejects {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Quelle licorne : gauche ou droite ?</h1>
+      <p>
+        Les deux licornes sont presque pareilles : seules la crinière et la
+        queue changent. Leur place gauche/droite est tirée au hasard à chaque
+        rangée. Regarde-les dans l'appli, en petit et en grand.
+      </p>
+
+      <div class="criteria">
+        <b>Règles écrites avant le vote</b> : une licorne est
+        <b>éliminée</b>, même si elle plaît, si dans l'un des deux thèmes :
+        <ul>
+          <li><b>C1</b> : à 48 px, on ne reconnaît plus la corne et la crinière (ça fait une tache) ;</li>
+          <li><b>C2</b> : à 64 px, on ne voit pas les deux yeux ;</li>
+          <li><b>C3</b> : la crinière se fond dans le fond violet de l'appli.</li>
+        </ul>
+        Les cases « éliminée » sont dans la rangée 3 (petites tailles).
+      </div>
+
+      <h2>1. Dans l'appli, thème clair (téléphone)</h2>
+      <p>
+        Vraie page d'accueil de la prod : la licorne remplace l'emoji 🦄 en
+        haut et la petite planète en bas.
+      </p>
+      <div class="pair" data-row="clair" data-kind="phone" data-theme="light"></div>
+
+      <h2>2. Dans l'appli, thème sombre (téléphone)</h2>
+      <div class="pair" data-row="sombre" data-kind="phone" data-theme="dark"></div>
+
+      <h2>3. Petites tailles (48, 64, 80, 100, 128 px) sur le fond de l'appli</h2>
+      <p>Ce sont les tailles des emplacements que la licorne remplacera.</p>
+      <div class="pair" data-row="tailles" data-kind="ladder"></div>
+
+      <h2>4. En grand</h2>
+      <div class="pair" data-row="grand" data-kind="big"></div>
+
+      <h2>Ton verdict à copier</h2>
+      <p>Se remplit tout seul. « Copier », puis colle dans la conversation.</p>
+      <textarea id="out" readonly></textarea>
+      <p>
+        <button id="copy">Copier le verdict</button
+        ><span id="copied" class="copied" hidden>Copié !</span>
+        <button id="reveal">Montrer qui est qui (après le vote)</button>
+      </p>
+    </main>
+    <script>
+      const IMG = {
+        A2: 'renders/A2_unicorn_transparent.png',
+        A3: 'renders/A3_unicorn_transparent.png',
+      };
+      const BIG = {
+        A2: 'renders/A2_unicorn_gradient.png',
+        A3: 'renders/A3_unicorn_gradient.png',
+      };
+      const BG = { light: 'context/home-light.png', dark: 'context/home-dark.png' };
+      const SIZES = [48, 64, 80, 100, 128];
+      const SIDE_NAMES = ['Gauche', 'Droite'];
+      const CRITERIA = ['C1', 'C2', 'C3'];
+      const TITLES = {
+        clair: "Dans l'appli, thème clair",
+        sombre: "Dans l'appli, thème sombre",
+        tailles: 'Petites tailles',
+        grand: 'En grand',
+      };
+      const CHOICES = [
+        ['L', 'Gauche'],
+        ['R', 'Droite'],
+        ['=', 'Pareil'],
+      ];
+      const key = {};
+
+      function img(src, style) {
+        const el = document.createElement('img');
+        el.src = src;
+        el.alt = '';
+        if (style) Object.assign(el.style, style);
+        return el;
+      }
+
+      // A slot box {x, y, w, h} in CSS px of a 412 px wide page -> mascot centred in it,
+      // height = slot height, positioned in % so the phone frame can shrink.
+      function placeInSlot(src, box) {
+        const cx = box.x + box.w / 2;
+        const cy = box.y + box.h / 2;
+        return img(src, {
+          height: (box.h / 823) * 100 + '%',
+          left: (cx / 412) * 100 + '%',
+          top: (cy / 823) * 100 + '%',
+          transform: 'translate(-50%, -50%)',
+        });
+      }
+
+      function phone(candidate, theme, slots) {
+        const el = document.createElement('div');
+        el.className = 'phone';
+        const bg = img(BG[theme]);
+        bg.className = 'bg';
+        el.append(bg);
+        for (const box of [slots[theme].hero, slots[theme].kawaii]) {
+          const m = placeInSlot(IMG[candidate], box);
+          m.className = 'mascot';
+          el.append(m);
+        }
+        return el;
+      }
+
+      function ladder(candidate) {
+        const wrap = document.createElement('div');
+        for (const theme of ['light', 'dark']) {
+          const strip = document.createElement('div');
+          strip.className = 'ladder';
+          strip.style.backgroundImage = `url(${BG[theme]})`;
+          for (const size of SIZES) {
+            const fig = document.createElement('figure');
+            fig.append(img(IMG[candidate], { width: size + 'px', height: size + 'px', objectFit: 'contain' }));
+            fig.append(size + ' px');
+            strip.append(fig);
+          }
+          wrap.append(strip);
+        }
+        return wrap;
+      }
+
+      function big(candidate) {
+        const el = document.createElement('div');
+        el.className = 'big';
+        el.append(img(BIG[candidate]));
+        return el;
+      }
+
+      function voteBox(row) {
+        const name = row.dataset.row;
+        const box = document.createElement('div');
+        box.className = 'vote';
+        box.innerHTML =
+          '<b>Préférée :</b>' +
+          CHOICES.map(
+            ([v, l]) =>
+              `<label><input type="radio" name="v-${name}" value="${v}"> ${l}</label>`
+          ).join('') +
+          `<input type="text" data-comment="${name}" placeholder="Commentaire (facultatif)">`;
+        row.after(box);
+        if (row.dataset.kind !== 'ladder') return;
+        const rej = document.createElement('div');
+        rej.className = 'rejects';
+        rej.innerHTML = SIDE_NAMES.map(
+          (side, i) =>
+            `<div><b>${side} éliminée par :</b> ` +
+            CRITERIA.map(
+              (c) => `<label><input type="checkbox" data-reject="${i}" value="${c}"> ${c}</label>`
+            ).join(' ') +
+            '</div>'
+        ).join('');
+        box.after(rej);
+      }
+
+      function verdictText() {
+        const lines = ['VERDICT licorne A3 vs A2'];
+        const code = [];
+        Object.keys(TITLES).forEach((name, i) => {
+          const picked = document.querySelector(`input[name="v-${name}"]:checked`);
+          const comment = document.querySelector(`[data-comment="${name}"]`).value.trim();
+          const label = picked
+            ? CHOICES.find(([v]) => v === picked.value)[1]
+            : '(pas encore choisi)';
+          lines.push(`${i + 1}. ${TITLES[name]} : ${label}${comment ? ' — ' + comment : ''}`);
+          code.push(name[0] + (key[name] ? key[name][0].slice(1) : '?'));
+        });
+        SIDE_NAMES.forEach((side, i) => {
+          const rejected = [...document.querySelectorAll(`[data-reject="${i}"]:checked`)].map(
+            (el) => el.value
+          );
+          lines.push(`${side} (rangée 3) éliminée par : ${rejected.join(', ') || 'rien'}`);
+        });
+        lines.push('code : ' + code.join('.'));
+        return lines.join('\n');
+      }
+
+      async function main() {
+        const { slots } = await (await fetch('context/slots.json')).json();
+        for (const row of document.querySelectorAll('.pair')) {
+          const name = row.dataset.row;
+          const order = Math.random() < 0.5 ? ['A2', 'A3'] : ['A3', 'A2'];
+          key[name] = order;
+          order.forEach((candidate, i) => {
+            const side = document.createElement('div');
+            side.className = 'side';
+            side.innerHTML = `<div class="label">${SIDE_NAMES[i]}<small data-who hidden>${candidate}</small></div>`;
+            const kind = row.dataset.kind;
+            if (kind === 'phone') side.append(phone(candidate, row.dataset.theme, slots));
+            if (kind === 'ladder') side.append(ladder(candidate));
+            if (kind === 'big') side.append(big(candidate));
+            row.append(side);
+          });
+          voteBox(row);
+        }
+        const out = document.getElementById('out');
+        const refresh = () => (out.value = verdictText());
+        document.addEventListener('input', refresh);
+        document.addEventListener('change', refresh);
+        refresh();
+      }
+
+      document.getElementById('copy').addEventListener('click', async () => {
+        const out = document.getElementById('out');
+        out.select();
+        try {
+          await navigator.clipboard.writeText(out.value);
+        } catch (error) {
+          console.error(error);
+          document.execCommand('copy');
+        }
+        const done = document.getElementById('copied');
+        done.hidden = false;
+        setTimeout(() => (done.hidden = true), 2000);
+      });
+      document.getElementById('reveal').addEventListener('click', () =>
+        document.querySelectorAll('[data-who]').forEach((el) => (el.hidden = false))
+      );
+      main();
+    </script>
+  </body>
+</html>
