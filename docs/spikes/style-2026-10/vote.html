@@ -145,7 +145,9 @@
       textarea {
         width: 100%;
         min-height: 190px;
-        font: 14px/1.4 ui-monospace, monospace;
+        font:
+          14px/1.4 ui-monospace,
+          monospace;
         padding: 10px;
         border: 1px solid var(--line);
         border-radius: 10px;
@@ -180,28 +182,48 @@
       </p>
 
       <div class="criteria">
-        <b>Règles écrites avant le vote</b> : une licorne est
-        <b>éliminée</b>, même si elle plaît, si dans l'un des deux thèmes :
+        <b>Règles écrites avant le vote</b> : une licorne est <b>éliminée</b>,
+        même si elle plaît, si dans l'un des deux thèmes :
         <ul>
-          <li><b>C1</b> : à 48 px, on ne reconnaît plus la corne et la crinière (ça fait une tache) ;</li>
+          <li>
+            <b>C1</b> : à 48 px, on ne reconnaît plus la corne et la crinière
+            (ça fait une tache) ;
+          </li>
           <li><b>C2</b> : à 64 px, on ne voit pas les deux yeux ;</li>
-          <li><b>C3</b> : la crinière se fond dans le fond violet de l'appli ;</li>
-          <li><b>C4</b> : à 100 px, la crinière paraît maigre, filasse (on voit la tête entre les crins).</li>
+          <li>
+            <b>C3</b> : la crinière se fond dans le fond violet de l'appli ;
+          </li>
+          <li>
+            <b>C4</b> : à 100 px, la crinière paraît maigre, filasse (on voit la
+            tête entre les crins).
+          </li>
         </ul>
         Les cases « éliminée » sont dans la rangée 3 (petites tailles).
       </div>
 
       <h2>1. Dans l'appli, thème clair (téléphone)</h2>
       <p>
-        Vraie page d'accueil de la prod : la licorne remplace l'emoji 🦄 en
-        haut et la petite planète en bas.
+        Vraie page d'accueil de la prod : la licorne remplace l'emoji 🦄 en haut
+        et la petite planète en bas.
       </p>
-      <div class="pair" data-row="clair" data-kind="phone" data-theme="light"></div>
+      <div
+        class="pair"
+        data-row="clair"
+        data-kind="phone"
+        data-theme="light"
+      ></div>
 
       <h2>2. Dans l'appli, thème sombre (téléphone)</h2>
-      <div class="pair" data-row="sombre" data-kind="phone" data-theme="dark"></div>
+      <div
+        class="pair"
+        data-row="sombre"
+        data-kind="phone"
+        data-theme="dark"
+      ></div>
 
-      <h2>3. Petites tailles (48, 64, 80, 100, 128 px) sur le fond de l'appli</h2>
+      <h2>
+        3. Petites tailles (48, 64, 80, 100, 128 px) sur le fond de l'appli
+      </h2>
       <p>Ce sont les tailles des emplacements que la licorne remplacera.</p>
       <div class="pair" data-row="tailles" data-kind="ladder"></div>
 
@@ -219,16 +241,23 @@
     </main>
     <script>
       // Candidates: vote.html?pair=A4,A3 (default A3,A2 = the 2026-10-20 vote in VERDICT.md).
-      const PAIR = (new URLSearchParams(location.search).get('pair') || 'A3,A2').split(',');
+      const PAIR = (
+        new URLSearchParams(location.search).get('pair') || 'A3,A2'
+      ).split(',');
       if (PAIR.length !== 2 || !PAIR.every((c) => /^A\d+$/.test(c))) {
         throw new Error('pair must look like A4,A3');
       }
       document.title = `Licorne ${PAIR[0]} ou ${PAIR[1]}`;
       const render = (kind) =>
-        Object.fromEntries(PAIR.map((c) => [c, `renders/${c}_unicorn_${kind}.png`]));
+        Object.fromEntries(
+          PAIR.map((c) => [c, `renders/${c}_unicorn_${kind}.png`])
+        );
       const IMG = render('transparent');
       const BIG = render('gradient');
-      const BG = { light: 'context/home-light.png', dark: 'context/home-dark.png' };
+      const BG = {
+        light: 'context/home-light.png',
+        dark: 'context/home-dark.png',
+      };
       const SIZES = [48, 64, 80, 100, 128];
       const SIDE_NAMES = ['Gauche', 'Droite'];
       const CRITERIA = ['C1', 'C2', 'C3', 'C4']; // C4 added for A4 vs A3 (2026-10-21)
@@ -288,7 +317,13 @@
           strip.style.backgroundImage = `url(${BG[theme]})`;
           for (const size of SIZES) {
             const fig = document.createElement('figure');
-            fig.append(img(IMG[candidate], { width: size + 'px', height: size + 'px', objectFit: 'contain' }));
+            fig.append(
+              img(IMG[candidate], {
+                width: size + 'px',
+                height: size + 'px',
+                objectFit: 'contain',
+              })
+            );
             fig.append(size + ' px');
             strip.append(fig);
           }
@@ -323,7 +358,8 @@
           (side, i) =>
             `<div><b>${side} éliminée par :</b> ` +
             CRITERIA.map(
-              (c) => `<label><input type="checkbox" data-reject="${i}" value="${c}"> ${c}</label>`
+              (c) =>
+                `<label><input type="checkbox" data-reject="${i}" value="${c}"> ${c}</label>`
             ).join(' ') +
             '</div>'
         ).join('');
@@ -334,19 +370,27 @@
         const lines = [`VERDICT licorne ${PAIR[0]} vs ${PAIR[1]}`];
         const code = [];
         Object.keys(TITLES).forEach((name, i) => {
-          const picked = document.querySelector(`input[name="v-${name}"]:checked`);
-          const comment = document.querySelector(`[data-comment="${name}"]`).value.trim();
+          const picked = document.querySelector(
+            `input[name="v-${name}"]:checked`
+          );
+          const comment = document
+            .querySelector(`[data-comment="${name}"]`)
+            .value.trim();
           const label = picked
             ? CHOICES.find(([v]) => v === picked.value)[1]
             : '(pas encore choisi)';
-          lines.push(`${i + 1}. ${TITLES[name]} : ${label}${comment ? ' — ' + comment : ''}`);
+          lines.push(
+            `${i + 1}. ${TITLES[name]} : ${label}${comment ? ' — ' + comment : ''}`
+          );
           code.push(name[0] + (key[name] ? key[name][0].slice(1) : '?'));
         });
         SIDE_NAMES.forEach((side, i) => {
-          const rejected = [...document.querySelectorAll(`[data-reject="${i}"]:checked`)].map(
-            (el) => el.value
+          const rejected = [
+            ...document.querySelectorAll(`[data-reject="${i}"]:checked`),
+          ].map((el) => el.value);
+          lines.push(
+            `${side} (rangée 3) éliminée par : ${rejected.join(', ') || 'rien'}`
           );
-          lines.push(`${side} (rangée 3) éliminée par : ${rejected.join(', ') || 'rien'}`);
         });
         lines.push('code : ' + code.join('.'));
         return lines.join('\n');
@@ -363,7 +407,8 @@
             side.className = 'side';
             side.innerHTML = `<div class="label">${SIDE_NAMES[i]}<small data-who hidden>${candidate}</small></div>`;
             const kind = row.dataset.kind;
-            if (kind === 'phone') side.append(phone(candidate, row.dataset.theme, slots));
+            if (kind === 'phone')
+              side.append(phone(candidate, row.dataset.theme, slots));
             if (kind === 'ladder') side.append(ladder(candidate));
             if (kind === 'big') side.append(big(candidate));
             row.append(side);
@@ -390,9 +435,13 @@
         done.hidden = false;
         setTimeout(() => (done.hidden = true), 2000);
       });
-      document.getElementById('reveal').addEventListener('click', () =>
-        document.querySelectorAll('[data-who]').forEach((el) => (el.hidden = false))
-      );
+      document
+        .getElementById('reveal')
+        .addEventListener('click', () =>
+          document
+            .querySelectorAll('[data-who]')
+            .forEach((el) => (el.hidden = false))
+        );
       main();
     </script>
   </body>

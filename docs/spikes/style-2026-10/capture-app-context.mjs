@@ -12,7 +12,10 @@ mkdirSync(out, { recursive: true });
 const browser = await chromium.launch();
 const slots = {};
 for (const theme of ['light', 'dark']) {
-  const page = await browser.newPage({ viewport: { width: 412, height: 823 }, deviceScaleFactor: 2 });
+  const page = await browser.newPage({
+    viewport: { width: 412, height: 823 },
+    deviceScaleFactor: 2,
+  });
   await page.addInitScript((t) => {
     localStorage.setItem('theme', t);
     localStorage.setItem('tables-magiques-first-visit', 'true');
@@ -29,16 +32,27 @@ for (const theme of ['light', 'dark']) {
     };
     return {
       hero: box(document.querySelector('[data-tour="logo"]')),
-      kawaii: box([...document.querySelectorAll('svg')].find((s) => s.getAttribute('width') === '100')),
+      kawaii: box(
+        [...document.querySelectorAll('svg')].find(
+          (s) => s.getAttribute('width') === '100'
+        )
+      ),
     };
   });
   // Empty both slots so the board can place a candidate on the real background.
   await page.addStyleTag({
-    content: '[data-tour="logo"]{visibility:hidden!important} svg[width="100"]{visibility:hidden!important}',
+    content:
+      '[data-tour="logo"]{visibility:hidden!important} svg[width="100"]{visibility:hidden!important}',
   });
-  await page.screenshot({ path: join(out, `home-${theme}.png`), fullPage: true });
+  await page.screenshot({
+    path: join(out, `home-${theme}.png`),
+    fullPage: true,
+  });
   await page.close();
 }
 await browser.close();
-writeFileSync(join(out, 'slots.json'), JSON.stringify({ base, viewport: [412, 823], slots }, null, 2));
+writeFileSync(
+  join(out, 'slots.json'),
+  JSON.stringify({ base, viewport: [412, 823], slots }, null, 2)
+);
 console.log(JSON.stringify(slots));
