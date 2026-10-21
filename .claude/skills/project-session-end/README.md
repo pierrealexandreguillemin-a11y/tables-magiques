@@ -56,6 +56,19 @@ Sources read on 2026-10-21: `https://code.claude.com/docs/en/memory.md`, `.../ho
 Thresholds proposed by me (not validated by the user): T1 = 3 commits (nfl-big-data-bowl-2027
 recalibration, 2026-10-19: lower fired after 2 tasks); fatigue rows and limits in `SKILL.md`.
 
+## 2026-10-22 — light version
+
+User request: « skill à adapter light/rapide ». Changes vs the 2026-10-21 projection: RESUME
+reads only `MEMORY.md` + the CURRENT memo up front (CLAUDE.md is harness-loaded), runs git-only
+controls (the full test suite moved out of the resume: ~2 min, and pre-commit + CI run it), reads
+the "Read in full" files when the next action needs them, no reading-proof table. MEMO keeps 6
+short sections. Fatigue table unchanged.
+
+Discovery gap (measured 2026-10-22): a session launched in the parent folder
+`C:/Dev/Multiplications magiques` does **not** list this project skill (skills load from the
+cwd's `.claude/skills`). Fix: `C:/Dev/Multiplications magiques/CLAUDE.md` (outside git) points
+to this file. Proposals 1-2 above stay unwired.
+
 ## Not done
 
 Cold-start simulation (template README § "Simulation de démarrage à froid"): not run yet.
