@@ -104,7 +104,7 @@ Verify before writing (fix first if one fails): every number was measured in ste
 ```bash
 cd "/c/Dev/Multiplications magiques/tables-magiques"; MEMORY_DIR="C:/Users/pierr/.claude/projects/C--Dev-Multiplications-magiques/memory"
 grep -o '`[^` ]*\(/\|\.md\|\.ts\|\.tsx\|\.py\|\.json\)[^` ]*`' <memo> | tr -d '`' | sort -u |
-  while read p; do [ -e "$p" ] || [ -e "$MEMORY_DIR/$p" ] || echo "MISSING $p"; done
+  while read -r p; do [ -e "$p" ] || [ -e "$MEMORY_DIR/$p" ] || echo "MISSING $p"; done
 # expected: no output
 ```
 
