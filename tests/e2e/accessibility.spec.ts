@@ -8,6 +8,7 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { worstTextContrast } from './helpers/textContrast';
+import { waitForEntryAnimations } from './helpers/settle';
 
 test.describe('Accessibilité WCAG 2.1 AA', () => {
   test.beforeEach(async ({ page }) => {
@@ -231,21 +232,30 @@ test.describe('Accessibilité - Toutes les pages (axe-core)', () => {
     { name: 'Settings', path: '/settings' },
   ];
 
-  for (const { name, path } of pages) {
-    test(`${name} (${path}) — zero violation critique`, async ({ page }) => {
-      await page.goto(path);
-      await page.waitForLoadState('networkidle');
+  // Both themes: the dark one had its own failures (/settings "Bloque" 4.37:1, 2026-10-21).
+  // waitForEntryAnimations: measured during the fade-in, a text reads half-transparent (flaky).
+  for (const theme of ['light', 'dark'] as const) {
+    for (const { name, path } of pages) {
+      test(`${name} (${path}, thème ${theme}) — zero violation critique`, async ({
+        page,
+      }) => {
+        await page.goto(path);
+        await page.evaluate((t) => localStorage.setItem('theme', t), theme);
+        await page.reload();
+        await page.waitForLoadState('networkidle');
+        await waitForEntryAnimations(page);
 
-      const results = await new AxeBuilder({ page })
-        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-        .analyze();
+        const results = await new AxeBuilder({ page })
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+          .analyze();
 
-      const critical = results.violations.filter(
-        (v) => v.impact === 'critical' || v.impact === 'serious'
-      );
+        const critical = results.violations.filter(
+          (v) => v.impact === 'critical' || v.impact === 'serious'
+        );
 
-      expect(critical).toEqual([]);
-    });
+        expect(critical).toEqual([]);
+      });
+    }
   }
 });
 

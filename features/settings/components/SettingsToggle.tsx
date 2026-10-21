@@ -30,6 +30,8 @@ interface SettingsToggleProps {
 // COMPONENT
 // =============================================================================
 
+// Disabled: only the switch fades (AnimatedCheckbox opacity-50); the label stays readable,
+// a faded row measured 1.96-2.64:1 (docs/a11y/contrast-2026-10-21.md).
 export function SettingsToggle({
   label,
   description,
@@ -46,7 +48,6 @@ export function SettingsToggle({
       className={cn(
         'flex items-center justify-between gap-4 py-3',
         'border-b border-pink-100/50 dark:border-slate-700/50 last:border-0',
-        disabled && 'opacity-50',
         className
       )}
     >

@@ -70,7 +70,7 @@ export function NotificationsSection({ settings, updateSetting }: Props) {
       return {
         icon: <BellOff size={16} className="text-red-500" />,
         text: 'Bloque',
-        color: 'text-red-600 dark:text-red-400',
+        color: 'text-red-600 dark:text-red-300',
       };
     }
     return {
