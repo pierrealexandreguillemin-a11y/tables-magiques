@@ -118,3 +118,31 @@ judged by preference on the "En grand" row.
   still shows (the lilac underlayer `hair_underlayer` / scalp cap seen as a thick band under the
   strands). Leads, not tried: shrink or drop `UNDERLAYER` for `strands`, raise `SINK`, add inner
   strands that cover the band, or root the strands lower on the skull.
+
+## A5 — layered strands (2026-10-21)
+
+- **Diagnosis (measured, throwaway driver painting parts in flat colours):** the band seen from
+  the front is the `hair_underlayer` metaball mass (painted red: it fills the whole band), not
+  the scalp cap (painted green: barely visible). Dropping the underlayer removes the band, but
+  reopens the dark blue hollow behind the ear in the 3/4 view (the defect it was added for).
+- **Change:** `--mane layered` (`unicorn_mane.build_mane_layered`): A4 strands, no underlayer,
+  plus an inner layer of strands: the 7 side locks again (`inner_lock`), control-point lifts
+  x 0.45, half-width x 0.9, turned 6 degrees towards the nape, gradient started 0.1 later.
+  `strands` (A4) is untouched: vertex hashes of every mesh are identical before/after the change.
+- **Iterations (512 px previews, not committed):** it01 = the values above. Front: the smooth
+  lilac band is gone, strands run down the temples to the skull. 3/4: no dark hollow behind the
+  ear. Side: same silhouette as A4.
+- **Not reproducible to the bit:** two preview renders of the same code differ (PSNR 84 dB,
+  last-bit noise). Compare geometry, not image hashes.
+- **Reproduce:** same commands as A4 with `--mane layered` and `A5_*` tags.
+
+## A5 vs A4 — rejection criteria (written 2026-10-21, BEFORE the vote)
+
+Page: `vote.html?pair=A5,A4`. Same C1-C4 as above, plus:
+
+- **C5 — no band from the front:** on the "En grand" row and the front preview, no smooth
+  hairless layer between the skull and the strands.
+- **C6 — no hollow in 3/4:** no dark gap behind the ear (the regression of dropping the
+  underlayer alone).
+
+Vote paused by the user (2026-10-21, « pause sur la mascotte, on y reviendra »).

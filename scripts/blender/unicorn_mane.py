@@ -8,12 +8,14 @@
          Chosen over A2 (2026-10-20), but "a unicorn with dreadlocks" (one thick sweep per lock).
   strands A4: the A3 layout, every lock split into five thinner strands that fan out, with
          staggered lengths, small lifts (layering) and fine pointed tips.
+  layered A5: A4 without the smooth underlayer (seen from the front as a band between skull and
+         strands), its volume filled by an inner layer of strands pressed closer to the skull.
 
 Deterministic: no random numbers. Colours: studio.MANE_STOPS (pink -> lilac -> sky).
 """
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from mathutils import Vector
 from mathutils.kdtree import KDTree
@@ -233,9 +235,10 @@ def hair_underlayer(skull, root):
     return obj
 
 
-def build_mane_locks(skull, root, mat, make_lock=None):
-    """A3 layout: scalp cap, underlayer, then every lock built by make_lock (default hair_lock;
-    A4 passes split_lock, which returns several strands per lock)."""
+def build_mane_locks(skull, root, mat, make_lock=None, under=hair_underlayer, extra=()):
+    """A3 layout: scalp cap, underlayer (`under`, None = none), then every lock (plus `extra`)
+    built by make_lock (default hair_lock; A4 passes split_lock, which returns several strands
+    per lock)."""
     make_lock = make_lock or (lambda *a: [hair_lock(*a)])
 
     def up(p):  # flat side of every lock against the skull
@@ -246,8 +249,10 @@ def build_mane_locks(skull, root, mat, make_lock=None):
         side.z = 0.0
         return side.normalized() * 0.7 + TIP_BACK
 
-    locks = MANE_LEFT + MANE_RIGHT + (MANE_NAPE,) + FRINGE
-    objs = [scalp_cap(skull, root, (66, 90, 115, 140, 165, 185), 0.0, 0.17), hair_underlayer(skull, root)]
+    locks = MANE_LEFT + MANE_RIGHT + (MANE_NAPE,) + FRINGE + tuple(extra)
+    objs = [scalp_cap(skull, root, (66, 90, 115, 140, 165, 185), 0.0, 0.17)]
+    if under:
+        objs.append(under(skull, root))
     for k, lock in enumerate(locks):
         ctrl = [skull.point(*c) for c in lock.ctrl]
         objs.extend(make_lock(f"ManeLock.{k}", lock, ctrl, up, out, root))
@@ -346,8 +351,32 @@ def build_tail_strands(root, mat):
     build_tail_locks(root, mat, split_lock)
 
 
+# ============================================================================= A5: layered strands
+# A4 seen from the front (user, 2026-10-21): a smooth lilac band between the skull and the thin
+# strands. Measured: it is the UNDERLAYER metaball mass (dropping it removes the band but reopens
+# the dark hollow behind the ear in 3/4). A5 drops it and fills that hollow with an inner layer of
+# strands instead: the side locks again, pressed closer to the skull, so the band reads as hair.
+INNER_LIFT = 0.45  # inner lock control-point lift / outer lock lift
+INNER_WIDTH = 0.9  # inner lock half-width / outer lock half-width
+INNER_AZ = 6.0  # degrees the inner locks are turned towards the nape, so they show between the outer ones
+
+
+def inner_lock(lock):
+    """The side lock pressed towards the skull (lifts x INNER_LIFT, root kept) and shifted a few
+    degrees back, with a slightly darker stretch of the gradient."""
+    sign = lambda az: 1 if az >= 0 else -1  # noqa: E731
+    ctrl = (lock.ctrl[0],) + tuple((az + sign(az) * INNER_AZ, el, lift * INNER_LIFT) for az, el, lift in lock.ctrl[1:])
+    t0, t1 = lock.t
+    return replace(lock, ctrl=ctrl, width=lock.width * INNER_WIDTH, t=(t0 + 0.1, t1))
+
+
+def build_mane_layered(skull, root, mat):
+    build_mane_locks(skull, root, mat, split_lock, under=None, extra=[inner_lock(lk) for lk in MANE_LEFT + MANE_RIGHT])
+
+
 STYLES = {
     "curls": (build_mane_curls, build_tail_curls),
     "locks": (build_mane_locks, build_tail_locks),
     "strands": (build_mane_strands, build_tail_strands),
+    "layered": (build_mane_layered, build_tail_strands),
 }
