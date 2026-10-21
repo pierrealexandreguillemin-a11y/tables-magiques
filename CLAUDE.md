@@ -10,7 +10,7 @@ App web PWA d'apprentissage des multiplications pour enfants (9+). Stack: Next.j
 npm run dev          # Dev server
 npm run build        # Production build
 npm run typecheck    # tsc --noEmit
-npm run test:run     # Vitest (1398 tests)
+npm run test:run     # Vitest (1373 tests, 82 files — measured 2026-10-21)
 npm run test:e2e     # Playwright
 npm run test:e2e:visual       # Visual regression (Playwright screenshots)
 npm run test:e2e:visual:update # Update visual baselines
@@ -82,7 +82,7 @@ Tout le reste utilise CSS — voir `styles/animations.css`.
   `docs/perf/first-load-history.md` (accueil 432 → 288 KB gz)
 - Les couleurs d'animation passent par `lib/animations/colors.ts`
 - `next.config.ts` a le React Compiler active (memoization automatique)
-- 1398 tests (76 fichiers), coverage ~90%
+- 1373 tests (82 fichiers, mesure 2026-10-21 : `npm run test:run`), coverage ~90%
 - Zero dependances circulaires (madge verifie)
 - Budget JS par route (gate CI) : `perf-budget.json`, mesure + 5 %, a n'abaisser qu'avec une
   mesure. Historique : `docs/perf/first-load-history.md`
