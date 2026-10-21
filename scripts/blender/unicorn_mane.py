@@ -5,6 +5,9 @@
   locks  A3: flattened, tapering hair locks (elliptical cross-section, width swelling then
          narrowing to a soft point, slight twist) on gentle S-curves, layered on both sides of the
          head, tips rolling outward; a fringe beside the horn; a flowing tuft of a tail.
+         Chosen over A2 (2026-10-20), but "a unicorn with dreadlocks" (one thick sweep per lock).
+  strands A4: the A3 layout, every lock split into five thinner strands that fan out, with
+         staggered lengths, small lifts (layering) and fine pointed tips.
 
 Deterministic: no random numbers. Colours: studio.MANE_STOPS (pink -> lilac -> sky).
 """
@@ -230,7 +233,11 @@ def hair_underlayer(skull, root):
     return obj
 
 
-def build_mane_locks(skull, root, mat):
+def build_mane_locks(skull, root, mat, make_lock=None):
+    """A3 layout: scalp cap, underlayer, then every lock built by make_lock (default hair_lock;
+    A4 passes split_lock, which returns several strands per lock)."""
+    make_lock = make_lock or (lambda *a: [hair_lock(*a)])
+
     def up(p):  # flat side of every lock against the skull
         return p - skull.centre
 
@@ -243,7 +250,7 @@ def build_mane_locks(skull, root, mat):
     objs = [scalp_cap(skull, root, (66, 90, 115, 140, 165, 185), 0.0, 0.17), hair_underlayer(skull, root)]
     for k, lock in enumerate(locks):
         ctrl = [skull.point(*c) for c in lock.ctrl]
-        objs.append(hair_lock(f"ManeLock.{k}", lock, ctrl, up, out, root))
+        objs.extend(make_lock(f"ManeLock.{k}", lock, ctrl, up, out, root))
     studio.assign(shapes.join(objs, "Mane"), mat)
 
 
@@ -257,13 +264,90 @@ TAIL_LOCKS = (
 )
 
 
-def build_tail_locks(root, mat):
+def build_tail_locks(root, mat, make_lock=None):
+    make_lock = make_lock or (lambda *a: [hair_lock(*a)])
     side = UP.cross(TAIL_BACK)
     objs = []
     for k, lock in enumerate(TAIL_LOCKS):
         ctrl = [TAIL_ROOT + TAIL_BACK * b + UP * u + side * s for b, u, s in lock.ctrl]
-        objs.append(hair_lock(f"TailLock.{k}", lock, ctrl, lambda p: side, None, root))
+        objs.extend(make_lock(f"TailLock.{k}", lock, ctrl, lambda p: side, None, root))
     studio.assign(shapes.join(objs, "Tail"), mat)
 
 
-STYLES = {"curls": (build_mane_curls, build_tail_curls), "locks": (build_mane_locks, build_tail_locks)}
+# ============================================================================= A4: strands
+@dataclass(frozen=True)
+class Strand:
+    """One strand of a split lock: its offset across the lock (in lock half-widths; the spread
+    grows from root to tip, see FAN), its length (fraction of the lock), its lift off the lock
+    along the skull normal (layers the strands) and its own extra twist (radians, root -> tip)."""
+
+    side: float
+    length: float
+    lift: float
+    twist: float
+
+
+# A3 locks read as dreadlocks (user, 2026-10-20): one thick sweep each. A4 keeps the A3 layout
+# and splits every lock into these strands: thinner, staggered lengths, fanning out, sharp tips.
+STRANDS = (
+    Strand(-1.0, 0.86, 0.0, 0.3),
+    Strand(-0.5, 1.0, 0.03, -0.2),
+    Strand(0.0, 0.94, 0.05, 0.15),
+    Strand(0.5, 0.97, 0.02, 0.25),
+    Strand(1.0, 0.8, 0.04, -0.3),
+)
+STRAND_WIDTH = 0.5  # strand half-width / lock half-width: neighbours overlap, the lock keeps its volume
+FAN = (0.55, 1.0)  # strand spread across the lock (x lock half-width) at the root / at the tip
+SINK = 0.045  # strands are thinner than the A3 lock: lowered onto the skull so no hollow opens under them
+STRAND_TIP_CONE = 6.0
+STRAND_SAMPLES = 100
+
+
+def strand_width(t):
+    """Swells a little after the root, then tapers to a fine point (floor 0.02; A3 lock: 0.08)."""
+    return (0.75 + 0.25 * smoothstep(0.0, 0.3, t)) * max(1.0 - t**2.4, 0.0) ** 0.6 + 0.02
+
+
+def split_lock(name, lock, ctrl, up, out, root):
+    """The A3 lock's spine (lock_spine) split into STRANDS: each strand is offset across the lock
+    along the sweep's width axis (same frames as hair_lock), lifted off it, cut to its length,
+    then swept thin with its own stretch of the lock's colour gradient."""
+    spine = lock_spine(ctrl, lock.curl, out)
+    n = len(spine) - 1
+    frames = shapes.follow_frames(spine, up)
+    w = lambda t: lock.width * STRAND_WIDTH * strand_width(t)  # noqa: E731
+    h = lambda t: w(t) * (lock.flat + (1 - lock.flat) * t)  # noqa: E731
+    t0, t1 = lock.t
+    objs = []
+    for k, s in enumerate(STRANDS):
+        last = max(int(n * s.length), 8)
+        pts = []
+        for i in range(last + 1):
+            t = i / n
+            tan, nrm = frames[i]
+            a = lock.twist * t
+            across = tan.cross(nrm) * math.cos(a) + nrm * math.sin(a)
+            spread = lock.width * s.side * (FAN[0] + (FAN[1] - FAN[0]) * t)
+            pts.append(spine[i] + across * spread + Vector(up(spine[i])).normalized() * (s.lift - SINK) * smoothstep(0.0, 0.25, t))
+        pts = shapes.resample(pts, STRAND_SAMPLES)
+        twist = lambda t, s=s: (lock.twist + s.twist) * t  # noqa: E731
+        obj = shapes.sweep(f"{name}.{k}", pts, w, h, up, twist=twist, section=lock_section, tip=STRAND_TIP_CONE, segments=20, parent=root)
+        m = len(pts) - 1
+        paint(obj, gradient_field([(p, w(i / m), t0 + (t1 - t0) * s.length * i / m) for i, p in enumerate(pts)]))
+        objs.append(obj)
+    return objs
+
+
+def build_mane_strands(skull, root, mat):
+    build_mane_locks(skull, root, mat, split_lock)
+
+
+def build_tail_strands(root, mat):
+    build_tail_locks(root, mat, split_lock)
+
+
+STYLES = {
+    "curls": (build_mane_curls, build_tail_curls),
+    "locks": (build_mane_locks, build_tail_locks),
+    "strands": (build_mane_strands, build_tail_strands),
+}

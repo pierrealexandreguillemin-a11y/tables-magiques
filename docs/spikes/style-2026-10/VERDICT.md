@@ -45,7 +45,7 @@ Next: P23 plan in `docs/VISUAL_REFONTE_2026_SPEC.md` §5.
 ## A3 vs A2 — rejection criteria (written 2026-10-20, BEFORE the vote)
 
 Protocol: `docs/VISUAL_VALIDATION_PROTOCOL.md` (R2 display sizes, R3 criteria first). Vote page:
-`vote-a3-a2.html` (blind: left/right drawn at random per row, the copied code reveals the sides).
+`vote.html` (default pair A3,A2) (blind: left/right drawn at random per row, the copied code reveals the sides).
 
 Display sizes come from the slots the mascot will replace, measured on production
 (`capture-app-context.mjs` → `context/slots.json`, phone 412×823): home hero emoji 🦄
@@ -64,7 +64,7 @@ the mane and tail, so C1 and C3 are the discriminating ones.
 
 ## A3 vs A2 — verdict (2026-10-20)
 
-Pasted from `vote-a3-a2.html` (the user's daughter voted):
+Pasted from `vote.html` (default pair A3,A2) (the user's daughter voted):
 
 ```
 1. Dans l'appli, thème clair : Gauche
@@ -84,3 +84,27 @@ Code = row initial + candidate shown on the left, so the left side was A3 in all
   single thick sweep (half-width 0.17–0.20, rounded tip floor), so 13 chunky tubes read as
   dreadlocks. Next iteration (A4): same layout, each lock split into thinner strands with sharp
   tips.
+
+## A4 — split strands (2026-10-21)
+
+- **Change:** mane and tail only, `--mane strands` (`unicorn_mane.split_lock`): the A3 layout,
+  each lock's spine split into 5 strands (half-width 0.5 x the lock's, fanning from 0.55 to 1.0
+  lock half-widths, lengths 0.78-1.0, lifts 0-0.05, tips tapering to 0.02 instead of 0.08,
+  pressed 0.045 onto the skull so no hollow opens under the thinner strands). `locks` (A3) is
+  untouched and stays the default.
+- **Iterations (512 px previews, not committed):** it01 = 4 strands at 0.38 width: too thin,
+  "wet hair", the volume of the mane is lost. it02 = 5 strands at 0.5: volume back, but a dark
+  hollow under the mane seen from the front. it03 = it02 + SINK: hollow reduced (a lilac
+  shadow behind the ear remains, as on A3).
+- **Reproduce:** same commands as A3 with `--mane strands` and `A4_*` tags; the full render took
+  152 s here.
+
+## A4 vs A3 — rejection criteria (written 2026-10-21, BEFORE the vote)
+
+Same page and protocol: `vote.html?pair=A4,A3`. Same C1-C3 as above, plus one for this iteration:
+
+- **C4 — no gaps at 100 px:** the mane does not look stringy or thin (head showing through
+  between the strands).
+
+The user's request ("crins plus fins, plus visibles, plus détaillés, pas des dreadlocks") is
+judged by preference on the "En grand" row.
