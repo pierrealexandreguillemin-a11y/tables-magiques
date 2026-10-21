@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Licorne A3 ou A2</title>
+    <title>Licorne : vote</title>
     <style>
       :root {
         --bg: #faf7fc;
@@ -185,7 +185,8 @@
         <ul>
           <li><b>C1</b> : à 48 px, on ne reconnaît plus la corne et la crinière (ça fait une tache) ;</li>
           <li><b>C2</b> : à 64 px, on ne voit pas les deux yeux ;</li>
-          <li><b>C3</b> : la crinière se fond dans le fond violet de l'appli.</li>
+          <li><b>C3</b> : la crinière se fond dans le fond violet de l'appli ;</li>
+          <li><b>C4</b> : à 100 px, la crinière paraît maigre, filasse (on voit la tête entre les crins).</li>
         </ul>
         Les cases « éliminée » sont dans la rangée 3 (petites tailles).
       </div>
@@ -217,18 +218,20 @@
       </p>
     </main>
     <script>
-      const IMG = {
-        A2: 'renders/A2_unicorn_transparent.png',
-        A3: 'renders/A3_unicorn_transparent.png',
-      };
-      const BIG = {
-        A2: 'renders/A2_unicorn_gradient.png',
-        A3: 'renders/A3_unicorn_gradient.png',
-      };
+      // Candidates: vote.html?pair=A4,A3 (default A3,A2 = the 2026-10-20 vote in VERDICT.md).
+      const PAIR = (new URLSearchParams(location.search).get('pair') || 'A3,A2').split(',');
+      if (PAIR.length !== 2 || !PAIR.every((c) => /^A\d+$/.test(c))) {
+        throw new Error('pair must look like A4,A3');
+      }
+      document.title = `Licorne ${PAIR[0]} ou ${PAIR[1]}`;
+      const render = (kind) =>
+        Object.fromEntries(PAIR.map((c) => [c, `renders/${c}_unicorn_${kind}.png`]));
+      const IMG = render('transparent');
+      const BIG = render('gradient');
       const BG = { light: 'context/home-light.png', dark: 'context/home-dark.png' };
       const SIZES = [48, 64, 80, 100, 128];
       const SIDE_NAMES = ['Gauche', 'Droite'];
-      const CRITERIA = ['C1', 'C2', 'C3'];
+      const CRITERIA = ['C1', 'C2', 'C3', 'C4']; // C4 added for A4 vs A3 (2026-10-21)
       const TITLES = {
         clair: "Dans l'appli, thème clair",
         sombre: "Dans l'appli, thème sombre",
@@ -328,7 +331,7 @@
       }
 
       function verdictText() {
-        const lines = ['VERDICT licorne A3 vs A2'];
+        const lines = [`VERDICT licorne ${PAIR[0]} vs ${PAIR[1]}`];
         const code = [];
         Object.keys(TITLES).forEach((name, i) => {
           const picked = document.querySelector(`input[name="v-${name}"]:checked`);
@@ -353,7 +356,7 @@
         const { slots } = await (await fetch('context/slots.json')).json();
         for (const row of document.querySelectorAll('.pair')) {
           const name = row.dataset.row;
-          const order = Math.random() < 0.5 ? ['A2', 'A3'] : ['A3', 'A2'];
+          const order = Math.random() < 0.5 ? [PAIR[1], PAIR[0]] : [...PAIR];
           key[name] = order;
           order.forEach((candidate, i) => {
             const side = document.createElement('div');
