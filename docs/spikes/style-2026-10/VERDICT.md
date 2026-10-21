@@ -173,14 +173,19 @@ left = A5 (so "Gauche" = A5).
 - C5 and C6 were written in this file but are not in `vote.html`'s elimination list (C1-C4
   only): not judged through the page.
 
-## A6 — filled slit (2026-10-22)
+## A6 — side lock (2026-10-22)
 
-- **Change:** `--mane filled` (`unicorn_mane.build_mane_filled`): A5 plus `SLIT_LOCKS`, two locks
-  per side lying close to the skull (lifts 0.04-0.09) along its back edge seen in 3/4 (az 96-138).
-  `layered` (A5) is untouched (code added, nothing in its path changed).
-- **Iterations (512 px 3/4 previews, not committed):** it01 = one lock (az up to 138, lift ≤ 0.06):
-  the slit narrowed, a gap stayed under the ear. it02 = + a second lock nearer the ear (az up to
-  124, lift ≤ 0.09): no dark slit left from the ear to the cheek. Front view: same as A5, no band.
+- **it01-it02 (rejected by the user):** two locks per side filling the slit between the back edge
+  of the skull and the mane. Measured filled, but the filler sat in shadow behind the outer
+  locks: the step between head and mane still showed. User: « le problème n'est pas corrigé ».
+- **User's drawing** (green strokes on the A6 render, `C:/Users/pierr/Downloads/A6_unicorn_gradient.png`):
+  the lock wanted lies **in front of** the mane, on the side of the skull, from just behind the
+  ear down to the back of the cheek.
+- **Mapping:** throwaway Blender script projecting skull points (az, el) to the 1024 px 3/4 render
+  → the green strip = az ~70-95, el 55 to -30.
+- **Change:** `--mane filled` = A5 + `SLIT_LOCKS` (kept) + `SIDE_LOCK` (mirrored on both sides):
+  ctrl az 46 → 84, el 72 → -32, lifts 0.05-0.08. it03 (az 58-95) sat ~15 degrees too far back;
+  it04 matches the drawing side by side. Front view: no band, same framing as A5.
 - **Reproduce:** same commands as A5 with `--mane filled` and `A6_*` tags.
 
 ## A6 vs A5 — rejection criteria (written 2026-10-22, BEFORE the vote)

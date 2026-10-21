@@ -10,8 +10,9 @@
          staggered lengths, small lifts (layering) and fine pointed tips.
   layered A5: A4 without the smooth underlayer (seen from the front as a band between skull and
          strands), its volume filled by an inner layer of strands pressed closer to the skull.
-  filled A6: A5 plus one lock per side lying on the skull along the back of the head, in the slit
-         between the skull and the mane seen in 3/4 (user, 2026-10-22: "rajouter une mèche").
+  filled A6: A5 plus, per side, two locks in the slit between skull and mane seen in 3/4 and one
+         lock lying on the side of the skull in front of the mane (user, 2026-10-22: "rajouter
+         une mèche", then drawn on the render).
 
 Deterministic: no random numbers. Colours: studio.MANE_STOPS (pink -> lilac -> sky).
 """
@@ -392,9 +393,17 @@ def mirrored(lock):
     return replace(lock, ctrl=tuple((-az, el, lift) for az, el, lift in lock.ctrl))
 
 
+# it03 (user's drawing on the A6 render, 2026-10-22): the lock wanted is not in the hidden slit
+# but in front of the mane, lying on the side of the skull from just behind the ear down to the
+# back of the cheek. Mapped with a throwaway projection of skull (az, el) to the 3/4 render: the
+# green strip spans az ~70-95, el 55 down to -30 (it03 at az 84-95 sat ~15 degrees too far back).
+SIDE_LOCK = Lock(((0, 78, -0.03), (46, 72, 0.06), (70, 54, 0.08), (80, 26, 0.08), (84, -4, 0.07), (82, -32, 0.05)), 0.21, curl=(0.1, 0.32, None), twist=-0.25, t=(0.05, 0.7))
+
+
 def build_mane_filled(skull, root, mat):
     inner = [inner_lock(lk) for lk in MANE_LEFT + MANE_RIGHT]
-    build_mane_locks(skull, root, mat, split_lock, under=None, extra=inner + [f(lk) for lk in SLIT_LOCKS for f in (lambda x: x, mirrored)])
+    added = [f(lk) for lk in SLIT_LOCKS + (SIDE_LOCK,) for f in (lambda x: x, mirrored)]
+    build_mane_locks(skull, root, mat, split_lock, under=None, extra=inner + added)
 
 
 STYLES = {
