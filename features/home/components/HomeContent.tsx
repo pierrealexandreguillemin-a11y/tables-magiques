@@ -42,7 +42,7 @@ export function HomeContent() {
               className="block text-xl px-8 py-5 font-bold rounded-xl shadow-2xl
                 bg-white/20 backdrop-blur-xl backdrop-saturate-150
                 border border-white/30
-                text-white
+                text-purple-700 dark:text-white
                 hover:bg-white/30 hover:border-white/50
                 transition-all duration-300 shadow-btn-unicorn"
             >
@@ -59,7 +59,7 @@ export function HomeContent() {
                 bg-gradient-to-r from-orange-500/40 to-red-500/40
                 backdrop-blur-xl backdrop-saturate-150
                 border border-white/30
-                text-white
+                text-red-900 hover:text-red-950 dark:text-white dark:hover:text-white
                 hover:from-orange-500/60 hover:to-red-500/60 hover:border-white/50
                 transition-all duration-300 shadow-btn-challenge"
             >

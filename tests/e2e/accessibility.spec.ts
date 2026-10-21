@@ -7,6 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { worstTextContrast } from './helpers/textContrast';
 
 test.describe('Accessibilité WCAG 2.1 AA', () => {
   test.beforeEach(async ({ page }) => {
@@ -41,6 +42,51 @@ test.describe('Accessibilité WCAG 2.1 AA', () => {
 
     expect(criticalContrastViolations).toEqual([]);
   });
+
+  // Le test ci-dessus ne retient que 'critical' : axe classe color-contrast en 'serious', il ne
+  // peut donc jamais echouer. Et axe met ces boutons en "incomplete" (degrade + backdrop-filter) :
+  // ils sont mesures sur le rendu reel. Regression 2026-10-21 : en theme clair, GradientBorder a
+  // un fond interieur blanc et « Mode Entraînement » etait blanc sur blanc (1:1).
+  // 4.5:1 = AA texte normal (plus strict que les 3:1 exiges pour ce texte gras de 20 px).
+  for (const theme of ['light', 'dark'] as const) {
+    test(`boutons de l’accueil lisibles (thème ${theme}, repos et survol)`, async ({
+      page,
+    }) => {
+      await page.evaluate((t) => {
+        localStorage.setItem('theme', t);
+        localStorage.setItem('tables-magiques-tour-completed', 'true');
+        localStorage.setItem('tables-magiques-first-visit', 'true');
+      }, theme);
+      await page.reload();
+      // Attendre la fin de l'entree .animate-fade-scale (delai 1.2 s) : on mesure l'opacite finale
+      await page.waitForFunction(() =>
+        [...document.querySelectorAll('.animate-fade-scale')].every(
+          (el) => getComputedStyle(el).opacity === '1'
+        )
+      );
+
+      const ratios: Record<string, number> = {};
+      for (const href of ['/practice', '/challenge']) {
+        const cta = page.locator(`a[href="${href}"] span`);
+        await page.mouse.move(0, 0);
+        await page.waitForTimeout(400); // transition-all duration-300
+        ratios[`${href} repos`] = await worstTextContrast(cta);
+        await cta.hover();
+        await page.waitForTimeout(400);
+        ratios[`${href} survol`] = await worstTextContrast(cta);
+      }
+      test.info().annotations.push({
+        type: 'contrast',
+        description: JSON.stringify(ratios),
+      });
+      for (const [state, ratio] of Object.entries(ratios)) {
+        expect(
+          ratio,
+          `${state} ${JSON.stringify(ratios)}`
+        ).toBeGreaterThanOrEqual(4.5);
+      }
+    });
+  }
 
   test('structure de headings correcte', async ({ page }) => {
     const headings = await page.locator('h1, h2, h3, h4, h5, h6').all();
