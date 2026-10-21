@@ -9,11 +9,8 @@
 
 'use client';
 
-import { useMemo, useSyncExternalStore } from 'react';
-
-const emptySubscribe = () => () => {};
-const returnTrue = () => true;
-const returnFalse = () => false;
+import { useMemo } from 'react';
+import { useIsClient } from '@/hooks/useIsClient';
 
 const seededRandom = (seed: number): number => {
   const x = Math.sin(seed * 9999) * 10000;
@@ -64,11 +61,7 @@ const EMPTY_PARTICLES: Particle[] = [];
 const EMPTY_STARS: Star[] = [];
 
 export function useParticles() {
-  const isClient = useSyncExternalStore(
-    emptySubscribe,
-    returnTrue,
-    returnFalse
-  );
+  const isClient = useIsClient();
 
   const particles = useMemo(
     () => (isClient ? generateParticles() : EMPTY_PARTICLES),

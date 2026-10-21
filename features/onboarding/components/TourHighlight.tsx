@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, useCallback, useSyncExternalStore } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import { useIsClient } from '@/hooks/useIsClient';
 import { cn } from '@/lib/utils';
 import { createPortal } from 'react-dom';
 
@@ -34,17 +35,6 @@ interface TourHighlightProps {
 // HELPERS
 // =============================================================================
 
-/**
- * Hook pour detecter si on est monte cote client
- */
-function useIsMounted() {
-  return useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false
-  );
-}
-
 // =============================================================================
 // COMPONENT
 // =============================================================================
@@ -62,7 +52,7 @@ export function TourHighlight({
   children,
 }: TourHighlightProps) {
   const [targetRect, setTargetRect] = useState<TargetRect | null>(null);
-  const mounted = useIsMounted();
+  const mounted = useIsClient();
 
   // Calculer position element cible
   const updateTargetRect = useCallback(() => {

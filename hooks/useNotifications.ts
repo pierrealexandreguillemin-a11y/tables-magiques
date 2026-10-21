@@ -12,6 +12,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useIsClient } from './useIsClient';
 
 export type NotificationPermission = 'default' | 'granted' | 'denied';
 
@@ -96,11 +97,14 @@ interface ReminderSettings {
  * ```
  */
 export function useNotifications(): UseNotificationsReturn {
-  const [isSupported] = useState(checkSupport);
-  // Lazy initialization of permission state
-  const [permission, setPermission] = useState<NotificationPermission>(() =>
-    getPermission()
+  // Browser-only values, read after hydration: the server has no Notification API, so reading
+  // them in the first render made /settings fail to hydrate (React #418, 2026-10-21)
+  const isClient = useIsClient();
+  const isSupported = isClient && checkSupport();
+  const [requested, setPermission] = useState<NotificationPermission | null>(
+    null
   );
+  const permission = requested ?? (isClient ? getPermission() : 'default');
 
   // Request notification permission
   const requestPermission = useCallback(async (): Promise<boolean> => {
