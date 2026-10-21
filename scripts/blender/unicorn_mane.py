@@ -10,6 +10,8 @@
          staggered lengths, small lifts (layering) and fine pointed tips.
   layered A5: A4 without the smooth underlayer (seen from the front as a band between skull and
          strands), its volume filled by an inner layer of strands pressed closer to the skull.
+  filled A6: A5 plus one lock per side lying on the skull along the back of the head, in the slit
+         between the skull and the mane seen in 3/4 (user, 2026-10-22: "rajouter une mèche").
 
 Deterministic: no random numbers. Colours: studio.MANE_STOPS (pink -> lilac -> sky).
 """
@@ -374,9 +376,31 @@ def build_mane_layered(skull, root, mat):
     build_mane_locks(skull, root, mat, split_lock, under=None, extra=[inner_lock(lk) for lk in MANE_LEFT + MANE_RIGHT])
 
 
+# ============================================================================= A6: filled slit
+# A5 vote (user, 2026-10-22): "l'espace entre la tete et la meche gache tout; il faut rajouter une
+# meche". Seen in 3/4, a dark slit runs between the back edge of the skull and the mane, from the
+# ear down to the cheek: the 3/4 camera sees the skull's outline around az 120-150, where the
+# side locks stand 0.13-0.27 off the skull. Two locks per side lie there, close to the skull
+# (it01, one lock: the slit narrowed, a gap stayed under the ear; it02 adds the second, nearer the ear).
+SLIT_LOCKS = (
+    Lock(((0, 118, -0.03), (96, 72, 0.04), (126, 38, 0.06), (138, 6, 0.06), (132, -24, 0.04)), 0.19, curl=(0.1, 0.32, None), twist=-0.2, t=(0.2, 0.85)),
+    Lock(((0, 106, -0.03), (80, 76, 0.06), (112, 44, 0.09), (124, 12, 0.09), (120, -18, 0.06)), 0.2, curl=(0.1, 0.32, None), twist=-0.25, t=(0.15, 0.8)),
+)
+
+
+def mirrored(lock):
+    return replace(lock, ctrl=tuple((-az, el, lift) for az, el, lift in lock.ctrl))
+
+
+def build_mane_filled(skull, root, mat):
+    inner = [inner_lock(lk) for lk in MANE_LEFT + MANE_RIGHT]
+    build_mane_locks(skull, root, mat, split_lock, under=None, extra=inner + [f(lk) for lk in SLIT_LOCKS for f in (lambda x: x, mirrored)])
+
+
 STYLES = {
     "curls": (build_mane_curls, build_tail_curls),
     "locks": (build_mane_locks, build_tail_locks),
     "strands": (build_mane_strands, build_tail_strands),
     "layered": (build_mane_layered, build_tail_strands),
+    "filled": (build_mane_filled, build_tail_strands),
 }

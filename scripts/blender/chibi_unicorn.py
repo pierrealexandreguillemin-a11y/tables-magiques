@@ -1,10 +1,11 @@
 """Candidate A - procedural chibi unicorn (our own model, no third-party asset).
 
 Usage:
-  blender -b --python scripts/blender/chibi_unicorn.py -- <out_dir> [--preview] [--tag NAME] [--view 3q|front|side] [--mane locks|curls|strands|layered]
+  blender -b --python scripts/blender/chibi_unicorn.py -- <out_dir> [--preview] [--tag NAME] [--view 3q|front|side] [--mane locks|curls|strands|layered|filled]
 
 --mane: locks = A3 hair locks (default), curls = A2 spiral curls, strands = A4 split strands,
 layered = A5 strands over an inner layer of strands
+filled = A6: A5 plus one lock per side in the slit behind the skull
 (see unicorn_mane.py).
 
 Writes <out_dir>/A_unicorn_transparent.png, A_unicorn_gradient.png and A_unicorn.glb

@@ -168,7 +168,22 @@ left = A5 (so "Gauche" = A5).
   nothing). Per the protocol a failed criterion rejects regardless of preference: **neither is
   adopted as final**; A5 is the base of the next iteration.
 - **A6 target (user's words):** « l'espace entre la tête et la mèche gâche tout; il faut rajouter
-  une mèche ». Location of the gap on the 3/4 render: asked to the user (annotated image), not
-  guessed.
+  une mèche ». Location asked on an annotated 3/4 render (zones 1-4); user: « le 1 et le 2 » =
+  under the ear and down the back edge of the skull: a dark slit between skull and mane.
 - C5 and C6 were written in this file but are not in `vote.html`'s elimination list (C1-C4
   only): not judged through the page.
+
+## A6 — filled slit (2026-10-22)
+
+- **Change:** `--mane filled` (`unicorn_mane.build_mane_filled`): A5 plus `SLIT_LOCKS`, two locks
+  per side lying close to the skull (lifts 0.04-0.09) along its back edge seen in 3/4 (az 96-138).
+  `layered` (A5) is untouched (code added, nothing in its path changed).
+- **Iterations (512 px 3/4 previews, not committed):** it01 = one lock (az up to 138, lift ≤ 0.06):
+  the slit narrowed, a gap stayed under the ear. it02 = + a second lock nearer the ear (az up to
+  124, lift ≤ 0.09): no dark slit left from the ear to the cheek. Front view: same as A5, no band.
+- **Reproduce:** same commands as A5 with `--mane filled` and `A6_*` tags.
+
+## A6 vs A5 — rejection criteria (written 2026-10-22, BEFORE the vote)
+
+Page: `vote.html?pair=A6,A5`. C1-C6 as above; C5 and C6 are now on the page (elimination boxes).
+C4 is the one A5 failed; C6 is the user's remark on A5 (gap between head and mane).
