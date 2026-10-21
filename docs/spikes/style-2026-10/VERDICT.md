@@ -108,3 +108,13 @@ Same page and protocol: `vote.html?pair=A4,A3`. Same C1-C3 as above, plus one fo
 
 The user's request ("crins plus fins, plus visibles, plus détaillés, pas des dreadlocks") is
 judged by preference on the "En grand" row.
+
+## A4 vs A3 — verdict (2026-10-21)
+
+- **User verdict (verbatim):** « la nouvelle est mieux, mais il restera une épaisseur non corrigée
+  visible de face entre le crâne et les mèches fines, à faire en session prochaine ».
+- **A4 chosen over A3.** No vote code pasted (verdict given in chat, not through the page).
+- **Next iteration (A5) target:** from the front, the layer between the skull and the thin strands
+  still shows (the lilac underlayer `hair_underlayer` / scalp cap seen as a thick band under the
+  strands). Leads, not tried: shrink or drop `UNDERLAYER` for `strands`, raise `SINK`, add inner
+  strands that cover the band, or root the strands lower on the skull.

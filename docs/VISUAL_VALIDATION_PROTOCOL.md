@@ -1,6 +1,7 @@
 # Visual validation protocol
 
-> Status: **rules only, not yet applied** (written 2026-10-20). Nothing below has been run.
+> Status (2026-10-21): R2 mascot sizes and R3 applied to the A3/A2 and A4/A3 votes
+> (`docs/spikes/style-2026-10/vote.html`, `VERDICT.md`); R1, R2 reduced motion and R4 not done.
 > Each rule lists the change it needs; tick it in this file when it is wired and measured.
 
 ## Origin
@@ -33,7 +34,7 @@ parity check produced a wrong measurement (hue classifier, retracted in
 
 - Animated effects (StarField, confetti): judged in motion, never from stills. Stills are for
   measurement only.
-- [ ] Mascot board: besides the 1024 px render, show the mascot at **every size the app will display
+- [x] Mascot board (done in `vote.html`, 48-128 px on home light/dark): besides the 1024 px render, show the mascot at **every size the app will display
       it at** (to be listed when it is integrated), on the real app backgrounds (light and dark).
       Blender is already deterministic (`scripts/blender/studio.py:122`, Cycles seed 0) and has extra
       angles; the missing axis is display size.
