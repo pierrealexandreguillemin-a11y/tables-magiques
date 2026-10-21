@@ -146,3 +146,29 @@ Page: `vote.html?pair=A5,A4`. Same C1-C4 as above, plus:
   underlayer alone).
 
 Vote paused by the user (2026-10-21, « pause sur la mascotte, on y reviendra »).
+
+## A5 vs A4 — verdict (2026-10-22)
+
+Pasted from `vote.html?pair=A5,A4` (verbatim):
+
+```
+1. Dans l'appli, thème clair : Droite — elle a les cheveux sont plus beau et lisse
+2. Dans l'appli, thème sombre : Droite
+3. Petites tailles : Droite
+4. En grand : Gauche — l'espace entre la tête et la mèche gâche tout; il faut rajouter une mèche stp
+Gauche (rangée 3) éliminée par : rien
+Droite (rangée 3) éliminée par : C4
+code : c4.s4.t4.g5
+```
+
+Code = row initial + candidate shown on the left: rows 1-3 left = A4 (so "Droite" = A5), row 4
+left = A5 (so "Gauche" = A5).
+
+- **A5 preferred 4 rows out of 4**, but **eliminated by C4** on the small-size row (A4 by
+  nothing). Per the protocol a failed criterion rejects regardless of preference: **neither is
+  adopted as final**; A5 is the base of the next iteration.
+- **A6 target (user's words):** « l'espace entre la tête et la mèche gâche tout; il faut rajouter
+  une mèche ». Location of the gap on the 3/4 render: asked to the user (annotated image), not
+  guessed.
+- C5 and C6 were written in this file but are not in `vote.html`'s elimination list (C1-C4
+  only): not judged through the page.
