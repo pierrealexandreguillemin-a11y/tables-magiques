@@ -192,3 +192,38 @@ left = A5 (so "Gauche" = A5).
 
 Page: `vote.html?pair=A6,A5`. C1-C6 as above; C5 and C6 are now on the page (elimination boxes).
 C4 is the one A5 failed; C6 is the user's remark on A5 (gap between head and mane).
+
+## A6 vs A5 — verdict (2026-10-22)
+
+Pasted from `vote.html?pair=A6,A5` (verbatim):
+
+```
+1. Dans l'appli, thème clair : Droite
+2. Dans l'appli, thème sombre : Droite
+3. Petites tailles : Gauche
+4. En grand : Gauche
+Gauche (rangée 3) éliminée par : rien
+Droite (rangée 3) éliminée par : C5, C6
+code : c5.s5.t6.g6
+```
+
+Rows 1-2 left = A5 (so "Droite" = A6), rows 3-4 left = A6 (so "Gauche" = A6).
+
+- **A6 chosen, 4 rows out of 4.** A6 eliminated by nothing; A5 eliminated by C5 and C6.
+- **User's next request (verbatim):** « ajuste la mèche au-dessus (vert) qui est décalée par
+  rapport à la nouvelle (jaune) », drawn on the A6 render
+  (`C:/Users/pierr/Downloads/A6_unicorn_gradient (1).png`): the lock above `SIDE_LOCK` stands
+  further off the skull, with a dark crease between them.
+
+## A7 — settled layers (2026-10-22)
+
+- **Change:** `--mane settled` (`unicorn_mane.build_mane_settled`): A6 with the four side locks of
+  each side brought forward and lowered in cascade, `CASCADE` = (10°, x0.75), (8°, x0.8),
+  (6°, x0.85), (4°, x0.9) from the front lock back. `filled` (A6) keeps its geometry (same code
+  path with the default side locks).
+- **Iterations (512 px 3/4 previews, not committed):** it01 = front lock only, x0.55 lift, 8°:
+  sits on `SIDE_LOCK` but a dark gap opens behind it. it02 = x0.4, 12°: worse gap. it03 = cascade
+  on 3 locks: gap reduced. it04 = cascade on 4 locks (kept): the front lock lies on `SIDE_LOCK`,
+  no dark crease behind. Front view: no band.
+- **Reproduce:** same commands as A6 with `--mane settled` and `A7_*` tags (full render 142 s).
+- Not voted yet: shown to the user next to their drawing.

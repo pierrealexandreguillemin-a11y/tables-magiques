@@ -13,6 +13,8 @@
   filled A6: A5 plus, per side, two locks in the slit between skull and mane seen in 3/4 and one
          lock lying on the side of the skull in front of the mane (user, 2026-10-22: "rajouter
          une mèche", then drawn on the render).
+  settled A7: A6 with the side locks brought forward and lowered in cascade, so the lock above
+         SIDE_LOCK lies on it instead of standing off with a dark crease (user drawing, 2026-10-22).
 
 Deterministic: no random numbers. Colours: studio.MANE_STOPS (pink -> lilac -> sky).
 """
@@ -238,7 +240,7 @@ def hair_underlayer(skull, root):
     return obj
 
 
-def build_mane_locks(skull, root, mat, make_lock=None, under=hair_underlayer, extra=()):
+def build_mane_locks(skull, root, mat, make_lock=None, under=hair_underlayer, extra=(), sides=MANE_LEFT + MANE_RIGHT):
     """A3 layout: scalp cap, underlayer (`under`, None = none), then every lock (plus `extra`)
     built by make_lock (default hair_lock; A4 passes split_lock, which returns several strands
     per lock)."""
@@ -252,7 +254,7 @@ def build_mane_locks(skull, root, mat, make_lock=None, under=hair_underlayer, ex
         side.z = 0.0
         return side.normalized() * 0.7 + TIP_BACK
 
-    locks = MANE_LEFT + MANE_RIGHT + (MANE_NAPE,) + FRINGE + tuple(extra)
+    locks = tuple(sides) + (MANE_NAPE,) + FRINGE + tuple(extra)
     objs = [scalp_cap(skull, root, (66, 90, 115, 140, 165, 185), 0.0, 0.17)]
     if under:
         objs.append(under(skull, root))
@@ -400,10 +402,29 @@ def mirrored(lock):
 SIDE_LOCK = Lock(((0, 78, -0.03), (46, 72, 0.06), (70, 54, 0.08), (80, 26, 0.08), (84, -4, 0.07), (82, -32, 0.05)), 0.21, curl=(0.1, 0.32, None), twist=-0.25, t=(0.05, 0.7))
 
 
-def build_mane_filled(skull, root, mat):
-    inner = [inner_lock(lk) for lk in MANE_LEFT + MANE_RIGHT]
+def build_mane_filled(skull, root, mat, sides=MANE_LEFT + MANE_RIGHT):
+    inner = [inner_lock(lk) for lk in sides]
     added = [f(lk) for lk in SLIT_LOCKS + (SIDE_LOCK,) for f in (lambda x: x, mirrored)]
-    build_mane_locks(skull, root, mat, split_lock, under=None, extra=inner + added)
+    build_mane_locks(skull, root, mat, split_lock, under=None, extra=inner + added, sides=sides)
+
+
+# ============================================================================= A7: settled layers
+# A6 adopted (vote 2026-10-22), then the user drew the lock above SIDE_LOCK (green) offset from it
+# (yellow): it stood further off the skull, with a dark crease between them. Moving that lock
+# alone opened a new dark gap behind it (it01-it02), so the side locks move together, front ones
+# most: (degrees brought forward, lift factor) for MANE_LEFT/RIGHT[0..3] (it03-it04; it04 kept).
+CASCADE = ((10, 0.75), (8, 0.8), (6, 0.85), (4, 0.9))
+
+
+def settled(lock, az_shift, lift_k):
+    """A side lock brought forward (az) and lowered (lift), so the layers sit on SIDE_LOCK."""
+    s = lambda az: 1 if az >= 0 else -1  # noqa: E731
+    return replace(lock, ctrl=(lock.ctrl[0],) + tuple((az - s(az) * az_shift, el, lift * lift_k) for az, el, lift in lock.ctrl[1:]))
+
+
+def build_mane_settled(skull, root, mat):
+    sides = tuple(settled(lk, *CASCADE[i]) for side in (MANE_LEFT, MANE_RIGHT) for i, lk in enumerate(side))
+    build_mane_filled(skull, root, mat, sides)
 
 
 STYLES = {
@@ -412,4 +433,5 @@ STYLES = {
     "strands": (build_mane_strands, build_tail_strands),
     "layered": (build_mane_layered, build_tail_strands),
     "filled": (build_mane_filled, build_tail_strands),
+    "settled": (build_mane_settled, build_tail_strands),
 }
