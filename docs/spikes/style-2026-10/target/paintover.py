@@ -18,7 +18,7 @@ every lock starts from, ("silhouette", points) the dashed outline of the big for
 import math
 import sys
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 SS = 2  # supersampling
 PAL = [(255, 182, 222), (214, 182, 255), (176, 206, 255)]  # pink -> lilac -> sky (as studio.MANE_STOPS)
@@ -236,6 +236,32 @@ def draw_marks(d, marks, font):
                 d.line([c[i], c[i + 1]], fill=RED + (255,), width=3 * SS)
 
 
+def projected_layer(sec, size, outside):
+    """A section whose spine comes from a 3D lock projected by the camera (project_mane.py):
+    drawn on its own layer, then kept only where the lock is seen — along runs of points visible
+    from the camera, or outside the character's silhouette (where nothing can hide it)."""
+    layer = Image.new("RGBA", size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    for pts, w, curl, t, fork in section_locks(sec):
+        draw_fine_lock(d, pts, w, curl, t, fork)
+    mask = Image.new("L", size, 0)
+    dm = ImageDraw.Draw(mask)
+    reach = (sec["half"] * 1.25 + 3) * SS  # the bundle's own width: no bleed past a hidden point
+    vp = [((x * SS, y * SS), ok) for (x, y), ok in sec["vis_pts"]]
+    for (a, oa), (b, ob) in zip(vp, vp[1:]):
+        if oa and ob:
+            dm.line([a, b], fill=255, width=int(2 * reach))
+    for i, ((x, y), ok) in enumerate(vp):  # round joints only inside a visible run
+        if ok and 0 < i < len(vp) - 1 and vp[i - 1][1] and vp[i + 1][1]:
+            dm.ellipse((x - reach, y - reach, x + reach, y + reach), fill=255)
+    if sec.get("curl") and vp[-1][1]:
+        (x, y), r = vp[-1][0], (sec["curl"][0] * 2.2 + sec["half"]) * SS
+        dm.ellipse((x - r, y - r, x + r, y + r), fill=255)
+    seen = ImageChops.lighter(mask, outside)
+    layer.putalpha(ImageChops.multiply(layer.getchannel("A"), seen))
+    return layer
+
+
 def draw(base, clumps, marks, out, title):
     size = (1024 * SS, 1024 * SS)
     im = Image.open(base).convert("RGBA").resize(size)
@@ -247,7 +273,12 @@ def draw(base, clumps, marks, out, title):
         if kind == "base":  # ("base", points[, "back"]): "back" = an under-layer behind the character
             pts = [(x * SS, y * SS) for x, y in rest[0]]
             (db if rest[1:] == ["back"] else df).polygon(catmull(pts + pts[:1], 12), fill=BASE_FILL, outline=INK + (255,), width=2 * SS)
+    char = Image.open(base.replace("_gradient", "_alpha")).convert("L").resize(size)
+    outside = Image.eval(char, lambda a: 255 - a)
     for item in clumps:
+        if isinstance(item, dict) and "vis_pts" in item:  # projected 3D lock: per-point visibility
+            front.alpha_composite(projected_layer(item, size, outside))
+            continue
         if isinstance(item, dict):  # a section of fine locks
             for pts, w, curl, t, fork in section_locks(item):
                 draw_fine_lock(db if item.get("back") else df, pts, w, curl, t, fork)
@@ -256,7 +287,12 @@ def draw(base, clumps, marks, out, title):
         draw_clump(db if layer == ["back"] else df, label, cls, pts, w, curl, t, small)
     for item in clumps:  # section labels on top
         if isinstance(item, dict) and item.get("label"):
-            if "spine" in item:
+            if "vis_pts" in item:  # label on a seen point (visible, or outside the silhouette)
+                seen = [p for p, ok in item["vis_pts"] if ok or outside.getpixel((int(p[0] * SS), int(p[1] * SS))) > 128]
+                if not seen:
+                    continue
+                x, y = seen[len(seen) // 2]
+            elif "spine" in item:
                 x, y = resample(item["spine"], 40)[16]
             else:
                 (x1, y1), (x2, y2) = resample(item["edges"][0], 40)[12], resample(item["edges"][1], 40)[12]
@@ -265,8 +301,7 @@ def draw(base, clumps, marks, out, title):
             df.ellipse((x - 19 * SS, y - 19 * SS, x + 19 * SS, y + 19 * SS), fill=(255, 255, 255, 235), outline=INK + (255,), width=2 * SS)
             df.text((x, y), item["label"], fill=INK, font=small, anchor="mm")
     draw_marks(df, marks, font)
-    char = Image.open(base.replace("_gradient", "_alpha")).convert("L").resize(size)
-    back.putalpha(Image.composite(back.getchannel("A"), Image.new("L", size, 0), Image.eval(char, lambda a: 255 - a)))
+    back.putalpha(Image.composite(back.getchannel("A"), Image.new("L", size, 0), outside))
     im = Image.alpha_composite(Image.alpha_composite(im, back), front).convert("RGB")
     ImageDraw.Draw(im).text((24 * SS, 24 * SS), title, fill=INK, font=font)
     im.resize((1024, 1024), Image.LANCZOS).save(out)

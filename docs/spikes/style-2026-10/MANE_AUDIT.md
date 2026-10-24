@@ -149,3 +149,22 @@ other views.
   `normal()` widens its window past coincident points.
 - Counts (same replay command as above): 3/4 40 locks, front 22, side 31, back 33; spacing still
   11-20 px. Not voted.
+
+## Projected 3D locks (2026-10-24, user: « pourquoi tu ne suis pas la forme du crane ? »)
+
+Cause: every map so far was hand-drawn per view in 2D; nothing tied a lock to the skull, and the
+crest map lifted the locks off the head to escape the helmet. Fix, made structural rather than
+promised: `target/project_mane.py` (Blender) defines the locks in 3D — waypoints (az, el, lift)
+joined along great circles, every point snapped onto the **head mesh** by a ray from the cranium
+centre, then a fall past the last waypoint — and projects them with each view's camera into
+`proj_<view>.json`, flagging points hidden by the bald character (scene ray cast).
+`design.py` turns each projected lock into a bundle of fine locks; `paintover.projected_layer`
+keeps a lock only where it is seen (visible run, or outside the silhouette).
+
+- Bug found on the way: the projection first ran at the preview resolution (512 px) against
+  1024 px base images, so every lock landed at half scale; fixed by setting 1024 px like
+  `bald_views.py`, checked by plotting the projected points (visible / hidden) on the four bases.
+- Known limit: in the front view two lock edges are cut straight where they go behind the head
+  (2D mask). A Blender render of the locks would remove it.
+- Replay: `for v in 3q front side back; do "$B" -b --python project_mane.py -- $v; done` then
+  `python paintover.py design.py` (in `target/`).
