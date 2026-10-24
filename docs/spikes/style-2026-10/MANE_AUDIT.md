@@ -84,3 +84,21 @@ cheek. Palette `studio.MANE_STOPS`.
 - Interpenetration of strands with the head and the body: not measured (only seen where visible).
 - Whether a procedural (Python / geometry nodes) build can reach hand-sculpted quality is not
   proven; that is what the redo spike must show, against a target the user validates first.
+
+## Target board (2026-10-24, user: « oui refais la queue aussi, fais la planche cible »)
+
+Page: `target.html` (served from this folder: `python -m http.server 8765 --bind 127.0.0.1`,
+then `http://127.0.0.1:8765/target.html`), with a copy-paste feedback form.
+
+- A paint-over **map**, not a render: tapered 2D ribbons drawn over the unicorn rendered without
+  mane and tail, same framing as A7, four views (3/4, front, side, back).
+- Rules it encodes, one per finding above: a solid darker big form under every clump (6), one
+  origin whorl behind the horn (1), three clump sizes plus only 2 small strands (10), detail as
+  grooves sculpted into each clump instead of loose strands (10), three curls in all (5, 3), soft
+  tips (4, 7), different gestures and lengths (12), tail redone with the same rules (9).
+- Reproduce: `target/bald_views.py` (docstring: Blender commands + alpha extraction), then
+  `cd target && python paintover.py design.py` → `target_<view>.png`. The clumps are placed by
+  hand in `design.py` from the skull landmarks `bald_views.py` prints.
+- Checked: `bald_views.py` re-renders the committed 3/4 base with a max pixel difference of 1
+  (render noise); the cleaned `paintover.py` gives a max difference of 0 against the first draft.
+- Not voted. The build only starts once the user validates the target (or draws on it).

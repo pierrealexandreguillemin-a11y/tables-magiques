@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Licorne : cible crinière</title>
+    <style>
+      :root {
+        --bg: #faf7fc;
+        --ink: #2a2233;
+        --muted: #6d6478;
+        --line: #e8e0ef;
+        --pick: #8b5cf6;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 16px 64px;
+      }
+      h1 {
+        font-size: 26px;
+        margin: 0 0 4px;
+      }
+      h2 {
+        font-size: 19px;
+        margin: 36px 0 8px;
+      }
+      p,
+      li {
+        color: var(--muted);
+        max-width: 80ch;
+      }
+      b {
+        color: var(--ink);
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px 16px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      figure {
+        margin: 0;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      figure img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      figcaption {
+        padding: 8px 12px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      td,
+      th {
+        border-bottom: 1px solid var(--line);
+        padding: 8px 6px;
+        text-align: left;
+        vertical-align: top;
+      }
+      td input[type='text'] {
+        width: 100%;
+        font: inherit;
+        padding: 4px 6px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+      }
+      textarea {
+        width: 100%;
+        min-height: 180px;
+        font:
+          14px/1.4 ui-monospace,
+          monospace;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 8px;
+      }
+      button {
+        font: inherit;
+        background: var(--pick);
+        color: #fff;
+        border: 0;
+        border-radius: 8px;
+        padding: 8px 16px;
+        cursor: pointer;
+      }
+      @media (max-width: 700px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Crinière et queue : planche cible</h1>
+      <p>
+        Une <b>carte</b> de la future coiffure dessinée sur la licorne sans
+        crinière, pas un rendu. Elle fixe la silhouette, les mèches et leur
+        ordre avant toute ligne de code. Les couleurs et les traits sont
+        indicatifs ; ce qui compte : formes, tailles, directions, emplacements.
+        Audit qui l'a motivée : <code>MANE_AUDIT.md</code>.
+      </p>
+
+      <h2>Les règles de cette cible</h2>
+      <div class="card">
+        <ol>
+          <li>
+            <b>Une grande forme pleine</b> (violet foncé) sous toutes les mèches
+            : plus jamais de crâne ni de fente sombre entre deux mèches (le
+            défaut corrigé 3 fois de A5 à A7).
+          </li>
+          <li>
+            <b>Une seule origine</b> (étoile <b>O</b>, un épi derrière la corne)
+            : toutes les mèches en partent. Fini le bourrelet rose autour de la
+            corne.
+          </li>
+          <li>
+            <b>Trois tailles de mèches</b>, pas une : grosse (L2, T1), moyenne
+            (L1, N1, F1, R1), petite (L3, F2, T3), plus seulement
+            <b>2 brins fins</b> (« s ») placés exprès.
+          </li>
+          <li>
+            <b>Le détail = des sillons sculptés dans chaque mèche</b> (les
+            traits fins à l'intérieur), façon figurine vinyle. Plus de brins
+            séparés en spaghetti (A4 à A7).
+          </li>
+          <li>
+            <b>Trois boucles en tout</b> : bout de la frange F1, bout de L2,
+            bout de la queue T1. Les autres pointes finissent <b>arrondies</b>,
+            pas en aiguille.
+          </li>
+          <li>
+            <b>Asymétrie voulue</b> : la frange part vers l'œil droit, le volume
+            est du côté gauche du perso (côté caméra en 3/4), le côté droit est
+            plus mince.
+          </li>
+          <li>
+            <b>Gestes différents</b> : L1 rentre vers la joue, L2 ressort et
+            s'enroule, L3 part en arrière ; longueurs différentes (L1 courte, L2
+            la plus longue).
+          </li>
+          <li>
+            <b>Queue refaite avec les mêmes règles</b> : 3 mèches de tailles
+            différentes, une grande arche, une seule boucle.
+          </li>
+        </ol>
+      </div>
+
+      <h2>Les 4 vues</h2>
+      <div class="grid">
+        <figure>
+          <a href="target/target_3q.png"
+            ><img src="target/target_3q.png" alt="Cible, vue 3/4"
+          /></a>
+          <figcaption>3/4 — la vue de l'appli</figcaption>
+        </figure>
+        <figure>
+          <a href="target/target_front.png"
+            ><img src="target/target_front.png" alt="Cible, face"
+          /></a>
+          <figcaption>Face</figcaption>
+        </figure>
+        <figure>
+          <a href="target/target_side.png"
+            ><img src="target/target_side.png" alt="Cible, profil"
+          /></a>
+          <figcaption>Profil, côté gauche du perso</figcaption>
+        </figure>
+        <figure>
+          <a href="target/target_back.png"
+            ><img src="target/target_back.png" alt="Cible, dos"
+          /></a>
+          <figcaption>Dos</figcaption>
+        </figure>
+      </div>
+
+      <h2>Avant (A7) / cible, en 3/4</h2>
+      <div class="grid">
+        <figure>
+          <img src="renders/A7_unicorn_gradient.png" alt="A7 actuelle" />
+          <figcaption>
+            A7 actuelle (audit : <code>audit/A7_mane_audit_board.png</code>)
+          </figcaption>
+        </figure>
+        <figure>
+          <img src="target/target_3q.png" alt="Cible 3/4" />
+          <figcaption>Cible</figcaption>
+        </figure>
+      </div>
+
+      <h2>Gardé de tes votes (pas remis en jeu)</h2>
+      <p>
+        Licorne chibi, la nôtre. Mèches plates et effilées, pas des tubes («
+        frites de piscine », A2). Pas une seule grosse mèche par côté («
+        dreadlocks », A3). Pas de bande entre crâne et crinière de face (A5).
+        Pas d'espace entre tête et crinière (A6). La mèche sur le côté du crâne,
+        de derrière l'oreille jusqu'à la joue, que tu as dessinée : c'est
+        <b>L1</b>. Palette rose → lilas → ciel.
+      </p>
+
+      <h2>Ton avis</h2>
+      <p>
+        Pour chaque élément : OK, ou ce qu'il faut changer. Tu peux aussi
+        dessiner sur une des images comme pour A6 : c'est ce qui a le mieux
+        marché.
+      </p>
+      <div class="card">
+        <table id="items">
+          <tr>
+            <th>Élément</th>
+            <th>OK ?</th>
+            <th>À changer</th>
+          </tr>
+        </table>
+      </div>
+      <h2>Texte à me copier</h2>
+      <textarea id="out" readonly></textarea>
+      <p>
+        <button id="copy">Copier mon avis</button> <span id="copied"></span>
+      </p>
+    </main>
+    <script>
+      const ITEMS = [
+        ['silhouette', 'Silhouette générale (pointillés rouges)'],
+        ['origine', 'Origine O (épi derrière la corne)'],
+        ['frange', 'Frange F1 / F2 (vers l’œil droit)'],
+        ['gauche', 'Côté gauche L1, L2, L3'],
+        ['droit', 'Côté droit R1, R2 (plus mince)'],
+        ['nuque', 'Nuque N1 à N3 (vue de dos)'],
+        ['boucles', '3 boucles seulement (F1, L2, T1)'],
+        ['sillons', 'Détail en sillons sculptés'],
+        ['queue', 'Queue T1 à T3'],
+        ['longueur', 'Longueur (jusque sous le menton)'],
+      ];
+      const table = document.getElementById('items');
+      const out = document.getElementById('out');
+      for (const [key, label] of ITEMS) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${label}</td>
+          <td><label><input type="radio" name="${key}" value="OK"> OK</label>
+              <label><input type="radio" name="${key}" value="NON"> Non</label></td>
+          <td><input type="text" data-key="${key}" placeholder="ce que tu veux à la place"></td>`;
+        table.appendChild(tr);
+      }
+      function render() {
+        const lines = ITEMS.map(([key, label]) => {
+          const pick = document.querySelector(`input[name="${key}"]:checked`);
+          const note = document
+            .querySelector(`input[data-key="${key}"]`)
+            .value.trim();
+          return `${label} : ${pick ? pick.value : '-'}${note ? ' — ' + note : ''}`;
+        });
+        out.value = 'Cible crinière (target.html)\n' + lines.join('\n');
+      }
+      document.addEventListener('input', render);
+      document.addEventListener('change', render);
+      render();
+      document.getElementById('copy').addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(out.value);
+        } catch {
+          out.select();
+          document.execCommand('copy');
+        }
+        document.getElementById('copied').textContent = 'copié';
+      });
+    </script>
+  </body>
+</html>
