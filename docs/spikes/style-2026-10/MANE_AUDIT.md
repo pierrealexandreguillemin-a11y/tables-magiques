@@ -124,3 +124,28 @@ then `http://127.0.0.1:8765/target.html`), with a copy-paste feedback form.
   third tip forked, the curl on the widest lock. Counts (replay: `cd target && python -c "import
 design; [print(v[4], sum(s['n'] for s in v[1] if isinstance(s, dict))) for v in design.VIEWS]"`):
   3/4 37 locks, front 26, side 30, back 41; lock spacing 11-20 px for a head ~495 px wide in 3/4.
+
+## Verdict on the fine target (2026-10-24)
+
+User (verbatim): « c'est refusé: on dirait un casque de cheveux ! »
+
+Cause (mine, in the map's design, not its rendering): it was drawn as a **human hairstyle** — a
+cap of locks over the whole cranium on a solid base glued to the skull, both sides framing the
+face. A unicorn / pony mane grows from a **crest** (midline, forelock to nape and down the neck),
+falls to one side and behind with air between it and the head, and leaves most of the skull bare
+(Meshy « Cute little cartoon unicorn »: near side of the head bare, forelock swoop, mass behind).
+Next: the 3/4 view redrawn on that principle first, compared with the refused one, before the
+other views.
+
+## Crest map (2026-10-24, answer to « on dirait un casque de cheveux ! »)
+
+- `target/design.py` rewritten: roots on the midline only (whorl O behind the horn → nape), the
+  forelock F sweeps the forehead, the main mass M falls behind the head and down the neck (drawn
+  behind the character, so only what leaves the head's outline shows), L1 (the user's lock) and
+  a short L2 over the near side, a small far-side tuft R; back view: six nape bundles N1-N6 on
+  the crest. All "base" masses removed (they were the helmet, and read as holes).
+- Paint-over tool fixes found on the way: lock outlines no longer ink the root and tip caps; a
+  duplicated tip point (zero-length segment → bad normal → a bar across the tip) is dropped, and
+  `normal()` widens its window past coincident points.
+- Counts (same replay command as above): 3/4 40 locks, front 22, side 31, back 33; spacing still
+  11-20 px. Not voted.

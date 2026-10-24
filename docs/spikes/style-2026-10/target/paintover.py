@@ -70,9 +70,13 @@ def width(t, w):
 
 
 def normal(c, i):
-    a, b = c[max(i - 1, 0)], c[min(i + 1, len(c) - 1)]
-    L = math.hypot(b[0] - a[0], b[1] - a[1]) or 1
-    return -(b[1] - a[1]) / L, (b[0] - a[0]) / L
+    """Unit normal at c[i]; widens the neighbour window past coincident points."""
+    for r in range(1, len(c)):
+        a, b = c[max(i - r, 0)], c[min(i + r, len(c) - 1)]
+        L = math.hypot(b[0] - a[0], b[1] - a[1])
+        if L > 1e-6:
+            return -(b[1] - a[1]) / L, (b[0] - a[0]) / L
+    return 0.0, 0.0
 
 
 def fine_width(t, w):
@@ -170,9 +174,18 @@ def section_locks(sec):
         w = min(spacing * sec.get("overlap", 1.25), sec.get("max_w", 26)) * (0.65 + 0.7 * frac(k * 0.382 + sec.get("seed", 0.0)))
         widest = max(range(n), key=lambda j: frac(j * 0.382 + sec.get("seed", 0.0)))
         curl = sec["curl"] if "curl" in sec and k == widest else None
-        locks.append((pts[::3] + [pts[-1]], w, curl, sec["t"][0] + (sec["t"][1] - sec["t"][0]) * u, k % 3 == 1 and not curl))
+        keep = pts[::3] if (len(pts) - 1) % 3 == 0 else pts[::3] + [pts[-1]]  # no duplicated tip point
+        locks.append((keep, w, curl, sec["t"][0] + (sec["t"][1] - sec["t"][0]) * u, k % 3 == 1 and not curl))
     order = sorted(range(n), key=lambda k: (k % 2, k)) if sec.get("interleave", True) else range(n)
     return [locks[k] for k in order]
+
+
+def inked(d, poly, fill, edge):
+    """Fill a ribbon outline and ink only its two long sides (no line across root or tip)."""
+    half = len(poly) // 2
+    d.polygon(poly, fill=fill)
+    d.line(poly[:half], fill=edge, width=SS)
+    d.line(poly[half:], fill=edge, width=SS)
 
 
 FINE_GROOVES = ((-0.4, 0.06, 0.62), (0.0, 0.03, 0.8), (0.42, 0.1, 0.55))
@@ -190,16 +203,16 @@ def draw_fine_lock(d, pts, w, curl, t, fork):
     n = len(c) - 1
     if fork:
         cut = int(n * 0.65)
-        d.polygon(ribbon(c[: cut + 1], W, fine_width, 0.0, 0.4), fill=fill, outline=edge, width=SS)
+        inked(d, ribbon(c[: cut + 1], W, fine_width, 0.0, 0.6), fill, edge)
         for s in (-1, 1):
             br = []
             for i in range(cut, n + 1):
                 nx, ny = normal(c, i)
                 f = (i - cut) / (n - cut)
-                br.append((c[i][0] + nx * s * W * (0.3 + 0.6 * f), c[i][1] + ny * s * W * (0.3 + 0.6 * f)))
-            d.polygon(ribbon(br, W * 0.7, fine_width, 0.3, 1.0), fill=fill, outline=edge, width=SS)
+                br.append((c[i][0] + nx * s * W * (0.25 + 0.6 * f), c[i][1] + ny * s * W * (0.25 + 0.6 * f)))
+            inked(d, ribbon(br, W * 0.6, fine_width, 0.45, 1.0), fill, edge)
     else:
-        d.polygon(ribbon(c, W, fine_width), fill=fill, outline=edge, width=SS)
+        inked(d, ribbon(c, W, fine_width), fill, edge)
     for off, start, end in FINE_GROOVES:
         g = []
         for i in range(int(n * start), int(n * end)):
@@ -231,9 +244,9 @@ def draw(base, clumps, marks, out, title):
     font = ImageFont.truetype("arialbd.ttf", 26 * SS)
     small = ImageFont.truetype("arialbd.ttf", 20 * SS)
     for kind, *rest in marks:
-        if kind == "base":
+        if kind == "base":  # ("base", points[, "back"]): "back" = an under-layer behind the character
             pts = [(x * SS, y * SS) for x, y in rest[0]]
-            df.polygon(catmull(pts + pts[:1], 12), fill=BASE_FILL, outline=INK + (255,), width=2 * SS)
+            (db if rest[1:] == ["back"] else df).polygon(catmull(pts + pts[:1], 12), fill=BASE_FILL, outline=INK + (255,), width=2 * SS)
     for item in clumps:
         if isinstance(item, dict):  # a section of fine locks
             for pts, w, curl, t, fork in section_locks(item):
