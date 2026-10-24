@@ -394,7 +394,7 @@ def composite_on_gradient(src_png, dst_png, stops=BG_STOPS):
 # One camera framing for both candidates so the forced choice compares like with like.
 CAMERA = {"azimuth_deg": 34.0, "elevation_deg": -3.0, "fill": 0.84, "aim_z": 0.5}
 # Extra angles to judge proportions (same framing rule, camera swung around the character).
-VIEWS = {"3q": CAMERA, "front": {**CAMERA, "azimuth_deg": 0.0}, "side": {**CAMERA, "azimuth_deg": 90.0}}
+VIEWS = {"3q": CAMERA, "front": {**CAMERA, "azimuth_deg": 0.0}, "side": {**CAMERA, "azimuth_deg": 90.0}, "back": {**CAMERA, "azimuth_deg": 160.0}}
 
 
 def begin(preview):

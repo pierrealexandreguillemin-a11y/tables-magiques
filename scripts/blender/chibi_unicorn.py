@@ -1,13 +1,13 @@
 """Candidate A - procedural chibi unicorn (our own model, no third-party asset).
 
 Usage:
-  blender -b --python scripts/blender/chibi_unicorn.py -- <out_dir> [--preview] [--tag NAME] [--view 3q|front|side] [--mane locks|curls|strands|layered|filled|settled]
+  blender -b --python scripts/blender/chibi_unicorn.py -- <out_dir> [--preview] [--tag NAME] [--view 3q|front|side] [--mane locks|curls|strands|layered|filled|settled|crest]
 
 --mane: locks = A3 hair locks (default), curls = A2 spiral curls, strands = A4 split strands,
 layered = A5 strands over an inner layer of strands
 filled = A6: A5 plus slit locks and a side lock in front of the mane
 settled = A7: A6 with the side locks settled onto the side lock
-(see unicorn_mane.py).
+(see unicorn_mane.py); crest = A8 (mane_crest.py)
 
 Writes <out_dir>/A_unicorn_transparent.png, A_unicorn_gradient.png and A_unicorn.glb
 (with --tag, files are prefixed with the tag instead, for iteration snapshots; the GLB is only
@@ -26,6 +26,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import face_parts  # noqa: E402
 import shapes  # noqa: E402
 import studio  # noqa: E402
+import mane_crest  # noqa: E402
 import unicorn_mane  # noqa: E402
 from face_parts import smoothstep, sph  # noqa: E402
 from shapes import ball, capsule, ellipsoid, frame_from_normal, metaball_mesh, paint, surface_dir, uv_ellipsoid  # noqa: E402
@@ -190,7 +191,8 @@ def build_unicorn(mane_style):
     marks["mouth"] = build_smile(head, root, mats)
     build_ears(head, root, mats)
     build_horn(head, root, mats)
-    build_mane, build_tail = unicorn_mane.STYLES[mane_style]
+    styles = {**unicorn_mane.STYLES, "crest": (mane_crest.build_mane, mane_crest.build_tail)}
+    build_mane, build_tail = styles[mane_style]
     build_mane(unicorn_mane.Skull(HEAD_C, HEAD_R, head), root, mats["mane"])
     build_tail(root, mats["mane"])
     parts = [o for o in root.children if o.type == "MESH"]
