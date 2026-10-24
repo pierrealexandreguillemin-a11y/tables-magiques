@@ -73,6 +73,10 @@ Tout le reste utilise CSS — voir `styles/animations.css`.
 
 ## Regles
 
+- Tout livrable visuel (page, ou rendu de la mascotte : criniere, queue) passe par le skill
+  `anti-slop-frontend` avant la premiere ligne ou le premier rendu ; juges aveugles
+  `design-judge` (pages) / `hair-judge` (cheveux, harnais `docs/spikes/style-2026-10/harness/`) ;
+  verdict = choix force binaire de l'user
 - Ne jamais degrader le rendu visuel pour la perf — optimiser le HOW, pas le WHAT
 - Tout nouveau composant avec animation doit supporter `prefers-reduced-motion`
 - Les composants couteux (45+ elements, SVG complexes) doivent etre wrapes dans `memo()`
