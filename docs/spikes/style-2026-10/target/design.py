@@ -1,6 +1,6 @@
 """Target design of the mane and tail (2026-10-24), four views, for paintover.py.
 
-A paint-over MAP, not a render: tapered 2D ribbons placed by hand over the bald renders made by
+A paint-over MAP, not a render: clumps (gesture lines) placed by hand over the bald renders made by
 bald_views.py (same framing as A7), using the skull landmarks that script prints.
 Labels: F forelock, L character's left side (camera side in 3/4), R character's right side,
 N nape, T tail, s small strand. 'back' = drawn behind the character. "base" = the solid big form
@@ -17,6 +17,27 @@ def out(view):
     return os.path.join(HERE, f"target_{view}.png")
 
 
+def bundle(label, spine, half, t, curl=None, back=False, seed=0.0):
+    """One readable clump (gesture = spine, half-width = half) drawn as 3-6 fine locks of varied
+    widths converging to the tip (user, 2026-10-24: « attention à la finesse de la crinière »)."""
+    n = max(3, min(6, round(half / 9)))
+    sec = {"label": label, "spine": spine, "half": half, "n": n, "t": (t - 0.07, t + 0.07), "min_len": 0.78, "seed": seed, "back": back}
+    if curl:
+        sec["curl"] = curl
+    return sec
+
+
+def fine(clumps):
+    """Medium clumps ('M') -> bundles of fine locks; small strands ('S') kept as they are."""
+    res = []
+    for k, (label, cls, pts, w, curl, t, *layer) in enumerate(clumps):
+        if cls == "M":
+            res.append(bundle(label, pts, w, t, curl, layer == ["back"], seed=(k * 0.29) % 1))
+        else:
+            res.append((label, cls, pts, w * 0.6, curl, t, *layer))
+    return res
+
+
 Q = [
     ("T3", "M", [(650, 760), (690, 800), (706, 860), (694, 905)], 16, None, 0.85, "back"),
     ("T2", "M", [(648, 750), (716, 760), (764, 810), (770, 880)], 28, None, 0.6, "back"),
@@ -27,12 +48,13 @@ Q = [
     ("L2", "M", [(432, 210), (530, 222), (615, 280), (652, 370), (650, 470), (628, 560), (640, 640)], 52, (22, 0.85, -1), 0.4),
     ("L1", "M", [(420, 210), (485, 232), (548, 290), (585, 370), (588, 450), (566, 520), (538, 560)], 38, None, 0.2),
     ("s", "S", [(712, 600), (742, 640), (772, 642)], 7, None, 0.9),
+    ("", "S", [(760, 470), (792, 500), (800, 545)], 7, None, 0.7),
     ("F2", "M", [(408, 214), (372, 250), (330, 272), (296, 280)], 20, None, 0.12),
     ("F1", "M", [(420, 210), (395, 245), (350, 276), (295, 290), (245, 288)], 34, (18, 0.9, 1), 0.05),
     ("s", "S", [(418, 208), (404, 174), (414, 148), (436, 140)], 7, None, 0.05),
 ]
 Q_MARKS = [
-    ("base", [(150, 620), (148, 440), (180, 315), (255, 232), (360, 192), (470, 180), (600, 205), (715, 290), (768, 425), (772, 560), (752, 680), (700, 680), (640, 660), (610, 600), (600, 520), (595, 430), (570, 340), (520, 270), (450, 235), (380, 235), (300, 250), (240, 290), (200, 350), (178, 440), (175, 540)]),
+    ("base", [(150, 600), (148, 440), (180, 315), (255, 232), (360, 192), (470, 180), (600, 205), (715, 290), (765, 425), (765, 540), (740, 600), (690, 610), (640, 590), (608, 550), (600, 520), (595, 430), (570, 340), (520, 270), (450, 235), (380, 235), (300, 250), (240, 290), (200, 350), (178, 440), (175, 540)]),
     ("origin", 420, 210, "O"),
     ("silhouette", [(140, 630), (138, 440), (170, 310), (250, 225), (360, 182), (472, 168), (605, 198), (722, 285), (778, 420), (782, 560), (760, 690)]),
 ]
@@ -48,7 +70,7 @@ FRONT = [
     ("s", "S", [(535, 210), (528, 176), (542, 150), (566, 144)], 7, None, 0.05),
 ]
 FRONT_MARKS = [
-    ("base", [(235, 600), (232, 450), (258, 330), (335, 240), (445, 200), (560, 192), (688, 225), (782, 305), (822, 430), (822, 560), (800, 640), (760, 640), (745, 560), (745, 470), (725, 380), (680, 300), (610, 255), (520, 240), (430, 250), (355, 280), (300, 340), (275, 430), (268, 520), (262, 600)]),
+    ("base", [(240, 555), (232, 450), (258, 330), (335, 240), (445, 200), (560, 192), (688, 225), (782, 305), (815, 430), (812, 530), (790, 570), (758, 560), (745, 500), (740, 440), (725, 380), (680, 300), (610, 255), (520, 240), (430, 250), (355, 280), (300, 340), (275, 430), (270, 520), (262, 560)]),
     ("origin", 535, 212, "O"),
     ("silhouette", [(225, 600), (222, 450), (250, 320), (330, 230), (440, 190), (560, 182), (690, 215), (790, 300), (835, 430), (835, 560), (810, 650)]),
 ]
@@ -65,7 +87,7 @@ SIDE = [
     ("s", "S", [(335, 232), (322, 198), (334, 172), (358, 166)], 7, None, 0.05),
 ]
 SIDE_MARKS = [
-    ("base", [(195, 330), (235, 258), (330, 215), (450, 222), (555, 272), (625, 380), (640, 520), (622, 650), (560, 662), (450, 662), (400, 640), (340, 600), (300, 560), (318, 480), (335, 400), (340, 320), (300, 290), (240, 300)]),
+    ("base", [(195, 330), (235, 258), (330, 215), (450, 222), (555, 272), (620, 380), (632, 500), (618, 570), (570, 600), (470, 600), (400, 585), (345, 555), (310, 525), (320, 470), (335, 400), (340, 320), (300, 290), (240, 300)]),
     ("origin", 335, 234, "O"),
     ("silhouette", [(175, 335), (228, 252), (330, 205), (452, 212), (562, 268), (632, 380), (648, 520), (628, 655)]),
 ]
@@ -85,14 +107,20 @@ BACK = [
     ("s", "S", [(452, 248), (440, 214), (452, 188), (476, 182)], 7, None, 0.05),
 ]
 BACK_MARKS = [
-    ("base", [(225, 630), (220, 450), (250, 330), (335, 255), (455, 225), (580, 245), (675, 320), (712, 440), (710, 560), (690, 640), (470, 690), (300, 650)]),
+    ("base", [(232, 560), (222, 450), (250, 330), (335, 255), (455, 225), (580, 245), (675, 320), (708, 440), (702, 540), (665, 590), (470, 615), (290, 590)]),
     ("origin", 452, 250, "O"),
     ("silhouette", [(215, 620), (210, 450), (240, 330), (330, 245), (455, 210), (580, 232), (680, 310), (725, 440), (722, 560), (700, 640)]),
 ]
 
+def solid(marks):
+    """The fine version is slimmer than the first draft's dashed silhouette: the base outline is
+    the big form now."""
+    return [m for m in marks if m[0] != "silhouette"]
+
+
 VIEWS = [
-    (B.format("3q"), Q, Q_MARKS, out("3q"), "3/4"),
-    (B.format("front"), FRONT, FRONT_MARKS, out("front"), "Face"),
-    (B.format("side"), SIDE, SIDE_MARKS, out("side"), "Profil (cote gauche du perso)"),
-    (B.format("back"), BACK, BACK_MARKS, out("back"), "Dos"),
+    (B.format("3q"), fine(Q), solid(Q_MARKS), out("3q"), "3/4"),
+    (B.format("front"), fine(FRONT), solid(FRONT_MARKS), out("front"), "Face"),
+    (B.format("side"), fine(SIDE), solid(SIDE_MARKS), out("side"), "Profil (cote gauche du perso)"),
+    (B.format("back"), fine(BACK), solid(BACK_MARKS), out("back"), "Dos"),
 ]

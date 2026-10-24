@@ -102,3 +102,25 @@ then `http://127.0.0.1:8765/target.html`), with a copy-paste feedback form.
 - Checked: `bald_views.py` re-renders the committed 3/4 base with a max pixel difference of 1
   (render noise); the cleaned `paintover.py` gives a max difference of 0 against the first draft.
 - Not voted. The build only starts once the user validates the target (or draws on it).
+
+## Finesse pass (2026-10-24, user: « attention à la finesse de la crinière stp; il faut vraiment s'appliquer », « cherche des exemples ou assets sur le web via liens /wiki », « tu as aussi meshy »)
+
+- **Wiki first:** no hair article; `topics/game-dev/bibliotheques-assets-3d-libres.md` points to
+  Sketchfab, `entities/meshy.md` to the Meshy community (CC0 by its ToS §3.3, download on paid
+  plans only).
+- **Sketchfab** (public search API `api.sketchfab.com/v3/search`, thumbnails looked at): the
+  stylized hair sculpts by rumpelshtiltshin (Hair 45 / 37 / 40, Standard licence, links only)
+  show where finesse comes from: narrow locks in layers, fine incised strand lines, long tapers,
+  forked tips, a few lone strands, darker under-layers.
+- **Meshy** (tag pages are public, search needs an account): `/tags/unicorn` (« plus de 544 »),
+  `/tags/hair` (1776), `/tags/mane` (599). Closest: « Cute little cartoon unicorn » (Meshy-4,
+  CC0, 9 930 faces). **Measured in its viewer's solid mode: the mane is one smooth mass; the fine
+  strands are painted in the texture.** So Meshy gives shape and colour references, not fine
+  geometry; it also suggests fine grooves could come from a bump / normal map on simpler locks.
+- **Two failed drafts on the map (kept as lessons):** all-thin equal locks read as spaghetti
+  (the A4-A7 defect again); wide clumps (first board) read as chunky, not fine.
+- **Kept:** each readable clump of the first board becomes a bundle of 3-6 fine locks of varied
+  widths (`paintover.section_locks`, `design.fine`), converging and tapering to the tip, every
+  third tip forked, the curl on the widest lock. Counts (replay: `cd target && python -c "import
+design; [print(v[4], sum(s['n'] for s in v[1] if isinstance(s, dict))) for v in design.VIEWS]"`):
+  3/4 37 locks, front 26, side 30, back 41; lock spacing 11-20 px for a head ~495 px wide in 3/4.
