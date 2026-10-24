@@ -68,3 +68,37 @@ third (fourth) time instead of going back to the reference.
 Hair / strand / grooming tooling; a direct render-vs-reference similarity score (no silhouette
 IoU, CLIP or DINO); a tool that shows the user two images blind and records the vote (our own
 `vote.html` already does that).
+
+## Correction (2026-10-24) — the wiki section above was incomplete
+
+User: « Le wiki : tu te trompes de manière coupable; tu aurais trouver les compiles sur des
+skills game-dev et frontend. erreur de ta part ou de conception du wiki ? »
+
+Re-checked by hand: `C:/Dev/wiki/topics/llm-tooling/hub-llm-tooling.md` has a dedicated section
+**« Skills d'agent — design frontend et graphisme »** (9 entries) and a section « Skills d'agent —
+standard, ingénierie, évaluation »; the report above kept only 3 of them. Missed, with relevance:
+
+- `topics/llm-tooling/modern-web-guidance-chrome-skills-evaluees.md` (importance per file):
+  Chrome team's web-platform skills — 130 features, 153 use cases (a11y, CSS, forms,
+  performance, PWA…), offline search, Baseline compatibility. **Directly relevant** to our
+  Next.js / CSS-native refonte; not installed here.
+- `topics/llm-tooling/bibliotheques-prompts-frontend-ouvertes.md` (importance 4): where to find
+  UI references — awesome-design-md (74 brand DESIGN.md, local copy), the ui-ux-pro-max search
+  recipe (« nommer le style avant de chercher »), impeccable. Fits the reference-first rule.
+- `topics/llm-tooling/anthropic-official-skills-catalog.md` (importance 4): 19 official skills,
+  Creative & Design: frontend-design, canvas-design, theme-factory, algorithmic-art; Development:
+  webapp-testing (Playwright).
+- `topics/llm-tooling/hermes-creative-skills-catalog.md`: 20 creative skills (pixel-art…), and a
+  style-consistency loop (anchor image → vision extracts traits → STYLE_LOCK reinjected).
+- `topics/llm-tooling/skills-agents-threejs-paysage-audit.md` and
+  `entities/threejs-awesome-graphics-agent-skills.md`: three.js skill packs (audited clean,
+  licence caveat GPL on one example) — low relevance: no three.js runtime in this app.
+- `entities/img2threejs.md` (game-dev hub, « Assets, données et outils 3D »): photo → three.js
+  factory skill with deterministic gates — pattern for gating a build against a reference photo.
+- `entities/mono-color-skill.md`, `figures-isometriques-interactives-skills.md`: low relevance.
+
+Cause: my error, not the wiki's. The brief I gave the research agent put hair first and capped
+the report at ~700 words; I relayed its partial list as « what the wiki has » without opening
+the hub's design-skills section myself (one read). Secondary wiki gap, observed: the game-dev and
+architecture hubs have **no bridge** to that section (their « Ponts » tables do not list it), so a
+reader entering by game-dev does not see it — a proposal for the wiki, not done here.
