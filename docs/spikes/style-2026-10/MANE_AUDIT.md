@@ -168,3 +168,21 @@ keeps a lock only where it is seen (visible run, or outside the silhouette).
   (2D mask). A Blender render of the locks would remove it.
 - Replay: `for v in 3q front side back; do "$B" -b --python project_mane.py -- $v; done` then
   `python paintover.py design.py` (in `target/`).
+
+## User's reference (2026-10-24)
+
+User, after « on dirait qu'elle est atteinte de calvitie ! » and the inspiration links: « ça c'est
+de cheveux ! » → Meshy « Midnight Ponytail » (chenzheguo7, Meshy 6, CC0):
+https://www.meshy.ai/fr/posts/019ed510-59c0-743c-8571-1bbf7425682d
+
+Looked at in its viewer (2026-10-24): **1 708 086 faces**, triangle topology; in solid mode (no
+texture) every lock is still there — real strand geometry, unlike « Cute little cartoon unicorn »
+(9 930 faces, strands painted). What it has that every A-iteration and map lacked: hundreds of
+strands, a full mass (no skull visible), a ragged silhouette with many fine flyaways, wispy
+tips each with its own direction, a puffed crown with layers lifting off.
+
+Consequence: the sweep-per-lock generator (`unicorn_mane.py`) cannot reach this without falling
+back into « spaghetti ». Proposed (not started, needs the user's go): Blender hair curves (guide
+curves on the crest + interpolated children, clumping, frizz/noise), rendered by Cycles — the
+mascot is pre-rendered, so strand count costs render time only. To verify first: that Blender
+5.2's procedural hair node groups can be driven from a headless script.
