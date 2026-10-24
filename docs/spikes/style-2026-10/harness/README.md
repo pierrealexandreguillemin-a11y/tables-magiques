@@ -16,16 +16,21 @@ variant). Judge: `.claude/agents/hair-judge.md`, rubric `references/hair-rubric.
 
 ## Run on a candidate
 
+Current bars (H-v2, user 2026-10-24: « structure C, mais avec la finesse de crinière de A : un
+essai puis si refus, retour vers ma piste »): one pack per bar.
+
 ```bash
 cd docs/spikes/style-2026-10/harness
-python build_pack.py "<renders>/cand_{view}.png" "<scratchpad>/review/<name>" "../target/bald/bald_{view}_gradient.png"
+python build_pack.py "<renders>/cand_{view}.png" "<scratchpad>/review/<name>_C" --ref structure
+python build_pack.py "<renders>/cand_{view}.png" "<scratchpad>/review/<name>_A" --ref finesse
 # one FRESH hair-judge agent per line of <pack>/brief.md (never a fork), all in parallel;
 # save each JSON answer verbatim in <pack>/judge/ (H-A_<view>_<A|B>.json, H-B.json)
-python verdict.py "<scratchpad>/review/<name>"
+python verdict.py "<scratchpad>/review/<name>_C"; python verdict.py "<scratchpad>/review/<name>_A"
 ```
 
-Candidate renders must use the bald renders' cameras (`target/bald_views.py`, `studio.stage`),
-otherwise the hair framing is wrong (see A7). Then every R/M defect is checked by eye on the
+Chibi bars are whole characters: the candidate is framed whole. With the Meshy bar (H-v1,
+`--ref meshy` plus the bald pattern), candidate renders must use the bald renders' cameras
+(`target/bald_views.py`), otherwise the hair framing is wrong (see A7). Then every R/M defect is checked by eye on the
 zone it names (procedure Q.4) before anything is shown to the user, with `sheet.png`, and the
 user's forced choice: « Laquelle tiendrait dans l'appli livrée ? ».
 
@@ -47,6 +52,22 @@ the reference. Weak points, said plainly: one run each (judge noise unmeasured);
 control yet (no good candidate exists); A7 is caught by the score, not by an R. `verdict.py`
 replays the map4 row: `python verdict.py <scratchpad>/review/map4` → `FILTER FAILED`, exit 1
 (judge files there are transcriptions: `better` and severities only).
+
+## Calibration H-v2 (2026-10-24, chibi bars C structure / A finish, 7 fresh agents)
+
+| Run                             | Expected | Measured                                                                                     |
+| ------------------------------- | -------- | -------------------------------------------------------------------------------------------- |
+| H-A map4 vs C, 3q, both orders  | C wins   | C wins 6/6 in both → structure axes lost: silhouette, volume, flow, hierarchy: **red**       |
+| H-A map4 vs A, 3q, both orders  | A wins   | A wins 6/6 in both → finish axes lost: finish, tips: **red**                                 |
+| H-A A7 vs C, side, both orders  | C wins   | C wins 6/6 in both → 4 structure axes lost: **red**                                          |
+| H-B on C itself (green control) | green    | R 1 (`helmet`, back view: one smooth slab down the back of the head), M 7, m 11 → 0: **red** |
+
+Consequence, measured: with a chibi bar, H-B rates the bar itself at 0 with an R, so H-B is
+**not a gate** under H-v2 (`verdict.py` prints it as a list to check by eye). The gate is
+H-A alone: no axis of the bar lost in both orders. Weak points: one run per row; no H-A green
+control (no good candidate yet); the map fixtures carry lock labels (F1, M1…), so those pairs
+were not fully blind — a judge noticed it. Replay: `python verdict.py <scratchpad>/review/map4_C`
+(and `map4_A`, `A7_C`) → `FILTER FAILED`.
 
 ## Wiki tools — decision per tool (wiki files read 2026-10-24)
 

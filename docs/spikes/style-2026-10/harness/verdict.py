@@ -16,6 +16,11 @@ import os
 import sys
 
 BAR_SCORE = 4.5  # reference judged as a candidate, rubric H-v1, 2026-10-24 (README § Calibration)
+# axes each bar judges (hair-rubric.md H-v2); a pack without "ref" (H-v1, Meshy) counts all axes
+AXES_BY_REF = {
+    "structure": {"silhouette", "volume", "flow", "hierarchy"},
+    "finesse": {"finish", "tips"},
+}
 
 
 def load(path):
@@ -31,8 +36,12 @@ def h_a(pack, key):
             continue
         winners = {}
         for order, path in files.items():
-            cand = str(key[f"{view}_{order}"]["candidate"])
+            entry = key[f"{view}_{order}"]
+            cand = str(entry["candidate"])
+            judged = AXES_BY_REF.get(entry.get("ref"))
             for axis in load(path)["axes"]:
+                if judged is not None and axis["id"] not in judged:
+                    continue
                 better = axis["better"]
                 side = "tie" if better == "tie" else ("cand" if better == cand else "ref")
                 winners.setdefault(axis["id"], []).append(side)
@@ -58,10 +67,15 @@ def main(pack):
     b = h_b(pack)
     n_a = len(glob.glob(os.path.join(pack, "judge", "H-A_*.json")))
     print(f"H-A: {n_a} passes, axes lost in both orders: {lost or 'none'}")
+    # H-v2 chibi bars: the structure bar itself scores 0 with an R on H-B (README § Calibration),
+    # so H-B is a defect list checked by eye there, not a gate
+    h_b_gates = not all(e.get("ref") in AXES_BY_REF for e in key.values())
     if b:
         r, m_major, m_minor, score = b
-        print(f"H-B: R {r}, M {m_major}, m {m_minor} -> score {score:.2f} (bar {BAR_SCORE})")
-    passed = n_a > 0 and not lost and b is not None and b[0] == 0 and b[3] >= BAR_SCORE
+        gate = f"bar {BAR_SCORE}" if h_b_gates else "not a gate with chibi bars: check each R/M by eye"
+        print(f"H-B: R {r}, M {m_major}, m {m_minor} -> score {score:.2f} ({gate})")
+    b_ok = not h_b_gates or (b is not None and b[0] == 0 and b[3] >= BAR_SCORE)
+    passed = n_a > 0 and not lost and b_ok
     print("FILTER PASSED -> user's forced choice" if passed else "FILTER FAILED")
     return 0 if passed else 1
 
