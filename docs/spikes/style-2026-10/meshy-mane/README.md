@@ -97,3 +97,42 @@ Replay fit7 (~4 min, CPU):
 
 Board for the user's verdict: `fit7/board_fit5_vs_fit7.png`. **Not judged yet**: round-2 blind
 pack fit6 vs fit7 was built in the scratchpad (not run); rosette round the horn untouched.
+
+## The method that worked (user: « frange retenue … consigne la méthode, elle semble prometteuse »)
+
+1. **Real material, not invention**: start from a whole sculpted mane that exists (Meshy's own
+   geometry), never rebuild locks from my parameters (S1, A2-A8 all failed that way).
+2. **Diagnose on the untouched source first** (`--raw`): the defect was my cut, not Meshy.
+3. **Smallest change that removes the cause**: limit the cut (face cut below the eye line)
+   instead of adding geometry; move whole parts rigidly (5° shift) instead of deforming them
+   (the elevation remap crumpled the lock).
+4. **One cause per render**: when a variant fails, render each change alone (f7e / f7f) and let
+   the image decide.
+5. **Blind pairwise judges, both orders, before / after at the same camera** (procedure Q lens
+   A); every judge-named defect checked by eye on its zone before acting; defects become the
+   next DELTA.
+6. **The user marks the zone** on the board (green box, 2026-10-25: the rosette round the horn)
+   → next iteration targets that zone only.
+
+## Rosette round the horn: fit8-fit10 (2026-10-25, user's green box on the fit7 board)
+
+Diagnosed with a distance-band paint (`--debug-rosette`): the rolls lie 0.24-0.36 (Meshy units)
+from Meshy's horn base, the same distance as the forelock root, so the cut also uses height above
+the skull (`--rosette-keep`). Each round = 6 fresh blind judges vs fit7, both orders, front/3q/side.
+
+| Round | Candidate (flags on top of fit7)                                                                                                                                                         | Result                                                                                                                                                                                    |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 8     | fit8: `--rosette-r 0.34 --rosette-keep 0.09 --min-island 3000`                                                                                                                           | horn clear, wins silhouette/tips; **loses density + volume both orders, 3 views** (crown near bald)                                                                                       |
+| 9     | fit9: r 0.30                                                                                                                                                                             | front: no axis lost; **3q/side lose density (+ volume side) both orders**                                                                                                                 |
+| 10    | fr0.06: cut only in front of the horn (`--rosette-front 0.06`)                                                                                                                           | same split as fit9                                                                                                                                                                        |
+| 11    | inf0.05: fit9 + `--crown-inflate 0.05`                                                                                                                                                   | same split; judges name a « pale gap / scalp » at the horn base                                                                                                                           |
+| —     | measured: `--depth-mix` (hair near skull darker) left that patch unchanged; `--scalp-tint` changed 0 px; it is the flat **caps** closing the cut (`--cap-mix 0.75` lit them: 15-18 k px) | caps shaded lilac = pasted patches: rejected                                                                                                                                              |
+| 12    | **fit10**: inf0.05 + `--cap-sink` (caps round the horn poked, centres pulled onto the skull)                                                                                             | front: no axis lost both orders (wins silhouette, tips, flow); **3q/side still lose density + volume both orders**. H-B: R clones (8 equal petals round the horn), R helmet (fringe band) |
+
+Verdict of the loop: the trade-off is stable over 5 rounds — every rosette removal frees the horn
+and tapers the crown (silhouette, tips, flow) but loses coverage (density, volume) under the
+strand-anchored H-v1 rubric. Anti-loop stop: forced choice for the user,
+`fit10/board_fit7_vs_fit10.png` (A fit7 / B fit10).
+
+Replay fit10:
+`"$B" -b --python fit_mane.py -- <meshy.glb> <out> --res 1024 --spp 64 --meshy-fringe --face-max-el 0 --ear-r 0.14 --ear-ext 0.1 --fringe-shift 5 --rosette-r 0.30 --rosette-keep 0.09 --min-island 3000 --crown-inflate 0.05 --cap-sink`
