@@ -8,7 +8,7 @@ below), its horn and ears (ours stay) and everything hidden inside our head are 
 the existing mane material and gradient (studio.mane_material, MANE_STOPS) painted by height.
 
   B="/c/Program Files/Blender Foundation/Blender 5.2/blender.exe"
-  "$B" -b --python fit_mane.py -- <mane.glb> <out_dir> [--res 1024] [--spp 64] [--scale 1.45]
+  "$B" -b --python fit_mane.py -- <mane.glb> <out_dir> [--res 1024] [--spp 64] [--scale 1.45] [--fringe-bake <npz>]
 Writes cand_<view>_* and bald_<view>_* for 3q, front, side, back (bald = same camera, mane hidden).
 """
 
@@ -24,7 +24,9 @@ import bpy  # noqa: E402
 from mathutils import Vector  # noqa: E402
 
 import chibi_unicorn as cu  # noqa: E402
+import mane_hair  # noqa: E402
 import studio  # noqa: E402
+import unicorn_mane as um  # noqa: E402
 from face_parts import smoothstep, sph  # noqa: E402
 from shapes import paint  # noqa: E402
 
@@ -38,7 +40,11 @@ MESHY_HORN = (Vector((0.0, -0.48, 0.47)), Vector((0.0, -0.97, 0.52)), 0.1)  # ca
 MESHY_EARS = tuple((Vector((x, -0.35, 0.40)), Vector((x * 1.33, -0.42, 0.70)), 0.1) for x in (-0.27, 0.27))
 # capsules, not spheres: spheres sliced the locks around them (fit2: torn « petals » around the horn)
 HANG = 0.72  # vertical squash of the hanging locks (fit1 fell past the chest)
-INSIDE_MARGIN = 0.01  # keep what lies on our head's surface, drop what is under it
+INSIDE_MARGIN = 0.01
+# Meshy's fringe and the rolls around its horn: refused (fit5 judges, R `helmet` « rolled cap »;
+# user: « la frange … il faut des mèches »). Cut in front of the crown, replaced by FRINGE strands.
+FRINGE_CUT_PHI = 100.0
+FRINGE_CUT_ACROSS = 55.0  # keep what lies on our head's surface, drop what is under it
 
 
 def opt(args, name, default):
@@ -70,11 +76,16 @@ def capsule_distance(p, a, b):
 
 
 def doomed(p, scale, head_bvh):
-    """Meshy skin, face, horn and ears; anything under our head's surface."""
+    """Meshy skin, face, horn and ears, its fringe (replaced by strands); anything under our
+    head's surface."""
     rel = (p - cu.HEAD_C) / scale
     d = rel - Vector((0.0, 0.0, 0.0))
     if d.length > 1e-6 and math.degrees(d.angle(FACE_AXIS)) < FACE_HALF_ANGLE:
         return True
+    if d.length > 1e-6:
+        phi, across = mane_hair.crest_coords(d.normalized())
+        if phi < FRINGE_CUT_PHI and abs(across) < FRINGE_CUT_ACROSS:
+            return True
     q = rel + MESHY_CRANIUM
     if any(capsule_distance(q, a, b) < r for a, b, r in (MESHY_HORN, *MESHY_EARS)):
         return True
@@ -101,6 +112,22 @@ def trim(obj, head, scale):
     bm.free()
 
 
+def fringe_colliders():
+    """Head and body, plus the horn base and the ears, so the strands part around them."""
+    extra = [mane_hair.Collider(cu.HEAD_C + sph(0, 54) * (cu.HEAD_R + 0.14), Vector((0.13, 0.13, 0.13)))]
+    extra += [mane_hair.Collider(cu.HEAD_C + sph(50 * s, 55) * (cu.HEAD_R + 0.12), Vector((0.12, 0.12, 0.14))) for s in (-1, 1)]
+    return mane_hair.colliders(cu.HEAD + cu.TORSO) + extra
+
+
+def fringe(root, path):
+    """Strand fringe, baked on first use (the procedural hair is not reproducible run to run)."""
+    if os.path.exists(path):
+        return mane_hair.load_baked(path, root, mane_hair.FRINGE)
+    obj = mane_hair.build_mane(um.Skull(cu.HEAD_C, cu.HEAD_R, None), root, fringe_colliders(), mane_hair.FRINGE)
+    mane_hair.bake(obj, path)
+    return obj
+
+
 def colour(obj):
     zs = [v.co.z for v in obj.data.vertices]
     top, bottom = max(zs), min(zs)
@@ -116,6 +143,7 @@ def colour(obj):
 def main():
     args = sys.argv[sys.argv.index("--") + 1 :]
     glb, out_dir = os.path.abspath(args[0]), os.path.abspath(args[1])
+    os.makedirs(out_dir, exist_ok=True)
     scale = float(opt(args, "--scale", 1.45))
     scene = studio.begin(True)
     studio.configure_render(scene, int(opt(args, "--res", 1024)), int(opt(args, "--spp", 64)))
@@ -128,6 +156,7 @@ def main():
     bpy.context.view_layer.update()
     trim(mane, head, scale)
     colour(mane)
+    hair = [mane, fringe(root, os.path.abspath(opt(args, "--fringe-bake", os.path.join(out_dir, "fringe.npz"))))]
     bpy.context.view_layer.update()
     for k, view in enumerate(VIEWS):
         if k == 0:
@@ -136,7 +165,8 @@ def main():
             studio.setup_camera(scene, parts, **studio.VIEWS[view])
         bpy.context.view_layer.update()
         for tag, hidden in (("cand", False), ("bald", True)):
-            mane.hide_render = hidden
+            for o in hair:
+                o.hide_render = hidden
             studio.finish(scene, out_dir, f"{tag}_{view}")
     print("DONE")
 

@@ -22,12 +22,11 @@ from mathutils import Vector
 
 import shapes
 import studio
-from face_parts import smoothstep, sph
+from face_parts import smoothstep
 
 ASSETS = os.path.join(os.path.dirname(bpy.app.binary_path), "5.2", "datafiles", "assets", "nodes", "procedural_hair_node_assets.blend")
 GROUPS = ("Attach Hair Curves to Surface", "Interpolate Hair Curves", "Clump Hair Curves", "Hair Curves Noise", "Frizz Hair Curves", "Set Hair Curve Profile")
 GUIDE_POINTS = 24
-STEP = 0.045  # guide segment length (scene units; the cranium radius is 0.62)
 GRAVITY = Vector((0.0, 0.0, -1.0))
 MASK_ATTR = "mane_mask"
 
@@ -62,19 +61,82 @@ class Layer:
     back: float
 
 
+@dataclass(frozen=True)
+class Groom:
+    """A hair piece: guide layers, where roots may grow (mask on the cranium), node-group settings
+    (inputs by their UI names), colour stops root -> tip, share of the side pull that always goes
+    to +X (the camera side)."""
+
+    name: str
+    layers: tuple
+    mask: object
+    interpolate: dict
+    clump: dict
+    noise: dict
+    frizz: dict
+    profile: dict
+    stops: tuple
+    side_bias: float
+
+
+def crest_coords(u):
+    """(phi, across) in degrees of a unit direction from the cranium centre (see crest_point)."""
+    phi = math.degrees(math.atan2(u.z, -u.y)) % 360.0
+    return phi, math.degrees(math.asin(max(-1.0, min(1.0, u.x))))
+
+
+def crest_mask(u):
+    """Band along the midline from behind the horn to below the back of the skull."""
+    phi, across = crest_coords(u)
+    along = smoothstep(56, 64, phi) * (1.0 - smoothstep(190, 202, phi))
+    width = 34.0 + 8.0 * smoothstep(90, 160, phi)
+    return along * (1.0 - smoothstep(width - 6.0, width, abs(across)))
+
+
+def fringe_mask(u):
+    """Front of the crest, behind the horn: the roots of a fringe falling over the forehead."""
+    phi, across = crest_coords(u)
+    along = smoothstep(56, 62, phi) * (1.0 - smoothstep(112, 120, phi))  # past the Meshy cut (phi 100)
+    return along * (1.0 - smoothstep(36.0, 42.0, abs(across)))
+
+
 # Top layer: long, lifts off the crown, falls behind the ear to the neck. Under-layer: short,
 # close to the skull, fills the mass under it. Forelock: falls forward beside the horn.
-TOP = Layer(phis=(70, 88, 106, 124, 142, 160, 178, 196), offsets=(-24, -10, 4, 18, 32), length=1.05, lift=0.9, clearance=0.13, side=0.55, back=0.3)
-UNDER = Layer(phis=(80, 104, 128, 152, 176, 196), offsets=(-28, -12, 4, 20, 36), length=0.75, lift=0.45, clearance=0.06, side=0.5, back=0.4)
-FORELOCK = Layer(phis=(60, 66, 72), offsets=(-4, 8, 20), length=0.42, lift=0.8, clearance=0.06, side=0.8, back=-0.7)
-LAYERS = (UNDER, TOP, FORELOCK)
-
-# Interpolation, clumping, finish (node-group inputs by their UI names)
-INTERPOLATE = {"Density": 20000.0, "Interpolation Guides": 4, "Distance to Guides": 0.5, "Seed": 7}
-CLUMP = {"Factor": 0.88, "Shape": 0.5, "Tip Spread": 0.014, "Clump Offset": 0.0, "Distance Threshold": 0.6, "Seed": 11, "Guide Distance": 0.2}
-NOISE = {"Factor": 0.6, "Distance": 0.025, "Shape": 0.0, "Scale": 1.2, "Seed": 3}  # whole locks wave together (low scale)
-FRIZZ = {"Factor": 0.25, "Distance": 0.012, "Shape": 0.9, "Seed": 5}  # loose strands at the tips only
-PROFILE = {"Radius": 0.0045, "Shape": 0.6}
+MANE = Groom(
+    name="ManeHair",
+    layers=(
+        Layer(phis=(80, 104, 128, 152, 176, 196), offsets=(-28, -12, 4, 20, 36), length=0.75, lift=0.45, clearance=0.06, side=0.5, back=0.4),
+        Layer(phis=(70, 88, 106, 124, 142, 160, 178, 196), offsets=(-24, -10, 4, 18, 32), length=1.05, lift=0.9, clearance=0.13, side=0.55, back=0.3),
+        Layer(phis=(60, 66, 72), offsets=(-4, 8, 20), length=0.42, lift=0.8, clearance=0.06, side=0.8, back=-0.7),
+    ),
+    mask=crest_mask,
+    interpolate={"Density": 20000.0, "Interpolation Guides": 4, "Distance to Guides": 0.5, "Seed": 7},
+    clump={"Factor": 0.88, "Shape": 0.5, "Tip Spread": 0.014, "Clump Offset": 0.0, "Distance Threshold": 0.6, "Seed": 11, "Guide Distance": 0.2},
+    noise={"Factor": 0.6, "Distance": 0.025, "Shape": 0.0, "Scale": 1.2, "Seed": 3},  # whole locks wave together (low scale)
+    frizz={"Factor": 0.25, "Distance": 0.012, "Shape": 0.9, "Seed": 5},  # loose strands at the tips only
+    profile={"Radius": 0.0045, "Shape": 0.6},
+    stops=studio.MANE_STOPS,
+    side_bias=0.35,
+)
+# Fringe (user 2026-10-25: « la frange ... il faut des mèches »; bar = the fine locks of the Meshy
+# example): fine strands from behind the horn, falling forward over the forehead to the brow,
+# parting both ways around the horn; many thin locks; pink -> lilac like the top of the mane.
+FRINGE = Groom(
+    name="FringeHair",
+    layers=(
+        # fr1: 0.4-0.5 long, close clearance -> a fuzzy band like an eyebrow; longer, lifted at the root
+        Layer(phis=(70, 82, 94, 106, 116), offsets=(-40, -26, -12, 0, 12, 26, 40), length=0.68, lift=0.8, clearance=0.06, side=0.55, back=-0.8),
+        Layer(phis=(62, 72, 84), offsets=(-32, -16, 0, 16, 32), length=0.55, lift=0.5, clearance=0.03, side=0.45, back=-0.9),
+    ),
+    mask=fringe_mask,
+    interpolate={"Density": 40000.0, "Interpolation Guides": 3, "Distance to Guides": 0.3, "Seed": 7},
+    clump={"Factor": 1.0, "Shape": 0.8, "Tip Spread": 0.004, "Clump Offset": 0.0, "Distance Threshold": 0.4, "Seed": 11, "Guide Distance": 0.11},
+    noise={"Factor": 0.5, "Distance": 0.012, "Shape": 0.0, "Scale": 2.0, "Seed": 3},
+    frizz={"Factor": 0.3, "Distance": 0.008, "Shape": 0.9, "Seed": 5},
+    profile={"Radius": 0.0038, "Shape": 0.6},
+    stops=((0.0, studio.MANE_STOPS[0][1]), (1.0, studio.MANE_STOPS[1][1])),
+    side_bias=0.0,
+)
 
 
 def colliders(elements):
@@ -96,15 +158,12 @@ def crest_point(centre, radius, phi, offset):
     return centre + (midline * math.cos(o) + across * math.sin(o)).normalized() * radius
 
 
-SIDE_BIAS = 0.35  # share of the side pull that always goes to +X: the mass leans to the camera side
-
-
-def grow_guide(root, normal, layer, colliders, across):
+def grow_guide(root, normal, layer, colliders, across, side_bias):
     """Steps from the root: starts along normal (lift) + backwards, bends under gravity and the
     side pull, every point pushed out of the colliders by the layer's clearance. `across` (-1..1)
     = root position across the crest: strands fall to their own side, biased to +X."""
     back = Vector((0.0, layer.back, 0.0))
-    side = Vector((layer.side * (SIDE_BIAS + (1.0 - SIDE_BIAS) * across), 0.0, 0.0))
+    side = Vector((layer.side * (side_bias + (1.0 - side_bias) * across), 0.0, 0.0))
     d = (normal * layer.lift + back + side * 0.3).normalized()
     pts = [root.copy()]
     n = GUIDE_POINTS - 1
@@ -122,9 +181,9 @@ def grow_guide(root, normal, layer, colliders, across):
     return pts
 
 
-def guides(centre, radius, colliders):
+def guides(centre, radius, colliders, groom):
     out = []
-    for layer in LAYERS:
+    for layer in groom.layers:
         for phi in layer.phis:
             for off in layer.offsets:
                 root = crest_point(centre, radius, phi, off)
@@ -134,15 +193,15 @@ def guides(centre, radius, colliders):
                 # launched along the crest's own normal, not the root's: off the midline the root
                 # normal points sideways and the locks left horizontally (a brim, judge5 front/back)
                 launch = (crest_point(centre, radius, phi, 0) - centre).normalized()
-                out.append(grow_guide(root, launch * lie, layer, colliders, across))
+                out.append(grow_guide(root, launch * lie, layer, colliders, across, groom.side_bias))
     return out
 
 
-def scalp(centre, radius, root):
+def scalp(centre, radius, root, mask_fn, name):
     """UV sphere just inside the cranium: the surface the strands are attached to. Carries the
-    density mask: 1 on the crest band, 0 elsewhere (no strand roots on cheeks or face)."""
-    mesh = bpy.data.meshes.new("Scalp")
-    obj = bpy.data.objects.new("Scalp", mesh)
+    density mask: 1 where roots grow, 0 elsewhere (no strand roots on cheeks or face)."""
+    mesh = bpy.data.meshes.new(name)
+    obj = bpy.data.objects.new(name, mesh)
     bpy.context.collection.objects.link(obj)
     import bmesh
 
@@ -157,17 +216,8 @@ def scalp(centre, radius, root):
     obj.hide_render = True
     mask = mesh.attributes.new(MASK_ATTR, "FLOAT", "POINT")
     for v in mesh.vertices:
-        mask.data[v.index].value = crest_mask((v.co - centre).normalized())
+        mask.data[v.index].value = mask_fn((v.co - centre).normalized())
     return obj
-
-
-def crest_mask(u):
-    """Band along the midline from behind the horn to below the back of the skull."""
-    phi = math.degrees(math.atan2(u.z, -u.y)) % 360.0
-    across = math.degrees(math.asin(max(-1.0, min(1.0, u.x))))
-    along = smoothstep(56, 64, phi) * (1.0 - smoothstep(190, 202, phi))
-    width = 34.0 + 8.0 * smoothstep(90, 160, phi)
-    return along * (1.0 - smoothstep(width - 6.0, width, abs(across)))
 
 
 def load_groups():
@@ -193,17 +243,17 @@ def add_modifier(obj, group, values):
     return mod
 
 
-def hair_material():
-    """Pastel gradient root -> tip (studio.MANE_STOPS, as the sculpted manes), slight per-strand
-    variation so locks separate."""
-    mat = bpy.data.materials.new("ManeHair")
+def hair_material(stops=studio.MANE_STOPS):
+    """Pastel gradient root -> tip (default studio.MANE_STOPS, as the sculpted manes), slight
+    per-strand variation so locks separate."""
+    mat = bpy.data.materials.new("HairStrands")
     nt = mat.node_tree
     nodes, links = nt.nodes, nt.links
     bsdf = nodes["Principled BSDF"]
     info = nodes.new("ShaderNodeHairInfo")
     ramp = nodes.new("ShaderNodeValToRGB")
     els = ramp.color_ramp.elements
-    stops = studio.linear_stops(studio.MANE_STOPS)
+    stops = studio.linear_stops(stops)
     els[0].position, els[0].color = stops[0][0], stops[0][1]
     els[1].position, els[1].color = stops[-1][0], stops[-1][1]
     for pos, col in stops[1:-1]:
@@ -222,26 +272,26 @@ def hair_material():
     return mat
 
 
-def build_mane(skull, root, colliders):
-    surface = scalp(skull.centre, skull.radius, root)
-    data = bpy.data.hair_curves.new("ManeHair")
-    gs = guides(skull.centre, skull.radius, colliders)
+def build_mane(skull, root, colliders, groom=MANE):
+    surface = scalp(skull.centre, skull.radius, root, groom.mask, f"{groom.name}Scalp")
+    data = bpy.data.hair_curves.new(groom.name)
+    gs = guides(skull.centre, skull.radius, colliders, groom)
     data.add_curves([GUIDE_POINTS] * len(gs))
     for i, p in enumerate(q for g in gs for q in g):
         data.points[i].position = p
     data.surface = surface
     data.surface_uv_map = "UVMap"
-    obj = bpy.data.objects.new("ManeHair", data)
+    obj = bpy.data.objects.new(groom.name, data)
     bpy.context.collection.objects.link(obj)
     obj.parent = root
     g = load_groups()
     add_modifier(obj, g["Attach Hair Curves to Surface"], {"Surface Object": surface})
-    add_modifier(obj, g["Interpolate Hair Curves"], {**INTERPOLATE, "Density Mask": MASK_ATTR})
-    add_modifier(obj, g["Clump Hair Curves"], CLUMP)
-    add_modifier(obj, g["Hair Curves Noise"], NOISE)
-    add_modifier(obj, g["Frizz Hair Curves"], FRIZZ)
-    add_modifier(obj, g["Set Hair Curve Profile"], PROFILE)
-    data.materials.append(hair_material())
+    add_modifier(obj, g["Interpolate Hair Curves"], {**groom.interpolate, "Density Mask": MASK_ATTR})
+    add_modifier(obj, g["Clump Hair Curves"], groom.clump)
+    add_modifier(obj, g["Hair Curves Noise"], groom.noise)
+    add_modifier(obj, g["Frizz Hair Curves"], groom.frizz)
+    add_modifier(obj, g["Set Hair Curve Profile"], groom.profile)
+    data.materials.append(hair_material(groom.stops))
     report(obj)
     return obj
 
@@ -270,18 +320,18 @@ def bake(obj, path):
     print(f"HAIR_BAKED {path}: {n_cur} curves, {n_pts} points")
 
 
-def load_baked(path, root):
+def load_baked(path, root, groom=MANE):
     """Static hair object rebuilt from bake(); same material, no modifiers."""
     z = np.load(path)
-    data = bpy.data.hair_curves.new("ManeHair")
+    data = bpy.data.hair_curves.new(groom.name)
     data.add_curves(z["sizes"].tolist())
     data.attributes["position"].data.foreach_set("vector", z["position"].ravel())
     if "radius" not in data.attributes:
         data.attributes.new("radius", "FLOAT", "POINT")
     data.attributes["radius"].data.foreach_set("value", z["radius"])
-    obj = bpy.data.objects.new("ManeHair", data)
+    obj = bpy.data.objects.new(groom.name, data)
     bpy.context.collection.objects.link(obj)
     obj.parent = root
-    data.materials.append(hair_material())
+    data.materials.append(hair_material(groom.stops))
     print(f"HAIR_LOADED {path}: {len(data.curves)} curves")
     return obj

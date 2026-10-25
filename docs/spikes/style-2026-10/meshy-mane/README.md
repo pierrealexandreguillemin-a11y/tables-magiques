@@ -45,3 +45,19 @@ there are transcriptions (`better` and severities only), like the map4 calibrati
   R and most M are real defects regardless.
 - Framing deviation: the hair crop failed (the mane's shadow on body and ground widens the
   difference box), so candidates were framed as the whole character, unlike the calibration.
+
+## Strand fringe on the Meshy mane (fr1, fr2 — 2026-10-25)
+
+User: « la barre meshy des juges implique ce que je veux: des mèches fines comme dans l'exemple
+meshy. la frange: c'est vrai, elle est moche, il faut des mèches. le reste chibi est passable si
+la frange est corrigée. » Meshy's fringe and horn rolls are cut (`FRINGE_CUT_*`); a fringe of
+hair-curve strands grows in their place (`mane_hair.FRINGE`, baked to `fringe.npz`).
+
+- fr1: 0.4-0.5 long, close to the skin → a fuzzy band like an eyebrow (seen by me).
+- fr2: longer, lifted, clumped. Filter (9 fresh judges, H-v1, Meshy bar): **FILTER FAILED**,
+  H-A lost on every view, H-B R 3, M 7, m 6 → 0. The 3 R are one defect seen on front, 3q and
+  side: `helmet`, « short bristles all the same length, cut off flat like a broom … two unrelated
+  hair systems glued together » — checked by eye on the 3q crop, true. Judges also call the fringe
+  « a believable fibre fringe » and fault the sculpted Meshy rest (ribbons, cloned hook tips,
+  locks off the skull), which the user rated passable.
+- Anti-loop (anti-slop-frontend, Step 3): second failure on this level → stop, back to the user.
