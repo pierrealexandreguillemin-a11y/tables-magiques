@@ -23,10 +23,11 @@ Blender 5.2.0 LTS, headless, `--factory-startup`:
 | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | Hair node groups bundled                                                                                    | yes, `5.2/datafiles/assets/nodes/procedural_hair_node_assets.blend` (25 groups) |
 | Attach → Interpolate → Clump → Frizz → Set Profile driven by script, 24 guides on a UV sphere, density 4000 | 18 987 strands, no node warning, Cycles render written                          |
-| Same with a `mane_mask` point attribute as Density Mask (`probe_mask.py` → `probe_mask.png`)                | 5 587 strands, roots confined to the crest band                                 |
+| Same with a `mane_mask` point attribute as Density Mask (`probe_mask.py` → `probe_mask.png`)                | 5 568-5 589 strands over 5 runs, roots confined to the crest band               |
 
 Replay: `"/c/Program Files/Blender Foundation/Blender 5.2/blender.exe" -b --factory-startup --python probe_mask.py`
-→ expected stdout `RESULT curves: 5587 points: 67044` and `RENDERED`.
+→ expected stdout `RESULT curves: ~5 580` (measured 5 568-5 589 over 5 runs: the count is
+not bit-exact run to run, cause not investigated) and `RENDERED`.
 
 Pitfalls found (Blender 5.2 API):
 
