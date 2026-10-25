@@ -23,6 +23,8 @@ BAND = 0.035  # band width along the surface (scene units; the cranium radius is
 ROOT_SKIN = 0.03  # vertices closer than this to the head sphere are roots
 MIN_BANDS = 3  # a chain shorter than this is a stub, not a lock
 POINTS = 24  # guide resolution (mane_hair.GUIDE_POINTS)
+DROOP = 0.5  # share of gravity blended into the axis direction at the tip (st5 judges: locks
+# stream horizontally « as if in a strong wind »; 0 keeps Meshy's shape)
 
 
 def graph(v, e):
@@ -115,6 +117,17 @@ def resample(poly, n, widths):
     return np.stack([np.interp(t, s, poly[:, k]) for k in range(3)], axis=1), np.interp(t, s, widths)
 
 
+def droop(axis, amount):
+    """Same segment lengths, directions bent towards -Z, more towards the tip."""
+    seg = np.diff(axis, axis=0)
+    length = np.linalg.norm(seg, axis=1)
+    d = seg / length[:, None]
+    s = np.linspace(0.0, 1.0, len(d))[:, None]
+    d = d * (1.0 - amount * s) + np.array([0.0, 0.0, -1.0]) * amount * s
+    d /= np.linalg.norm(d, axis=1)[:, None]
+    return np.vstack([axis[0], axis[0] + np.cumsum(d * length[:, None], axis=0)])
+
+
 def smooth(poly, passes=2):
     p = poly.copy()
     for _ in range(passes):
@@ -139,7 +152,8 @@ def main(src, dst):
     polys = chains(v, band, comp, pairs, counts, centre, radius)
     guides, widths = [], []
     for p, w in polys:
-        g, gw = resample(smooth(p), POINTS, w)
+        g, gw = resample(smooth(p, 4), POINTS, w)
+        g = droop(g, DROOP)
         u = g[0] - centre
         g[0] = centre + u / np.linalg.norm(u) * radius  # root on the head sphere
         guides.append(g)

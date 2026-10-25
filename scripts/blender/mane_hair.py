@@ -146,15 +146,14 @@ STRANDS = Groom(
     mask=crest_mask,
     interpolate={"Density": 30000.0, "Interpolation Guides": 3, "Distance to Guides": 0.6, "Seed": 7},
     # st1: Factor 0.85 / Guide Distance 0.1 / frizz 0.3 read as a ball of fur, no locks
-    clump={"Factor": 1.0, "Shape": 0.75, "Tip Spread": 0.006, "Clump Offset": 0.0, "Distance Threshold": 0.6, "Seed": 11, "Guide Distance": 0.15},
+    clump={"Factor": 1.0, "Shape": 0.6, "Tip Spread": 0.012, "Clump Offset": 0.0, "Distance Threshold": 0.6, "Seed": 11, "Guide Distance": 0.15},
     noise={"Factor": 0.4, "Distance": 0.012, "Shape": 0.0, "Scale": 1.5, "Seed": 3},
     frizz={"Factor": 0.15, "Distance": 0.008, "Shape": 0.95, "Seed": 5},
     profile={"Radius": 0.0035, "Shape": 0.6},
     stops=studio.MANE_STOPS,
     side_bias=0.0,
-    # st4: at full length this under-layer made a smooth dome round the head; it only covers the
-    # skull, the explicit locks (lock_strands) carry the shape
-    trim={"Scale Uniform": True, "Length Factor": 0.45, "Random Offset": 0.25, "Seed": 9},
+    # st4: a smooth dome at full length (guides streaming out); st5: trimmed to 0.45 it read as a
+    # fuzz cap. Now full length again, the guides droop (lock_axes.DROOP) so it lies on the head
 )
 
 
@@ -331,7 +330,10 @@ def report(obj):
 # st2: Interpolate blends neighbouring guides and Clump picks its own random lock centres, so the
 # lock shapes of the source mane were smoothed into one mass. Here every strand belongs to one
 # given lock: placed at random in the lock's cross-section, which narrows towards the tip.
-LOCK_TIGHTEN = 0.85  # share of the lock's width gathered at the tip
+LOCK_TIGHTEN = 0.55  # share of the sub-lock's width gathered at the tip (0.85: claw tips, st5 R)
+SUB_LOCKS = 3  # each lock splits into sub-locks of different lengths (st5: 26 identical locks = clones)
+SUB_OFFSET = 0.6  # sub-lock centre offset, as a fraction of the lock's half-width
+TIP_FAN = 0.025  # strands fan out a little at the very tip, each its own way
 LOCK_TRIM = (0.75, 1.0)  # each strand's length, as a fraction of its lock
 WAVE = 0.006  # per-strand low-frequency wave (scene units)
 
@@ -365,13 +367,18 @@ def lock_strands(name, axes, widths, root, head_centre, head_radius, per_lock, s
     pos, rad = [], []
     for axis, width in zip(np.asarray(axes, float), np.asarray(widths, float)):
         n = len(axis)
+        subs = [(rng.uniform(0, 2 * np.pi), rng.uniform(0.0, SUB_OFFSET), rng.uniform(0.7, 1.0)) for _ in range(SUB_LOCKS)]
         for _ in range(per_lock):
-            frac = rng.uniform(*LOCK_TRIM)
+            sub_angle, sub_r, sub_len = subs[rng.integers(SUB_LOCKS)]
+            frac = sub_len * rng.uniform(*LOCK_TRIM)
             pts, s = along(axis, frac)
             _, nn, bb = frames(pts)
-            w = np.interp(s, np.linspace(0, 1, n), width) * (1.0 - LOCK_TIGHTEN * s**1.5)
+            lock_w = np.interp(s, np.linspace(0, 1, n), width)
+            sub_c = (np.cos(sub_angle) * nn + np.sin(sub_angle) * bb) * (lock_w * sub_r)[:, None]
+            w = lock_w * (1.0 - SUB_OFFSET) * (1.0 - LOCK_TIGHTEN * s**1.5)
             r, a = np.sqrt(rng.uniform()), rng.uniform(0, 2 * np.pi)
-            off = (np.cos(a) * nn + np.sin(a) * bb) * (w * r)[:, None]
+            fan = rng.normal(size=3) * TIP_FAN * (s**3)[:, None]
+            off = sub_c + (np.cos(a) * nn + np.sin(a) * bb) * (w * r)[:, None] + fan
             phase, freq = rng.uniform(0, 2 * np.pi), rng.uniform(1.5, 3.0)
             wave = np.sin(phase + freq * np.pi * s)[:, None] * (np.cos(a + 1.3) * nn + np.sin(a + 1.3) * bb) * WAVE * s[:, None]
             p = pts + off + wave
