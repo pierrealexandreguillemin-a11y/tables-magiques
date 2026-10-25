@@ -1,6 +1,6 @@
 # E2E Test Coverage
 
-> **Dernière mise à jour**: 2026-10-25 21:45
+> **Dernière mise à jour**: 2026-10-25 23:44
 > **Total fichiers E2E**: 13
 > **Total tests E2E**: 177
 
