@@ -28,6 +28,7 @@ import shapes  # noqa: E402
 import studio  # noqa: E402
 import mane_crest  # noqa: E402
 import mane_hair  # noqa: E402
+import mane_sculpt  # noqa: E402
 import unicorn_mane  # noqa: E402
 from face_parts import smoothstep, sph  # noqa: E402
 from shapes import ball, capsule, ellipsoid, frame_from_normal, metaball_mesh, paint, surface_dir, uv_ellipsoid  # noqa: E402
@@ -200,7 +201,7 @@ def build_unicorn(mane_style):
         mane_hair.build_mane(skull, root, mane_hair.colliders(HEAD + TORSO))
         mane_crest.build_tail(root, mats["mane"])  # the tail moves to hair curves once the mane passes
     else:
-        styles = {**unicorn_mane.STYLES, "crest": (mane_crest.build_mane, mane_crest.build_tail)}
+        styles = {**unicorn_mane.STYLES, "crest": (mane_crest.build_mane, mane_crest.build_tail), "sculpt": (mane_sculpt.build_mane, unicorn_mane.build_tail_strands)}
         build_mane, build_tail = styles[mane_style]
         build_mane(skull, root, mats["mane"])
         build_tail(root, mats["mane"])
