@@ -77,3 +77,23 @@ an interpolated under-layer (`mane_hair.STRANDS`).
   volume and hierarchy in both orders. Lost: flow everywhere (locks stream horizontally, « wind »),
   tips (hooks). R = `clones` on the back: a ring of identical hooked locks like tentacles —
   checked by eye, true. M: fuzz cap (the trimmed under-layer), crease between layers, hooks.
+
+## Fringe fix on the fitted mane: fit6, fit7 (2026-10-25, evening)
+
+User: « reprends le chibi en échec la session précédente et corrige sa frange ». Cause found by
+rendering Meshy's mane untrimmed (`--raw`): Meshy has its own forelock, a swept lock with a
+pointed tip; the face cone (`FACE_HALF_ANGLE` 52°) sliced it into fit5's straight « helmet » hem.
+Courses read for the fix: `COURSES.md`.
+
+| Step            | Change (flags)                                                     | Result                                                                                                                                                                                                                                                                                                                                                                                                   |
+| --------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| fit6            | `--meshy-fringe --face-max-el 0`: face cut only below the eye line | Meshy forelock back. **Pairwise vs fit5, 6 fresh judges (H-v1, both orders, front/3q/side): no axis lost in both orders; fit6 wins all 6 axes front in both orders, 4-5 axes 3q, side tie/mixed.** Shared defect: tip lands on the lashes. H-B on fit6 (1 judge, H-v1 biased to strands): R lumps (rosette round the horn), R helmet, R off-skull side wings; M thorns beside the horn, M lash intersect |
+| f7a-f7d, f7f    | `--fringe-lift`: elevations remapped to a floor above the lashes   | **failed**: forelock crumpled into a band (bald forehead) — measured on f7f (lift alone)                                                                                                                                                                                                                                                                                                                 |
+| f7e             | `--ear-r 0.14 --ear-ext 0.1`                                       | thorns beside the horn gone, forelock intact                                                                                                                                                                                                                                                                                                                                                             |
+| f7s5 = **fit7** | + `--fringe-shift 5`: front shifted 5° up the skull, shape kept    | forelock clears the lashes; 9° bares the forehead. Horn capsule 0.13/0.16: no gain (horn sinks at 0.13)                                                                                                                                                                                                                                                                                                  |
+
+Replay fit7 (~4 min, CPU):
+`"$B" -b --python fit_mane.py -- <meshy.glb> <out> --res 1024 --spp 64 --meshy-fringe --face-max-el 0 --ear-r 0.14 --ear-ext 0.1 --fringe-shift 5`
+
+Board for the user's verdict: `fit7/board_fit5_vs_fit7.png`. **Not judged yet**: round-2 blind
+pack fit6 vs fit7 was built in the scratchpad (not run); rosette round the horn untouched.

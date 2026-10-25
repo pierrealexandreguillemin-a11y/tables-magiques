@@ -37,8 +37,23 @@ MESHY_CRANIUM = Vector((0.0, -0.2, 0.0))
 MESHY_RADIUS = 0.4
 FACE_AXIS = Vector((0.0, -1.0, -0.6)).normalized()  # eyes, snout, mouth
 FACE_HALF_ANGLE = 52.0  # degrees; the forelock (elevation ~ +25 deg) stays outside
-MESHY_HORN = (Vector((0.0, -0.48, 0.47)), Vector((0.0, -0.97, 0.52)), 0.1)  # capsule base, tip, radius (pixels on the grid views)
-MESHY_EARS = tuple((Vector((x, -0.35, 0.40)), Vector((x * 1.33, -0.42, 0.70)), 0.1) for x in (-0.27, 0.27))
+# fit6 (2026-10-25): the cone sliced Meshy's own forelock into the straight « helmet » hem (fit5
+# R). The face cut now stops below this elevation (Meshy units, from its cranium centre): snout
+# and mouth go, the forehead and the lock lying on it stay.
+FACE_MAX_EL = float(sys.argv[sys.argv.index("--face-max-el") + 1]) if "--face-max-el" in sys.argv else 90.0
+def _arg(name, default):
+    return float(sys.argv[sys.argv.index(name) + 1]) if name in sys.argv else default
+
+
+# fit7 (2026-10-25, fit6 judges): the rolls round Meshy's horn read as a rosette of lumps (R) and
+# stubs of its ears as pink thorns beside our horn (M): both capsules can be widened.
+MESHY_HORN = (Vector((0.0, -0.48, 0.47)), Vector((0.0, -0.97, 0.52)), _arg("--horn-r", 0.1))  # capsule base, tip, radius (pixels on the grid views)
+MESHY_EARS = tuple((Vector((x, -0.35, 0.40)), Vector((x * 1.33, -0.42, 0.70 + _arg("--ear-ext", 0.0))), _arg("--ear-r", 0.1)) for x in (-0.27, 0.27))
+# fit7: the forelock's tip landed on the eyelashes (3 of 6 pairwise judges, H-B intersect).
+# Remapping elevations to a floor (f7a-f7d, f7f) crumpled the forelock into a band; it is now
+# shifted up the skull as a whole by FRINGE_SHIFT degrees, fading out above the forehead and
+# towards the sides, so its shape is kept.
+FRINGE_SHIFT = _arg("--fringe-shift", 0.0)
 # capsules, not spheres: spheres sliced the locks around them (fit2: torn « petals » around the horn)
 HANG = 0.72  # vertical squash of the hanging locks (fit1 fell past the chest)
 INSIDE_MARGIN = 0.01
@@ -46,6 +61,9 @@ INSIDE_MARGIN = 0.01
 # user: « la frange … il faut des mèches »). Cut in front of the crown, replaced by FRINGE strands.
 FRINGE_CUT_PHI = 100.0
 FRINGE_CUT_ACROSS = 55.0  # keep what lies on our head's surface, drop what is under it
+
+
+FRINGE_CUT = "--meshy-fringe" not in sys.argv  # fit5 state: keep Meshy's own fringe, no strand fringe
 
 
 def opt(args, name, default):
@@ -70,6 +88,22 @@ def import_mane(path, scale, root):
     return obj
 
 
+def lift_fringe(obj):
+    """Shift the front of the mane up the skull (see FRINGE_SHIFT)."""
+    moved = 0
+    for v in obj.data.vertices:
+        d = v.co - cu.HEAD_C
+        r = d.length
+        el = math.degrees(math.asin(max(-1.0, min(1.0, d.z / r))))
+        az = math.degrees(math.atan2(d.x, -d.y))
+        w = (1.0 - smoothstep(40.0, 60.0, abs(az))) * (1.0 - smoothstep(48.0, 72.0, el))
+        if w <= 0.0:
+            continue
+        v.co = cu.HEAD_C + sph(az, el + FRINGE_SHIFT * w) * r
+        moved += 1
+    print(f"FRINGE_SHIFT {FRINGE_SHIFT} deg, {moved} vertices moved")
+
+
 def capsule_distance(p, a, b):
     ab = b - a
     t = max(0.0, min(1.0, (p - a).dot(ab) / ab.length_squared))
@@ -81,9 +115,9 @@ def doomed(p, scale, head_bvh):
     head's surface."""
     rel = (p - cu.HEAD_C) / scale
     d = rel - Vector((0.0, 0.0, 0.0))
-    if d.length > 1e-6 and math.degrees(d.angle(FACE_AXIS)) < FACE_HALF_ANGLE:
+    if d.length > 1e-6 and math.degrees(d.angle(FACE_AXIS)) < FACE_HALF_ANGLE and d.z < math.sin(math.radians(FACE_MAX_EL)) * d.length:
         return True
-    if d.length > 1e-6:
+    if d.length > 1e-6 and FRINGE_CUT:
         phi, across = mane_hair.crest_coords(d.normalized())
         if phi < FRINGE_CUT_PHI and abs(across) < FRINGE_CUT_ACROSS:
             return True
@@ -198,12 +232,15 @@ def main():
     head = next(o for o in parts if o.name == "Head")
     mane = import_mane(glb, scale, root)
     bpy.context.view_layer.update()
-    trim(mane, head, scale)
+    if "--raw" not in args:
+        trim(mane, head, scale)
+    if FRINGE_SHIFT:
+        lift_fringe(mane)
     if "--export-mesh" in args:
         export_mesh(mane, os.path.abspath(opt(args, "--export-mesh", "")))
         return
     colour(mane)
-    hair = [mane, fringe(root, os.path.abspath(opt(args, "--fringe-bake", os.path.join(out_dir, "fringe.npz"))))]
+    hair = [mane] if not FRINGE_CUT else [mane, fringe(root, os.path.abspath(opt(args, "--fringe-bake", os.path.join(out_dir, "fringe.npz"))))]
     if "--guides" in args:  # option 2: strands along the Meshy lock axes replace the sculpted mesh
         mane.hide_render = True
         mesh_npz = os.path.abspath(opt(args, "--mesh", ""))
@@ -214,13 +251,13 @@ def main():
         per_lock = int(opt(args, "--per-lock", 600))
         hair.append(mane_hair.lock_strands("ManeLocks", z["guides"], z["widths"], root, cu.HEAD_C, cu.HEAD_R, per_lock, studio.MANE_STOPS))
     bpy.context.view_layer.update()
-    for k, view in enumerate(VIEWS):
+    for k, view in enumerate(opt(args, "--views", ",".join(VIEWS)).split(",")):
         if k == 0:
             studio.stage(scene, parts, view=view)
         else:
             studio.setup_camera(scene, parts, **studio.VIEWS[view])
         bpy.context.view_layer.update()
-        for tag, hidden in (("cand", False), ("bald", True)):
+        for tag, hidden in (("cand", False),) + ((("bald", True),) if "--no-bald" not in args else ()):
             for o in hair:
                 o.hide_render = hidden
             studio.finish(scene, out_dir, f"{tag}_{view}")
