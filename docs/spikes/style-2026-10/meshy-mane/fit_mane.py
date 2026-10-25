@@ -92,6 +92,11 @@ def trim(obj, head, scale):
     kill = [v for v in bm.verts if doomed(v.co, scale, head_bvh)]
     print(f"MESHY_TRIM {len(kill)} of {len(bm.verts)} vertices removed")
     bmesh.ops.delete(bm, geom=kill, context="VERTS")
+    # close the cut edges: an open hair shell shows its dark inside (fit4: hollows by the ears)
+    rim = [e for e in bm.edges if e.is_boundary]
+    filled = bmesh.ops.holes_fill(bm, edges=rim, sides=0)["faces"]
+    bmesh.ops.triangulate(bm, faces=filled)
+    print(f"MESHY_CAPS {len(rim)} cut edges closed with {len(filled)} faces")
     bm.to_mesh(obj.data)
     bm.free()
 

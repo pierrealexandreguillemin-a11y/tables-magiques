@@ -26,3 +26,22 @@ its docstring). Not judged yet.
 | fit4 | capsules re-measured on grid views       | horn gone; ears cut leave dark hollows and pink stubs by our ears |
 
 Replay: `"$B" -b --python fit_mane.py -- <glb> <out> --res 512 --spp 32` (~80 s).
+
+## Filter on fit5 (2026-10-25, rubric H-v1, Meshy bar, 9 fresh judges)
+
+`python ../harness/verdict.py <scratchpad>/review/fit5` → **FILTER FAILED** (exit 1). Judge files
+there are transcriptions (`better` and severities only), like the map4 calibration row.
+
+- H-A: the reference wins every axis in both orders on front, 3q and side. Back: density,
+  silhouette, tips and hierarchy lost; **volume won by the candidate in both orders**; flow
+  tie/lost.
+- H-B: R 1, M 9, m 5 → 0. R = `helmet` on the front: crown and bangs read as a rolled cap with a
+  straight hem across the forehead — checked by eye, true, and caused by the face-cone cut in
+  `fit_mane.py`, not by Meshy. M: `off-skull` (locks shoot back nearly horizontal, side and 3q),
+  `lumps` (rolled knobs around the horn, ruffled hem), `clones` + `needles` (back: one claw-shaped
+  lock repeated, hooked tips on the crown), `spaghetti` (equal hanging ribbons, side).
+- Bias, said plainly: H-v1 anchors (« hundreds of strands », three scales down to single strands)
+  can never be won by sculpted chibi locks; density and hierarchy are lost by construction. The
+  R and most M are real defects regardless.
+- Framing deviation: the hair crop failed (the mane's shadow on body and ground widens the
+  difference box), so candidates were framed as the whole character, unlike the calibration.
