@@ -24,8 +24,9 @@ PROJECT = `C:/Dev/Multiplications magiques/tables-magiques`
    action, the decisions waiting for the user, `Fatigue: OK — counter reset to 0.`
 5. Start the local part of the next action. External actions wait for an explicit go.
 
-**External actions** (never without the user's go): `git push` (master redeploys production on
-Vercel), Vercel deploy/promote, mail, publishing an artifact, deleting files outside the repo.
+**External actions** (never without the user's go): `git push` outside mode MEMO (master
+redeploys production on Vercel), Vercel deploy/promote, mail, publishing an artifact, deleting
+files outside the repo. Standing exception: mode MEMO pushes master (step 1).
 
 ## Mode MEMO
 
@@ -33,7 +34,9 @@ Triggers: 3+ commits since the memo's HEAD (`git rev-list --count <hash>..HEAD`)
 user verdict on a vote; a compaction this session (then refresh the memo **and stop**,
 `feedback_compaction_is_session_end.md`); the user's words above — never « reprise » alone.
 
-1. **Commit everything first.** Then collect:
+1. **Commit everything first, then push master** — standing go from the user, 2026-10-25: « go auto
+   à chaque skill session-end ». The push redeploys production: run `npm run test:run`,
+   `npm run typecheck`, `npm run lint` first; a red gate → no push, say it in the memo. Then collect:
 
    ```bash
    cd "/c/Dev/Multiplications magiques/tables-magiques"
@@ -69,7 +72,7 @@ Line: `Fatigue: <OK/ALERT/STOP> — <rows not OK, with counts>.`
 
 ## Never
 
-- A memo on « reprise »; an external action on a resume.
+- A memo on « reprise »; an external action on a resume (the mode MEMO push is not a resume).
 - A memo written before the last commit (its HEAD is wrong).
 - Copying `CLAUDE.md` or git log into the memo.
 - Working on after a compaction instead of refreshing the memo and stopping.
