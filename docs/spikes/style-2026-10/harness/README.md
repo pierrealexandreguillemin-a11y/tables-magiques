@@ -14,7 +14,19 @@ variant). Judge: `.claude/agents/hair-judge.md`, rubric `references/hair-rubric.
 | `build_pack.py`                          | Review pack in a scratchpad folder: same framing on both sides, anonymous pairs in both orders, `key.json`, `sheet.png` for the user, `brief.md` with one prompt per judge pass                                             |
 | `verdict.py`                             | Verdict from the judges' JSON saved in `<pack>/judge/`; exit 0 only when the filter passes                                                                                                                                  |
 
-## Run on a candidate
+## Current bar (2026-10-25): Meshy, rubric H-v1 restored
+
+User, 2026-10-25, answering « which bar do the judges use? » (back to the Meshy captures, or
+another): « ok ». The chibi bars C/A were refused for the mane on 2026-10-24 (« la barre chibi est
+refusée … tu as des exemples du rendu meshy pour t'inspirer (et PAS copier) »). So
+`hair-rubric.md` and `.claude/agents/hair-judge.md` are back to their H-v1 text, byte for byte
+(`git show ffd75a6:<path>`), the version calibrated below against the Meshy captures; H-v2 stays
+in git history (efcd216). Run with `--ref meshy` (the default) and the bald pattern; the H-v1
+gate applies (no R, H-B ≥ 4.5, no axis lost in both orders). Candidate renders for the
+hair-curve mane: `../proposal-hair-curves/render_views.py` (one groom for all views, bald
+cameras).
+
+## Run on a candidate (H-v2, superseded 2026-10-25)
 
 Current bars (H-v2, user 2026-10-24: « structure C, mais avec la finesse de crinière de A : un
 essai puis si refus, retour vers ma piste »): one pack per bar.

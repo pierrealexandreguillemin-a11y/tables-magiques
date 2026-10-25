@@ -1,13 +1,13 @@
 """Candidate A - procedural chibi unicorn (our own model, no third-party asset).
 
 Usage:
-  blender -b --python scripts/blender/chibi_unicorn.py -- <out_dir> [--preview] [--tag NAME] [--view 3q|front|side] [--mane locks|curls|strands|layered|filled|settled|crest]
+  blender -b --python scripts/blender/chibi_unicorn.py -- <out_dir> [--preview] [--tag NAME] [--view 3q|front|side] [--mane locks|curls|strands|layered|filled|settled|crest|hair]
 
 --mane: locks = A3 hair locks (default), curls = A2 spiral curls, strands = A4 split strands,
 layered = A5 strands over an inner layer of strands
 filled = A6: A5 plus slit locks and a side lock in front of the mane
 settled = A7: A6 with the side locks settled onto the side lock
-(see unicorn_mane.py); crest = A8 (mane_crest.py)
+(see unicorn_mane.py); crest = A8 (mane_crest.py); hair = hair curves (mane_hair.py)
 
 Writes <out_dir>/A_unicorn_transparent.png, A_unicorn_gradient.png and A_unicorn.glb
 (with --tag, files are prefixed with the tag instead, for iteration snapshots; the GLB is only
@@ -27,6 +27,7 @@ import face_parts  # noqa: E402
 import shapes  # noqa: E402
 import studio  # noqa: E402
 import mane_crest  # noqa: E402
+import mane_hair  # noqa: E402
 import unicorn_mane  # noqa: E402
 from face_parts import smoothstep, sph  # noqa: E402
 from shapes import ball, capsule, ellipsoid, frame_from_normal, metaball_mesh, paint, surface_dir, uv_ellipsoid  # noqa: E402
@@ -51,16 +52,25 @@ def pearl_tint(p, n):
 
 
 # ----------------------------------------------------------------------------- body & head
+# Metaball elements, also the collision volumes of the hair-curve mane (mane_hair.colliders)
+TORSO = (
+    ellipsoid((0, 0.15, 0.50), (0.25, 0.32, 0.22)),  # belly
+    ball((0, -0.09, 0.56), 0.245),  # chest, pushed forward
+    ellipsoid((0, -0.14, 0.74), (0.15, 0.14, 0.12)),  # short neck under the head
+    *(ball((x, 0.36, 0.50), 0.19) for x in (-0.14, 0.14)),  # rounded haunches
+)
+HEAD = (
+    ball(HEAD_C, HEAD_R),
+    ellipsoid(MUZZLE_C, (0.27, 0.17, 0.19)),
+    ball((-0.27, -0.50, 1.13), 0.28),
+    ball((0.27, -0.50, 1.13), 0.28),
+)
+
+
 def build_body(root):
     """Small chibi pony body: rounded chest, belly, haunches, a short neck, four stubby legs with
     slightly flared hooves. Legs are thin enough not to fuse into a pillar."""
-    els = [
-        ellipsoid((0, 0.15, 0.50), (0.25, 0.32, 0.22)),  # belly
-        ball((0, -0.09, 0.56), 0.245),  # chest, pushed forward
-        ellipsoid((0, -0.14, 0.74), (0.15, 0.14, 0.12)),  # short neck under the head
-    ]
-    for x in (-0.14, 0.14):
-        els.append(ball((x, 0.36, 0.50), 0.19))  # rounded haunches
+    els = list(TORSO)
     for x in (-0.165, 0.165):
         for y in (-0.08, 0.40):
             els.append(capsule((x, y, 0.25), 0.095, 0.09))
@@ -75,13 +85,7 @@ def build_body(root):
 
 
 def build_head(root):
-    els = [
-        ball(HEAD_C, HEAD_R),
-        ellipsoid(MUZZLE_C, (0.27, 0.17, 0.19)),
-        ball((-0.27, -0.50, 1.13), 0.28),
-        ball((0.27, -0.50, 1.13), 0.28),
-    ]
-    head = metaball_mesh("Head", els, parent=root)
+    head = metaball_mesh("Head", HEAD, parent=root)
     snout = MUZZLE_C + Vector((0, -0.12, 0))
 
     def col(p, n):
@@ -191,10 +195,15 @@ def build_unicorn(mane_style):
     marks["mouth"] = build_smile(head, root, mats)
     build_ears(head, root, mats)
     build_horn(head, root, mats)
-    styles = {**unicorn_mane.STYLES, "crest": (mane_crest.build_mane, mane_crest.build_tail)}
-    build_mane, build_tail = styles[mane_style]
-    build_mane(unicorn_mane.Skull(HEAD_C, HEAD_R, head), root, mats["mane"])
-    build_tail(root, mats["mane"])
+    skull = unicorn_mane.Skull(HEAD_C, HEAD_R, head)
+    if mane_style == "hair":
+        mane_hair.build_mane(skull, root, mane_hair.colliders(HEAD + TORSO))
+        mane_crest.build_tail(root, mats["mane"])  # the tail moves to hair curves once the mane passes
+    else:
+        styles = {**unicorn_mane.STYLES, "crest": (mane_crest.build_mane, mane_crest.build_tail)}
+        build_mane, build_tail = styles[mane_style]
+        build_mane(skull, root, mats["mane"])
+        build_tail(root, mats["mane"])
     parts = [o for o in root.children if o.type == "MESH"]
     lo, _ = studio.world_bbox(parts)
     root.location.z -= lo.z  # hooves rest exactly on the ground (z = 0)
