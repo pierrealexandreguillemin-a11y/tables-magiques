@@ -48,3 +48,13 @@ What every chibi unicorn of the shortlist shares (looked at, thumbnails only):
   rolled tip; layering forelock > mane > under-locks.
 - **Colour per lock** (pink / lilac / mint / sky bands, or a strong gradient) — it is what makes
   the locks readable; S1's near-white gradient erases them.
+
+## User verdicts (2026-10-25)
+
+- Meshy community shortlist: « aucune, c'est slop » (community = AI generations, the average).
+- Sketchfab staff picks (stylized hair, `../harness/bar_sheet.png`): « 21 OU 3 » (Evie Sculpt,
+  Purple music), then Purple music refused after a look in its viewer.
+- it2 (waves, sub-grooves, hooks after Evie, `it2` not kept): « raté, c'est de la merde, tu as
+  une mauvaise inspiration et tu la copies mal ». S1 stopped; work moved to the fitted Meshy
+  mane's fringe (`../meshy-mane/README.md`, fit7). The user re-sent Midnight Ponytail
+  (https://www.meshy.ai/fr/posts/019ed510-59c0-743c-8571-1bbf7425682d) as the reference.
