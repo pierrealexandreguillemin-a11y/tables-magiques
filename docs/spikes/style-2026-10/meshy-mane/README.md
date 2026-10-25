@@ -61,3 +61,19 @@ hair-curve strands grows in their place (`mane_hair.FRINGE`, baked to `fringe.np
   « a believable fibre fringe » and fault the sculpted Meshy rest (ribbons, cloned hook tips,
   locks off the skull), which the user rated passable.
 - Anti-loop (anti-slop-frontend, Step 3): second failure on this level → stop, back to the user.
+
+## Option 2: the whole mane in strands along Meshy's lock axes (st1-st5, 2026-10-25)
+
+User's pick: « Toute la crinière en brins fins, avec la forme de Meshy ». `fit_mane.py
+--export-mesh` → `lock_axes.py` (Reeb-graph skeleton: geodesic bands from the head, ring centres
+→ 26 lock axes + ring widths) → `mane_hair.lock_strands` (600 strands per lock, deterministic) over
+an interpolated under-layer (`mane_hair.STRANDS`).
+
+- st1-st4 seen by me: converging axes inside the skull (fixed: stop where a lock joins the mass),
+  roots at right angles (fixed: prolong the axis to the head), bare back (mask widened), a smooth
+  dome (under-layer at full length).
+- st5 filter (9 fresh judges, H-v1): **FILTER FAILED**, R 1, M 13, m 6. First measurable gains:
+  the candidate wins density in 6 of 8 passes, and on the side view wins density, silhouette,
+  volume and hierarchy in both orders. Lost: flow everywhere (locks stream horizontally, « wind »),
+  tips (hooks). R = `clones` on the back: a ring of identical hooked locks like tentacles —
+  checked by eye, true. M: fuzz cap (the trimmed under-layer), crease between layers, hooks.

@@ -25,7 +25,7 @@ import studio
 from face_parts import smoothstep
 
 ASSETS = os.path.join(os.path.dirname(bpy.app.binary_path), "5.2", "datafiles", "assets", "nodes", "procedural_hair_node_assets.blend")
-GROUPS = ("Attach Hair Curves to Surface", "Interpolate Hair Curves", "Clump Hair Curves", "Hair Curves Noise", "Frizz Hair Curves", "Set Hair Curve Profile")
+GROUPS = ("Attach Hair Curves to Surface", "Interpolate Hair Curves", "Clump Hair Curves", "Hair Curves Noise", "Frizz Hair Curves", "Trim Hair Curves", "Set Hair Curve Profile")
 GUIDE_POINTS = 24
 GRAVITY = Vector((0.0, 0.0, -1.0))
 MASK_ATTR = "mane_mask"
@@ -77,6 +77,7 @@ class Groom:
     profile: dict
     stops: tuple
     side_bias: float
+    trim: dict = None  # Trim Hair Curves inputs, or None
 
 
 def crest_coords(u):
@@ -136,6 +137,24 @@ FRINGE = Groom(
     profile={"Radius": 0.0038, "Shape": 0.6},
     stops=((0.0, studio.MANE_STOPS[0][1]), (1.0, studio.MANE_STOPS[1][1])),
     side_bias=0.0,
+)
+# Strands along given guides (the lock axes of the Meshy mane, user 2026-10-25 option 2): the
+# shape comes from the guides; mask = where the sculpted mane met the head (set by the caller).
+STRANDS = Groom(
+    name="ManeStrands",
+    layers=(),
+    mask=crest_mask,
+    interpolate={"Density": 30000.0, "Interpolation Guides": 3, "Distance to Guides": 0.6, "Seed": 7},
+    # st1: Factor 0.85 / Guide Distance 0.1 / frizz 0.3 read as a ball of fur, no locks
+    clump={"Factor": 1.0, "Shape": 0.75, "Tip Spread": 0.006, "Clump Offset": 0.0, "Distance Threshold": 0.6, "Seed": 11, "Guide Distance": 0.15},
+    noise={"Factor": 0.4, "Distance": 0.012, "Shape": 0.0, "Scale": 1.5, "Seed": 3},
+    frizz={"Factor": 0.15, "Distance": 0.008, "Shape": 0.95, "Seed": 5},
+    profile={"Radius": 0.0035, "Shape": 0.6},
+    stops=studio.MANE_STOPS,
+    side_bias=0.0,
+    # st4: at full length this under-layer made a smooth dome round the head; it only covers the
+    # skull, the explicit locks (lock_strands) carry the shape
+    trim={"Scale Uniform": True, "Length Factor": 0.45, "Random Offset": 0.25, "Seed": 9},
 )
 
 
@@ -272,10 +291,12 @@ def hair_material(stops=studio.MANE_STOPS):
     return mat
 
 
-def build_mane(skull, root, colliders, groom=MANE):
+def build_mane(skull, root, colliders, groom=MANE, given=None):
+    """`given`: guide polylines (GUIDE_POINTS points each) to use instead of growing them, e.g.
+    the lock axes of a sculpted mane (docs/spikes/style-2026-10/meshy-mane/lock_axes.py)."""
     surface = scalp(skull.centre, skull.radius, root, groom.mask, f"{groom.name}Scalp")
     data = bpy.data.hair_curves.new(groom.name)
-    gs = guides(skull.centre, skull.radius, colliders, groom)
+    gs = [[Vector(p) for p in g] for g in given] if given is not None else guides(skull.centre, skull.radius, colliders, groom)
     data.add_curves([GUIDE_POINTS] * len(gs))
     for i, p in enumerate(q for g in gs for q in g):
         data.points[i].position = p
@@ -290,6 +311,8 @@ def build_mane(skull, root, colliders, groom=MANE):
     add_modifier(obj, g["Clump Hair Curves"], groom.clump)
     add_modifier(obj, g["Hair Curves Noise"], groom.noise)
     add_modifier(obj, g["Frizz Hair Curves"], groom.frizz)
+    if groom.trim:
+        add_modifier(obj, g["Trim Hair Curves"], groom.trim)
     add_modifier(obj, g["Set Hair Curve Profile"], groom.profile)
     data.materials.append(hair_material(groom.stops))
     report(obj)
@@ -302,6 +325,75 @@ def report(obj):
             print(f"HAIR_WARN {m.name}: {w.type} {w.message}")
     ev = obj.evaluated_get(bpy.context.evaluated_depsgraph_get()).data
     print(f"HAIR_STRANDS {obj.name}: {len(ev.curves)} curves, {len(ev.points)} points")
+
+
+# ----------------------------------------------------------------------------- explicit locks
+# st2: Interpolate blends neighbouring guides and Clump picks its own random lock centres, so the
+# lock shapes of the source mane were smoothed into one mass. Here every strand belongs to one
+# given lock: placed at random in the lock's cross-section, which narrows towards the tip.
+LOCK_TIGHTEN = 0.85  # share of the lock's width gathered at the tip
+LOCK_TRIM = (0.75, 1.0)  # each strand's length, as a fraction of its lock
+WAVE = 0.006  # per-strand low-frequency wave (scene units)
+
+
+def frames(axis):
+    """Parallel-transport frames (tangent, normal, binormal) along a polyline (n, 3)."""
+    t = np.gradient(axis, axis=0)
+    t /= np.linalg.norm(t, axis=1)[:, None]
+    ref = np.array([0.0, 0.0, 1.0]) if abs(t[0, 2]) < 0.9 else np.array([1.0, 0.0, 0.0])
+    n = [np.cross(t[0], ref)]
+    n[0] /= np.linalg.norm(n[0])
+    for i in range(1, len(axis)):
+        m = n[-1] - t[i] * (n[-1] @ t[i])
+        n.append(m / np.linalg.norm(m))
+    n = np.array(n)
+    return t, n, np.cross(t, n)
+
+
+def along(axis, frac):
+    """Points of `axis` re-sampled over its first `frac` of length, same point count."""
+    seg = np.linalg.norm(np.diff(axis, axis=0), axis=1)
+    s = np.r_[0, np.cumsum(seg)]
+    q = np.linspace(0, s[-1] * frac, len(axis))
+    return np.stack([np.interp(q, s, axis[:, k]) for k in range(3)], axis=1), q / s[-1]
+
+
+def lock_strands(name, axes, widths, root, head_centre, head_radius, per_lock, stops, radius=0.0032, seed=5):
+    """Hair curves: `per_lock` strands for every lock axis (k, n, 3) of half-width (k, n)."""
+    rng = np.random.default_rng(seed)
+    centre = np.asarray(head_centre, dtype=float)
+    pos, rad = [], []
+    for axis, width in zip(np.asarray(axes, float), np.asarray(widths, float)):
+        n = len(axis)
+        for _ in range(per_lock):
+            frac = rng.uniform(*LOCK_TRIM)
+            pts, s = along(axis, frac)
+            _, nn, bb = frames(pts)
+            w = np.interp(s, np.linspace(0, 1, n), width) * (1.0 - LOCK_TIGHTEN * s**1.5)
+            r, a = np.sqrt(rng.uniform()), rng.uniform(0, 2 * np.pi)
+            off = (np.cos(a) * nn + np.sin(a) * bb) * (w * r)[:, None]
+            phase, freq = rng.uniform(0, 2 * np.pi), rng.uniform(1.5, 3.0)
+            wave = np.sin(phase + freq * np.pi * s)[:, None] * (np.cos(a + 1.3) * nn + np.sin(a + 1.3) * bb) * WAVE * s[:, None]
+            p = pts + off + wave
+            d = p - centre
+            dist = np.linalg.norm(d, axis=1)
+            inside = dist < head_radius + 0.004  # strands laid on the skin, never under it
+            p[inside] = centre + d[inside] / dist[inside, None] * (head_radius + 0.004)
+            pos.append(p)
+            rad.append(radius * (1.0 - 0.8 * s))
+    pos, rad = np.array(pos, np.float32), np.array(rad, np.float32)
+    data = bpy.data.hair_curves.new(name)
+    data.add_curves([pos.shape[1]] * len(pos))
+    data.attributes["position"].data.foreach_set("vector", pos.ravel())
+    if "radius" not in data.attributes:
+        data.attributes.new("radius", "FLOAT", "POINT")
+    data.attributes["radius"].data.foreach_set("value", rad.ravel())
+    obj = bpy.data.objects.new(name, data)
+    bpy.context.collection.objects.link(obj)
+    obj.parent = root
+    data.materials.append(hair_material(stops))
+    print(f"HAIR_LOCKS {name}: {len(axes)} locks x {per_lock} = {len(pos)} strands")
+    return obj
 
 
 # ----------------------------------------------------------------------------- bake

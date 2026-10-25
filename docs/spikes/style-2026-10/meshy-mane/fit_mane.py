@@ -8,7 +8,8 @@ below), its horn and ears (ours stay) and everything hidden inside our head are 
 the existing mane material and gradient (studio.mane_material, MANE_STOPS) painted by height.
 
   B="/c/Program Files/Blender Foundation/Blender 5.2/blender.exe"
-  "$B" -b --python fit_mane.py -- <mane.glb> <out_dir> [--res 1024] [--spp 64] [--scale 1.45] [--fringe-bake <npz>]
+  "$B" -b --python fit_mane.py -- <mane.glb> <out_dir> [--res 1024] [--spp 64] [--scale 1.45] [--fringe-bake <npz>] [--export-mesh <npz>: write the trimmed mane for lock_axes.py and stop]
+     [--guides <guides.npz> --mesh <mane_mesh.npz> [--strands-bake <npz>] [--per-lock 600]: strands along the lock axes]
 Writes cand_<view>_* and bald_<view>_* for 3q, front, side, back (bald = same camera, mane hidden).
 """
 
@@ -128,6 +129,49 @@ def fringe(root, path):
     return obj
 
 
+def export_mesh(obj, path):
+    """Fitted, trimmed mane for lock_axes.py (root-local coordinates, like HEAD_C)."""
+    import numpy as np
+
+    me = obj.data
+    v = np.empty(len(me.vertices) * 3, np.float32)
+    me.vertices.foreach_get("co", v)
+    e = np.empty(len(me.edges) * 2, np.int32)
+    me.edges.foreach_get("vertices", e)
+    np.savez_compressed(path, vertices=v.reshape(-1, 3), edges=e.reshape(-1, 2), head_centre=np.array(cu.HEAD_C), head_radius=cu.HEAD_R)
+    print(f"MESHY_EXPORTED {path}: {len(me.vertices)} vertices, {len(me.edges)} edges")
+
+
+def strand_mane(root, guides_path, mesh_path, bake_path):
+    """The whole mane in strands along the Meshy lock axes; roots where Meshy's mane met the head."""
+    import dataclasses
+
+    import numpy as np
+
+    if os.path.exists(bake_path):
+        return mane_hair.load_baked(bake_path, root, mane_hair.STRANDS)
+    g = np.load(guides_path)["guides"]
+    m = np.load(mesh_path)
+    v = m["vertices"]
+    skin = np.linalg.norm(v - m["head_centre"], axis=1) - float(m["head_radius"])
+    dirs = v[skin < 0.03] - m["head_centre"]
+    dirs = dirs / np.linalg.norm(dirs, axis=1)[:, None]
+    dirs = dirs[:: max(1, len(dirs) // 1500)]
+
+    def mask(u):  # the crest band, plus ~12 deg around every point where the sculpted mane touched the head
+        best = float(np.max(dirs @ np.array(u)))
+        # st1: Meshy's contact points alone left the back of the skull bare
+        phi, across = mane_hair.crest_coords(u)
+        # st3: a bare patch remained on the back of the skull beside the crest -> whole upper back
+        back = smoothstep(56, 66, phi) * (1.0 - smoothstep(205, 218, phi)) * (1.0 - smoothstep(62.0, 72.0, abs(across)))
+        return max(back, smoothstep(math.cos(math.radians(14)), math.cos(math.radians(8)), best))
+
+    groom = dataclasses.replace(mane_hair.STRANDS, mask=mask)
+    obj = mane_hair.build_mane(um.Skull(cu.HEAD_C, cu.HEAD_R, None), root, [], groom, given=g)
+    mane_hair.bake(obj, bake_path)
+    return obj
+
+
 def colour(obj):
     zs = [v.co.z for v in obj.data.vertices]
     top, bottom = max(zs), min(zs)
@@ -155,8 +199,20 @@ def main():
     mane = import_mane(glb, scale, root)
     bpy.context.view_layer.update()
     trim(mane, head, scale)
+    if "--export-mesh" in args:
+        export_mesh(mane, os.path.abspath(opt(args, "--export-mesh", "")))
+        return
     colour(mane)
     hair = [mane, fringe(root, os.path.abspath(opt(args, "--fringe-bake", os.path.join(out_dir, "fringe.npz"))))]
+    if "--guides" in args:  # option 2: strands along the Meshy lock axes replace the sculpted mesh
+        mane.hide_render = True
+        mesh_npz = os.path.abspath(opt(args, "--mesh", ""))
+        hair = [strand_mane(root, os.path.abspath(opt(args, "--guides", "")), mesh_npz, os.path.abspath(opt(args, "--strands-bake", os.path.join(out_dir, "strands.npz")))), hair[1]]
+        import numpy as np
+
+        z = np.load(os.path.abspath(opt(args, "--guides", "")))
+        per_lock = int(opt(args, "--per-lock", 600))
+        hair.append(mane_hair.lock_strands("ManeLocks", z["guides"], z["widths"], root, cu.HEAD_C, cu.HEAD_R, per_lock, studio.MANE_STOPS))
     bpy.context.view_layer.update()
     for k, view in enumerate(VIEWS):
         if k == 0:
